@@ -16,11 +16,18 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <assert.h>
-#include <iostream>
-#include <map>
+// Cppmq includes
 #include <string>
-#include <string_view>
+#include <chrono>
+#include <thread>
+#include <iostream>
 
+
+#include <zmq.hpp>
+
+
+
+// file for testing
 std::ofstream myfile;
 
 std::map<std::string, double> data { {"VehicleID", 0},
@@ -36,12 +43,17 @@ std::map<std::string, double> data { {"VehicleID", 0},
                                      {"Line", 0},
                                      {"Signals", 0},};
 
-void InterfaceConnection::closeFile(const std::string path) {
+InterfaceConnection::~InterfaceConnection() {
+    myfile.close();
+}
+
+void InterfaceConnection::closeFile() {
     myfile.close();
 }
 
 void InterfaceConnection::openFile(const std::string path) {
     myfile.open(path);
+   // socket.bind("tcp://*:5555");
 
     std::cout << "######################################################## \n";
 
@@ -53,6 +65,7 @@ void InterfaceConnection::openFile(const std::string path) {
     assert (rc == 0);
      */
 }
+
 
 int InterfaceConnection::writeToFile(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci, int cnt) {
 
@@ -158,4 +171,50 @@ int InterfaceConnection::writeToFile(std::string path, std::string vehicleID, Tr
      */
 
     return cnt;
+
 }
+
+
+
+
+
+
+// hard coded data
+//const std::string data{"World"};
+
+void InterfaceConnection::openSocket(int c) {
+
+    // initialize the zmq context with a single IO thread
+    zmq::context_t context{c};
+
+    // construct a REP (reply) socket and bind to interface
+    zmq::socket_t socket{context, zmq::socket_type::rep};
+
+    // prepare some static data for responses
+    const std::string data{"World"};
+
+}
+
+
+void InterfaceConnection::sendMessage(zmq::context_t context, zmq::socket_t socket, TraCIAPI::VehicleScope traci) {
+
+    //using namespace std::chrono_literals;
+
+    for (;;)
+    {
+        zmq::message_t request;
+
+        // receive a request from client
+        socket.recv(request, zmq::recv_flags::none);
+        std::cout << "Received " << request.to_string() << std::endl;
+
+        // simulate work
+        //std::this_thread::sleep_for(1s);
+
+        // send the reply to the client
+        socket.send(zmq::buffer(data), zmq::send_flags::none);
+    }
+
+}
+
+
