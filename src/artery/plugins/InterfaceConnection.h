@@ -16,8 +16,8 @@ class InterfaceConnection {
 public:
     ~InterfaceConnection();
     InterfaceConnection();
-    void openSocket(int c);
-    void sendMessage(zmq::context_t context, zmq::socket_t socket, TraCIAPI::VehicleScope);
+    static void openSocket(int c);
+    static void sendMessage(zmq::context_t context, zmq::socket_t socket, TraCIAPI::VehicleScope);
     static int writeToFile(const std::string path, const std::string vehicleID, TraCIAPI::VehicleScope traci, int cnt);
     static void closeFile(const std::string path);
     static void openFile(const std::string path);
@@ -25,7 +25,7 @@ public:
 protected:
     zmq::context_t context;
     zmq::socket_t socket;
-    const std::string data;
+    const std::string data_zmq;
 };
 
 

@@ -47,7 +47,8 @@ InterfaceConnection::~InterfaceConnection() {
     myfile.close();
 }
 
-void InterfaceConnection::closeFile() {
+
+void InterfaceConnection::closeFile(const std::string path) {
     myfile.close();
 }
 
@@ -191,7 +192,7 @@ void InterfaceConnection::openSocket(int c) {
     zmq::socket_t socket{context, zmq::socket_type::rep};
 
     // prepare some static data for responses
-    const std::string data{"World"};
+    const std::string data_zmq{"World"};
 
 }
 
@@ -212,9 +213,11 @@ void InterfaceConnection::sendMessage(zmq::context_t context, zmq::socket_t sock
         //std::this_thread::sleep_for(1s);
 
         // send the reply to the client
-        socket.send(zmq::buffer(data), zmq::send_flags::none);
+        //socket.send(zmq::buffer(data), zmq::send_flags::none);
     }
 
 }
+
+
 
 
