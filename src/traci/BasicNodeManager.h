@@ -1,6 +1,7 @@
 #ifndef BASICNODEMANAGER_H_XL6ISC2V
 #define BASICNODEMANAGER_H_XL6ISC2V
 
+#include "artery/plugins/InterfaceConnection.h"
 #include "traci/Angle.h"
 #include "traci/Boundary.h"
 #include "traci/NodeManager.h"
@@ -13,10 +14,11 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <iostream>
+#include <bitset>
 
 namespace traci
 {
-
 class API;
 class ModuleMapper;
 class PersonSink;

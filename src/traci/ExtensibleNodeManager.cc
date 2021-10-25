@@ -19,7 +19,11 @@ ExtensibleNodeManager::VehicleLifecycle::VehicleLifecycle(ExtensibleNodeManager*
 
 void ExtensibleNodeManager::VehicleLifecycle::addVehicle(const std::string& id)
 {
+    std::cout << "Ich bin in der Update drinnen ihr schweine.";
+
     m_manager->addVehicle(m_policy, id);
+
+    std::cout << "Ich bin in der Update drinnen ihr schweine.";
 }
 
 void ExtensibleNodeManager::VehicleLifecycle::removeVehicle(const std::string& id)
@@ -79,6 +83,7 @@ void ExtensibleNodeManager::addVehicle(const std::string& id)
 
 void ExtensibleNodeManager::addVehicle(const VehiclePolicy* omit, const std::string& id)
 {
+
     for (VehiclePolicy* policy : m_policies) {
         if (policy != omit && policy->addVehicle(id) == VehiclePolicy::Decision::Discard) {
             return;

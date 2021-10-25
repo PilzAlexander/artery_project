@@ -2,10 +2,12 @@
 // Created by vagrant on 10/21/21.
 //
 
+
+
 #ifndef ARTERY_INTERFACECONNECTION_H
 #define ARTERY_INTERFACECONNECTION_H
-#include "fstream"
-#include "iostream"
+#include "../../../../../../../../usr/include/c++/8/fstream"
+#include "../../../../../../../../usr/include/c++/8/iostream"
 
 namespace artery
 {
@@ -15,7 +17,7 @@ namespace artery
     public:
         ~InterfaceConnection();
         InterfaceConnection();
-        void writeToFile(const std::string &);
+        void static writeToFile(const std::string);
         void closeFile();
         void openFile();
 

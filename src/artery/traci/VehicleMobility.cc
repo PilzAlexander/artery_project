@@ -1,18 +1,28 @@
 #include "artery/traci/Cast.h"
 #include "artery/traci/VehicleMobility.h"
 #include <omnetpp/cwatch.h>
-#include "artery/Plugins/InterfaceConnection.h"
+
+#include <iostream>
+#include <fstream>
+#include <zmq.h>
+#include <string.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <assert.h>
 
 using namespace traci;
 
 namespace artery
 {
     std::ofstream myfile;
-    InterfaceConnection* Test = new InterfaceConnection();
 
-
-
-
+    /*
+    //  Socket to talk to clients
+    void *context = zmq_ctx_new ();
+    void *responder = zmq_socket (context, ZMQ_REP);
+    int rc = zmq_bind (responder, "tcp://*:5555");
+    //InterfaceConnection* Test = new InterfaceConnection();
+     */
 
 
 void VehicleMobility::initializeSink(std::shared_ptr<API> api, std::shared_ptr<VehicleCache> cache, const Boundary& boundary)
@@ -24,7 +34,8 @@ void VehicleMobility::initializeSink(std::shared_ptr<API> api, std::shared_ptr<V
     mNetBoundary = boundary;
     mController.reset(new VehicleController(api, cache));
     //Test->openFile();
-    //myfile.open("/home/vagrant/Test1.txt");
+    myfile.open("/home/vagrant/Desktop/fork_repo/artery_project/Test1.txt");
+
 }
 
 
@@ -44,9 +55,12 @@ void VehicleMobility::updateVehicle(const TraCIPosition& traci_pos, TraCIAngle t
 
     const auto vehicleID = getVehicleController()->getVehicleId();
 
+    //std::cout << vehicleID;
+
     //Test->writeToFile(vehicleID);
 
-    /*myfile << "Signals1: " << int(getVehicleController()->getTraCI()->vehicle.getSignals("flow0.0")) << "\n";
+    /*
+    myfile << "Signals1: " << int(getVehicleController()->getTraCI()->vehicle.getSignals("flow0.0")) << "\n";
     myfile << "Distance: " << int(getVehicleController()->getTraCI()->vehicle.getDistance("flow0.0")) << "\n";
     myfile << "Acceleration: " << int(getVehicleController()->getTraCI()->vehicle.getAcceleration("flow0.0"))
            << "\n";
@@ -57,14 +71,25 @@ void VehicleMobility::updateVehicle(const TraCIPosition& traci_pos, TraCIAngle t
            << "\n";
     myfile << "CO2 Emission: " << int(getVehicleController()->getTraCI()->vehicle.getCO2Emission("flow0.0"))
            << "\n";
-    myfile << "Emergency Decel: " << int(getVehicleController()->getTraCI()->vehicle.getEmergencyDecel("flow0.0"))
-        << "\n";
+    //myfile << "Emergency Decel: " << int(getVehicleController()->getTraCI()->vehicle.getEmergencyDecel("flow0.0"))
+    //    << "\n";
     myfile << "Height: " << int(getVehicleController()->getTraCI()->vehicle.getHeight("flow0.0")) << "\n";
     myfile << "Length: " << int(getVehicleController()->getTraCI()->vehicle.getLength("flow0.0")) << "\n";
     myfile << "Width: " << getVehicleController()->getTraCI()->vehicle.getWidth("flow0.0") << "\n";
     myfile << "Line: " << getVehicleController()->getTraCI()->vehicle.getLine("flow0.0") << "\n";
     myfile << "Vehicle Class: " << getVehicleController()->getTraCI()->vehicle.getVehicleClass("flow0.0") << "\n";
-*/
+    myfile << "\n\n";
+
+     */
+    /*
+    assert (rc == 0);
+    //while (1) {
+    char buffer [10];
+    zmq_recv (responder, buffer, 10, 0);
+    printf ("Received Hello\n");
+    sleep (1);          //  Do some 'work'
+    zmq_send (responder, "Feinstes Schweeeeeiiiiiiinnn", 5, 0);
+     */
 }
 
 VehicleController* VehicleMobility::getVehicleController()
