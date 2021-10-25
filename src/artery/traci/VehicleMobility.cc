@@ -14,16 +14,7 @@ using namespace traci;
 
 namespace artery
 {
-    std::ofstream myfile;
-
-    /*
-    //  Socket to talk to clients
-    void *context = zmq_ctx_new ();
-    void *responder = zmq_socket (context, ZMQ_REP);
-    int rc = zmq_bind (responder, "tcp://*:5555");
-    //InterfaceConnection* Test = new InterfaceConnection();
-     */
-
+    //std::ofstream myfile;
 
 void VehicleMobility::initializeSink(std::shared_ptr<API> api, std::shared_ptr<VehicleCache> cache, const Boundary& boundary)
 {
@@ -34,7 +25,7 @@ void VehicleMobility::initializeSink(std::shared_ptr<API> api, std::shared_ptr<V
     mNetBoundary = boundary;
     mController.reset(new VehicleController(api, cache));
     //Test->openFile();
-    myfile.open("/home/vagrant/Desktop/fork_repo/artery_project/Test1.txt");
+    //myfile.open("/home/vagrant/Desktop/fork_repo/artery_project/Test1.txt");
 
 }
 

@@ -28,6 +28,10 @@ class VehicleSink;
 class BasicNodeManager : public NodeManager, public Listener, public omnetpp::cSimpleModule
 {
 public:
+
+    BasicNodeManager();
+    ~BasicNodeManager();
+
     static const omnetpp::simsignal_t addNodeSignal;
     static const omnetpp::simsignal_t updateNodeSignal;
     static const omnetpp::simsignal_t removeNodeSignal;
@@ -94,17 +98,17 @@ protected:
 
 private:
     std::shared_ptr<API> m_api;
-    ModuleMapper* m_mapper;
+    ModuleMapper* m_mapper{};
     Boundary m_boundary;
-    SubscriptionManager* m_subscriptions;
-    unsigned m_nodeIndex;
+    SubscriptionManager* m_subscriptions{};
+    unsigned m_nodeIndex{};
     std::map<std::string, omnetpp::cModule*> m_nodes;
     std::map<std::string, PersonSink*> m_persons;
     std::map<std::string, VehicleSink*> m_vehicles;
     std::string m_vehicle_sink_module;
     std::string m_person_sink_module;
-    bool m_destroy_vehicles_on_crash;
-    bool m_ignore_persons;
+    bool m_destroy_vehicles_on_crash{};
+    bool m_ignore_persons{};
     omnetpp::SimTime m_offset = omnetpp::SimTime::ZERO;
 };
 

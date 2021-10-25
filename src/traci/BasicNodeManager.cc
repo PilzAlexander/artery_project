@@ -10,8 +10,11 @@
 #include "artery/plugins/InterfaceConnection.h"
 
 #include <inet/common/ModuleAccess.h>
+#include <fstream>
 
 using namespace omnetpp;
+
+int counter = 0;
 
 namespace traci
 {
@@ -203,65 +206,13 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     auto& vehicleID = vehicle->getId();
     auto& traci = m_api->vehicle;
 
-    /*
+    auto path = "/home/vagrant/Desktop/fork_repo/Test1.txt";
+    std::cout << "Open Path \n";
+    std::cout << path << "\n";
 
-
-    std::cout << "Vehicle ID: " << vehicleID << "\n";
-    std::cout << "Speed: " << traci.getSpeed(vehicleID) << "\n";
-    std::cout << "Acceleration: " << traci.getAcceleration(vehicleID) << "\n";
-    std::cout << "Acceleration: " << traci.getAcceleration(vehicleID) << "\n";
-    std::cout << "Angle: " << traci.getAngle(vehicleID) << "\n";
-    std::cout << "Distance: " << traci.getDistance(vehicleID) << "\n";
-    std::cout << "Height: " << traci.getHeight(vehicleID) << "\n";
-    std::cout << "Length: " << traci.getLength(vehicleID) << "\n";
-    std::cout << "Width: " << traci.getWidth(vehicleID) << "\n";
-    std::cout << "LanePosition: " << traci.getLanePosition(vehicleID) << "\n";
-    std::cout << "Line: " << traci.getLine(vehicleID) << "\n";
-    std::cout << "Signals: " << traci.getSignals(vehicleID) << "\n";
-
-    auto signalsNode = traci.getSignals(vehicleID);
-
-    traci.setSignals("flow0.0", 255);
-
-    std::string binary = std::bitset<8>(signalsNode).to_string(); //to binary
-    std::cout << "SignalBinary: " << binary << "\n";
-
-    if (signalsNode & 1){
-        std::cout << "lowBeamHeadlightsOn \n";
-    }
-
-    if (signalsNode & 2){
-        std::cout << "HighBeamHeadlightsOn \n";
-    }
-
-    if (signalsNode & 4){
-        std::cout << "leftTurnSignalOn \n";
-    }
-
-    if (signalsNode & 8){
-        std::cout << "rightTurnSignalOn \n";
-    }
-
-    if (signalsNode & 16){
-        std::cout << "dayTimeRunningLightsOn \n";
-    }
-
-    if (signalsNode & 32){
-        std::cout << "reverseLightOn \n";
-    }
-
-    if (signalsNode & 64){
-        std::cout << "fogLightOn \n";
-    }
-
-    if (signalsNode & 128){
-        std::cout << "parkingLightOn \n";
-    }
-
-    std::cout << "\n \n";
-    */
-
-    InterfaceConnection::writeToFile("flow0.0", traci);
+    std::cout << counter << "\n";
+    counter = InterfaceConnection::writeToFile(path,"flow0.0", traci, counter);
+    std::cout << counter << "\n";
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);
@@ -420,6 +371,29 @@ PersonSink* BasicNodeManager::getPersonSink(const std::string& id)
 {
     auto found = m_persons.find(id);
     return found != m_persons.end() ? found->second : nullptr;
+}
+
+BasicNodeManager::BasicNodeManager() {
+
+    /*
+    auto path = "/home/vagrant/Desktop/fork_repo/Test1.txt";
+    std::ofstream file;
+
+    InterfaceConnection::openFile(path);
+
+    std::cout << "Open Path \n";
+    std::cout << path << "\n";
+    */
+}
+
+BasicNodeManager::~BasicNodeManager() {
+
+
+    auto path = "/home/vagrant/Desktop/fork_repo/Test1.txt";
+    std::cout << "Close Path \n";
+    std::cout << path << "\n";
+
+    InterfaceConnection::closeFile(path);
 }
 
 

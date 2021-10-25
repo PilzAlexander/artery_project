@@ -16,24 +16,34 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <assert.h>
-
+#include <iostream>
+#include <map>
+#include <string>
+#include <string_view>
 
 std::ofstream myfile;
 
-InterfaceConnection::InterfaceConnection() {
+std::map<std::string, double> data { {"VehicleID", 0},
+                                     {"Speed", 0},
+                                     {"Acceleration", 0},
+                                     {"Angle", 0},
+                                     {"Distance", 0},
+                                     {"Height", 0},
+                                     {"Length", 0},
+                                     {"Width", 0},
+                                     {"Angle", 0},
+                                     {"LanePosition", 0},
+                                     {"Line", 0},
+                                     {"Signals", 0},};
 
-}
-
-InterfaceConnection::~InterfaceConnection() {
-    myfile.close();
-}
-
-void InterfaceConnection::closeFile() {
+void InterfaceConnection::closeFile(const std::string path) {
     myfile.close();
 }
 
 void InterfaceConnection::openFile(const std::string path) {
     myfile.open(path);
+
+    std::cout << "######################################################## \n";
 
     /*
     //  Socket to talk to clients
@@ -44,22 +54,52 @@ void InterfaceConnection::openFile(const std::string path) {
      */
 }
 
-void InterfaceConnection::writeToFile(const std::string vehicleID, TraCIAPI::VehicleScope traci) {
+int InterfaceConnection::writeToFile(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci, int cnt) {
 
-    std::cout << vehicleID;
+    if (cnt == 0){
+        std::cout << "drinnen \n";
+        openFile(path);
+        cnt++;
+    }
+
+/*
+    std::string vehicleID_string = vehicleID;
+    int vehicleID_int;
+    std::string vehicleID_int_tmp;
+    int tmp_cnt = vehicleID_string.find('w')
+
+    vehicleID_int_tmp = vehicleID_string.substr(tmp_cnt,5);
+    std::cout << vehicleID << "\n";
+    std::cout << vehicleID_int_tmp;
     //auto& traci = m_api->vehicle;
+*/
+    //data["VehicleID"] = vehicleID;
+    data["Speed"] = traci.getSpeed(vehicleID);
+    data["Acceleration"] = traci.getAcceleration(vehicleID);
+    data["Angle"] = traci.getAngle(vehicleID);
+    data["Distance"] = traci.getDistance(vehicleID);
+    data["Height"] = traci.getHeight(vehicleID);
+    data["Length"] = traci.getLength(vehicleID);
+    data["Width"] = traci.getWidth(vehicleID) ;
+    data["LanePosition"] = traci.getLanePosition(vehicleID);
+    //data["Line"] = traci.getLine(vehicleID);
+    data["Signals"] = traci.getSignals(vehicleID);
 
-    std::cout << "NodeID: " << vehicleID << "\n";
-    std::cout << "Speed: " << traci.getSpeed("flow0.0") << "\n";
-    std::cout << "Acceleration: " << traci.getAcceleration("flow0.0") << "\n";
-    std::cout << "\n";
+    /*
+    for(const auto& elem : data)
+    {
+        std::cout << elem.first << " " << elem.second.first << " " << elem.second.second << "\n";
+    }
+     */
+
+    std::cout << "\n \n";
 
     myfile << "Vehicle ID: " << vehicleID << "\n";
     myfile << "Speed: " << traci.getSpeed(vehicleID) << "\n";
     myfile << "Acceleration: " << traci.getAcceleration(vehicleID) << "\n";
     myfile << "Angle: " << traci.getAngle(vehicleID) << "\n";
     myfile << "Distance: " << traci.getDistance(vehicleID) << "\n";
-    myfile<< "Height: " << traci.getHeight(vehicleID) << "\n";
+    myfile << "Height: " << traci.getHeight(vehicleID) << "\n";
     myfile << "Length: " << traci.getLength(vehicleID) << "\n";
     myfile << "Width: " << traci.getWidth(vehicleID) << "\n";
     myfile << "LanePosition: " << traci.getLanePosition(vehicleID) << "\n";
@@ -74,38 +114,38 @@ void InterfaceConnection::writeToFile(const std::string vehicleID, TraCIAPI::Veh
     std::cout << "SignalBinary: " << binary << "\n";
 
     if (signalsNode & 1){
-        std::cout << "lowBeamHeadlightsOn \n";
+        myfile << "lowBeamHeadlightsOn \n";
     }
 
     if (signalsNode & 2){
-        std::cout << "HighBeamHeadlightsOn \n";
+        myfile << "HighBeamHeadlightsOn \n";
     }
 
     if (signalsNode & 4){
-        std::cout << "leftTurnSignalOn \n";
+        myfile << "leftTurnSignalOn \n";
     }
 
     if (signalsNode & 8){
-        std::cout << "rightTurnSignalOn \n";
+        myfile << "rightTurnSignalOn \n";
     }
 
     if (signalsNode & 16){
-        std::cout << "dayTimeRunningLightsOn \n";
+        myfile << "dayTimeRunningLightsOn \n";
     }
 
     if (signalsNode & 32){
-        std::cout << "reverseLightOn \n";
+        myfile << "reverseLightOn \n";
     }
 
     if (signalsNode & 64){
-        std::cout << "fogLightOn \n";
+        myfile << "fogLightOn \n";
     }
 
     if (signalsNode & 128){
-        std::cout << "parkingLightOn \n";
+        myfile << "parkingLightOn \n";
     }
 
-    std::cout << "\n \n";
+    myfile << "\n \n";
 
     /*
     //while (1) {
@@ -116,4 +156,6 @@ void InterfaceConnection::writeToFile(const std::string vehicleID, TraCIAPI::Veh
     zmq_send (responder, "Feinstes Schweeeeeiiiiiiinnn", 5, 0);
     //}
      */
+
+    return cnt;
 }
