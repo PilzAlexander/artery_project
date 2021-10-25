@@ -6,7 +6,9 @@
 #include "traci/PersonSink.h"
 #include "traci/VariableCache.h"
 #include "traci/VehicleSink.h"
+
 #include "artery/plugins/InterfaceConnection.h"
+
 #include <inet/common/ModuleAccess.h>
 
 using namespace omnetpp;
@@ -259,7 +261,7 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     std::cout << "\n \n";
     */
 
-    artery::InterfaceConnection::writeToFile(vehicleID);
+    InterfaceConnection::writeToFile("flow0.0", traci);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);
@@ -419,5 +421,6 @@ PersonSink* BasicNodeManager::getPersonSink(const std::string& id)
     auto found = m_persons.find(id);
     return found != m_persons.end() ? found->second : nullptr;
 }
+
 
 } // namespace traci

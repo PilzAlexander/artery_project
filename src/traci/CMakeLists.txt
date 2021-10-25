@@ -20,6 +20,7 @@ set(SOURCES
     sumo/foreign/tcpip/socket.cpp
     sumo/foreign/tcpip/storage.cpp
     sumo/utils/traci/TraCIAPI.cpp
+    ../artery/plugins/InterfaceConnection.cc
 )
 
 add_library(traci SHARED ${SOURCES})

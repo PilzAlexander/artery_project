@@ -9,20 +9,17 @@
 #include "../../../../../../../../usr/include/c++/8/fstream"
 #include "../../../../../../../../usr/include/c++/8/iostream"
 
-namespace artery
-{
 
-    class InterfaceConnection {
+class InterfaceConnection {
 
-    public:
-        ~InterfaceConnection();
-        InterfaceConnection();
-        void static writeToFile(const std::string);
-        void closeFile();
-        void openFile();
+public:
+    ~InterfaceConnection();
+    InterfaceConnection();
+    static void writeToFile(const std::string vehicleID, TraCIAPI::VehicleScope traci);
+    void closeFile();
+    static void openFile(const std::string path);
 
-    };
+};
 
-} //namespace artery
 
 #endif /* ARTERY_INTERFACECONNECTION_H */
