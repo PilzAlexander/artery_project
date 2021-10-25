@@ -2,17 +2,9 @@
 // Created by vagrant on 10/21/21.
 //
 
-
-#include "artery/traci/VehicleMobility.h"
-#include "artery/traci/VehicleController.h"
 #include "artery/traci/Cast.h"
-#include "artery/traci/VehicleMobility.h"
-#include <omnetpp/cwatch.h>
 #include "InterfaceConnection.h"
-
 #include <fstream>
-#include <zmq.h>
-#include <zmqpp/zmqpp.hpp>
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -21,11 +13,19 @@
 #include <map>
 #include <string>
 #include <string_view>
-#include <thread>
 
 std::ofstream myfile;
 
 std::map<std::string, double> data;
+
+// Constructor without args
+InterfaceConnection::InterfaceConnection() {}
+
+// Deconstructor
+InterfaceConnection::~InterfaceConnection() {
+
+}
+
 
 void InterfaceConnection::closeFile(const std::string path) {
     myfile.close();
@@ -49,15 +49,7 @@ void InterfaceConnection::openFile(const std::string path) {
     //data["Line"] =  0;
     data["Signals"] =  0;
 
-    /*
-    //  Socket to talk to clients
-    void *context = zmq_ctx_new ();
-    void *responder = zmq_socket (context, ZMQ_REP);
-    int rc = zmq_bind (responder, "tcp://*:5555");
-    assert (rc == 0);
-     */
 }
-
 
 void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci) {
 
@@ -142,50 +134,9 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
     }
     myfile << "\n \n";
 
-    /*
-    //while (1) {
-    char buffer [10];
-    zmq_recv (responder, buffer, 10, 0);
-    printf ("Received Hello\n");
-    sleep (1);          //  Do some 'work'
-    zmq_send (responder, "Feinstes Schweeeeeiiiiiiinnn", 5, 0);
-    //}
-     */
 }
 
-//zmqpp beispiel (hardgecodedde funktion für server)
-void InterfaceConnection::openSocketSendMessage() {
-
-    using namespace std::chrono_literals;
-
-    // initialize the zmq context with a single IO thread
-    zmq::context_t context{1};
-
-    // construct a REP (reply) socket and bind to interface
-    zmq::socket_t socket{context, zmq::socket_type::rep};
-    socket.bind("tcp://*:5555");
-
-    // prepare some static data for responses
-    const std::string data_zmq{"World"};
-
-    for (;;)
-    {
-        zmq::message_t request;
-
-        // receive a request from client
-        socket.recv(request, zmq::recv_flags::none);
-        std::cout << "Received " << request.to_string() << std::endl;
-
-        // simulate work
-        std::this_thread::sleep_for(1s);
-
-        // send the reply to the client
-        socket.send(zmq::buffer(data_zmq), zmq::send_flags::none);
-    }
-
-    //return 0;
-}
-
+// EOF
 
 
 

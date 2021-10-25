@@ -7,6 +7,7 @@
 #include "traci/VariableCache.h"
 #include "traci/VehicleSink.h"
 
+#include "artery/plugins/SimSocket.h"
 #include "artery/plugins/InterfaceConnection.h"
 
 #include <inet/common/ModuleAccess.h>
@@ -208,8 +209,7 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     //std::cout << "Open Path \n";
     //std::cout << path << "\n";
 
-    InterfaceConnection::writeToFile(path,"flow0.0", traci);
-    InterfaceConnection::openSocketSendMessage();
+    //InterfaceConnection::writeToFile(path,"flow0.0", traci);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);
@@ -370,18 +370,7 @@ PersonSink* BasicNodeManager::getPersonSink(const std::string& id)
     return found != m_persons.end() ? found->second : nullptr;
 }
 
-BasicNodeManager::BasicNodeManager() {
-
-    /*
-    auto path = "/home/vagrant/Desktop/fork_repo/Test1.txt";
-    std::ofstream file;
-
-    InterfaceConnection::openFile(path);
-
-    std::cout << "Open Path \n";
-    std::cout << path << "\n";
-    */
-}
+BasicNodeManager::BasicNodeManager() {}
 
 BasicNodeManager::~BasicNodeManager() {
 
