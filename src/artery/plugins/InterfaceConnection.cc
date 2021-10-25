@@ -12,6 +12,7 @@
 
 #include <fstream>
 #include <zmq.h>
+#include <zmqpp/zmqpp.hpp>
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -20,6 +21,7 @@
 #include <map>
 #include <string>
 #include <string_view>
+#include <thread>
 
 std::ofstream myfile;
 
@@ -151,26 +153,20 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
      */
 }
 
-// hard coded data
-//const std::string data{"World"};
+//zmqpp beispiel (hardgecodedde funktion für server)
+void InterfaceConnection::openSocketSendMessage() {
 
-void InterfaceConnection::openSocket(int c) {
+    using namespace std::chrono_literals;
 
     // initialize the zmq context with a single IO thread
-    zmq::context_t context{c};
+    zmq::context_t context{1};
 
     // construct a REP (reply) socket and bind to interface
     zmq::socket_t socket{context, zmq::socket_type::rep};
+    socket.bind("tcp://*:5555");
 
     // prepare some static data for responses
     const std::string data_zmq{"World"};
-
-}
-
-
-void InterfaceConnection::sendMessage(zmq::context_t context, zmq::socket_t socket, TraCIAPI::VehicleScope traci) {
-
-    //using namespace std::chrono_literals;
 
     for (;;)
     {
@@ -181,13 +177,22 @@ void InterfaceConnection::sendMessage(zmq::context_t context, zmq::socket_t sock
         std::cout << "Received " << request.to_string() << std::endl;
 
         // simulate work
-        //std::this_thread::sleep_for(1s);
+        std::this_thread::sleep_for(1s);
 
         // send the reply to the client
-        //socket.send(zmq::buffer(data), zmq::send_flags::none);
+        socket.send(zmq::buffer(data_zmq), zmq::send_flags::none);
     }
 
+    //return 0;
 }
+
+
+
+
+
+
+
+
 
 
 

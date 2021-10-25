@@ -13,8 +13,9 @@ if(POLICY CMP0079)
     endif()
 endif()
 
+#TODO 17
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 enable_testing()
 
@@ -93,7 +94,8 @@ endif()
 option(WITH_ENVMOD "Build Artery with environment model feature" ON)
 option(WITH_STORYBOARD "Build Artery with storyboard feature" ON)
 option(WITH_TRANSFUSION "Build Artery with transfusion feature" OFF)
-option(WITH_TESTBED "Build Artery with testbed feature" ON) #TODO: Dynamisch stellen
+#TODO $Variable für WITH_TESTBED
+option(WITH_TESTBED "Build Artery with testbed feature" ON)
 
 option(WITH_OTS "Build Artery with support for OpenTrafficSim" OFF)
 if(WITH_OTS)
