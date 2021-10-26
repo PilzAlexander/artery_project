@@ -19,10 +19,10 @@ void TestbedNodeManager::initialize()
     BasicNodeManager::initialize();
 
     // open socket with initializing the TestbedNodeManager AP
-    SimSocket newSocket = SimSocket("tcp://127.0.0.1:5557", "Sack");
+   // SimSocket newSocket = SimSocket("tcp://127.0.0.1:5557", "Sack");
 
     // send data
-    SimSocket::createSocket(newSocket.getPort(), newSocket.getDataZmq());
+  //  SimSocket::createSocket(newSocket.getPort(), newSocket.getDataZmq());
 
 
 }

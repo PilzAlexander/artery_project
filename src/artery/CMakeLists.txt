@@ -90,6 +90,7 @@ target_link_libraries(core PUBLIC traci)
 target_link_libraries(core PUBLIC Vanetza::vanetza)
 find_package(cppzmq)
 target_link_libraries(core PUBLIC cppzmq)
+target_link_libraries(core PUBLIC zmqpp)
 
 if(TARGET veins)
     message(STATUS "Enable Veins integration")
