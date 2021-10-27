@@ -12,13 +12,11 @@
  * Includes
  *********************************************************************************/
 #include "SimSocket.h"
-#include "zmqpp/zmqpp.hpp"
-
 #include <chrono>
 #include <thread>
 #include <iostream>
 #include <pthread.h>
-
+#include <zmq.hpp>
 /********************************************************************************
  * Function declaration
  ********************************************************************************/
@@ -26,8 +24,6 @@
 using namespace std::chrono_literals;
 using namespace std;
 int i = 0;
-zmqpp::socket* socketPointer;
-
 // Constructor without args
 
 
@@ -59,9 +55,9 @@ int SimSocket::createSocket(std::string port, std::string data_zmq) {
    // zmqpp::socket& socketPointer = socket;
 
    // socketPointer = &socket;
-    zmqpp::message message;
+
     // compose a message from a string and a number
-    message << "TEST";
+
 
   //  sendTest(socket, "FICKT EUCH ALLE");
     cout << "T-Dog " ;
@@ -129,10 +125,23 @@ const std::string &SimSocket::getDataZmq() const {
 void SimSocket::setDataZmq(const std::string &dataZmq) {
     data_zmq = dataZmq;
 }
+void SimSocket::sendMessageZMQ(std::string messageNachricht){
+    // initialize the zmq context with a single IO thread
+    zmq::context_t context{1};
 
+    // construct a REQ (request) socket and connect to interface
+    zmq::socket_t socketZMQ{context, zmq::socket_type::req};
+    socketZMQ.connect("tcp://localhost:5555");
+
+    // set up some static data to send
+
+
+    socketZMQ.send(zmq::buffer(messageNachricht), zmq::send_flags::none);
+
+}
 void SimSocket::sendMessage(std::string messageNachricht) {
 
-
+  /*
 
     const string endpoint = "tcp://localhost:5555";
 
@@ -149,9 +158,14 @@ void SimSocket::sendMessage(std::string messageNachricht) {
 
     cout << "F-Dog";
         cout << socketPointer<< endl << endl;
-        socket.send(messageNachricht);
+       // socket.send(messageNachricht);
+    pthread_t t1 ,t2;
+    int i1,i2;
+    i1 = pthread_create(&t1, NULL, reinterpret_cast<void *(*)(void *)>( socketPointer->send(messageNachricht)), (void*) "t1");
+    pthread_join(t1,NULL);
         socket.close();
-        /*
+
+
          *
     int request_nbr;
     for (request_nbr = 0; request_nbr != 10; request_nbr++) {
@@ -160,9 +174,9 @@ void SimSocket::sendMessage(std::string messageNachricht) {
         zmqpp::message message;
         // compose a message from a string and a number
         message << messageNachricht;
-       // pthread_t t1 ,t2;
-       // int i1,i2;
-      //  i1 = pthread_create(&t1, NULL, reinterpret_cast<void *(*)(void *)>( socketPointer->send(message)), (void*) "t1");
+       pthread_t t1 ,t2;
+         int i1,i2;
+       i1 = pthread_create(&t1, NULL, reinterpret_cast<void *(*)(void *)>( socketPointer->send(message)), (void*) "t1");
        // pthread_join(t1,NULL);
        cout << &socketPointer;
        socket.send(message);

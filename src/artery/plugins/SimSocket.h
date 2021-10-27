@@ -15,7 +15,7 @@
  *********************************************************************************/
 #include <zmq.hpp>
 #include <iostream>
-#include <zmqpp/zmqpp.hpp>
+
 /********************************************************************************
  * Class declaration
  ********************************************************************************/
@@ -38,6 +38,7 @@ private:
     static int createSocket(std::string port, std::string data_zmq);
     const std::string &getPort() const;
     static void sendMessage(std::string message);
+    static void sendMessageZMQ(std::string message);
     void setPort(const std::string &port);
 
     const std::string &getDataZmq() const;

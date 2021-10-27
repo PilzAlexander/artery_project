@@ -88,9 +88,7 @@ target_link_libraries(core PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(core PUBLIC OmnetPP::envir)
 target_link_libraries(core PUBLIC traci)
 target_link_libraries(core PUBLIC Vanetza::vanetza)
-find_package(cppzmq)
-target_link_libraries(core PUBLIC cppzmq)
-target_link_libraries(core PUBLIC zmqpp)
+target_link_libraries(core PUBLIC zmq)
 
 
 if(TARGET veins)
