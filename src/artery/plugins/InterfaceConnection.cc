@@ -150,3 +150,45 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
     //}
      */
 }
+
+// hard coded data
+//const std::string data{"World"};
+
+void InterfaceConnection::openSocket(int c) {
+
+    // initialize the zmq context with a single IO thread
+    zmq::context_t context{c};
+
+    // construct a REP (reply) socket and bind to interface
+    zmq::socket_t socket{context, zmq::socket_type::rep};
+
+    // prepare some static data for responses
+    const std::string data_zmq{"World"};
+
+}
+
+
+void InterfaceConnection::sendMessage(zmq::context_t context, zmq::socket_t socket, TraCIAPI::VehicleScope traci) {
+
+    //using namespace std::chrono_literals;
+
+    for (;;)
+    {
+        zmq::message_t request;
+
+        // receive a request from client
+        socket.recv(request, zmq::recv_flags::none);
+        std::cout << "Received " << request.to_string() << std::endl;
+
+        // simulate work
+        //std::this_thread::sleep_for(1s);
+
+        // send the reply to the client
+        //socket.send(zmq::buffer(data), zmq::send_flags::none);
+    }
+
+}
+
+
+
+

@@ -73,6 +73,9 @@ add_library(core SHARED
 target_link_libraries(artery INTERFACE core)
 add_library(Artery::Core ALIAS core)
 
+
+
+
 generate_opp_message(utility/AsioData.msg TARGET core)
 
 set_target_properties(core PROPERTIES
@@ -85,6 +88,8 @@ target_link_libraries(core PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(core PUBLIC OmnetPP::envir)
 target_link_libraries(core PUBLIC traci)
 target_link_libraries(core PUBLIC Vanetza::vanetza)
+find_package(cppzmq)
+target_link_libraries(core PUBLIC cppzmq)
 
 if(TARGET veins)
     message(STATUS "Enable Veins integration")
