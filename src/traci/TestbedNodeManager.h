@@ -12,15 +12,13 @@ class TestbedNodeManager : public BasicNodeManager
 {
 public:
     void initialize() override;
-    static std::string m_twinId;
-    static std::string m_twinName;
 
 protected:
     virtual omnetpp::cModule* createModule(const std::string&, omnetpp::cModuleType*) override;
 
 private:
-    //std::string m_twinId;
-    //std::string m_twinName;
+    std::string m_twinId;
+    std::string m_twinName;
 };
 
 } /* namespace traci */

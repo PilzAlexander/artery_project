@@ -126,17 +126,23 @@ void SimSocket::setDataZmq(const std::string &dataZmq) {
     data_zmq = dataZmq;
 }
 void SimSocket::sendMessageZMQ(std::string messageNachricht){
-    // initialize the zmq context with a single IO thread
-    zmq::context_t context{1};
+    try {
+        // initialize the zmq context with a single IO thread
+        zmq::context_t context{1};
 
-    // construct a REQ (request) socket and connect to interface
-    zmq::socket_t socketZMQ{context, zmq::socket_type::req};
-    socketZMQ.connect("tcp://localhost:5555");
+        // construct a REQ (request) socket and connect to interface
+        zmq::socket_t socketZMQ{context, zmq::socket_type::req};
+        socketZMQ.connect("tcp://localhost:5555");
 
-    // set up some static data to send
+        // set up some static data to send
 
 
-    socketZMQ.send(zmq::buffer(messageNachricht), zmq::send_flags::none);
+        socketZMQ.send(zmq::buffer(messageNachricht), zmq::send_flags::none);
+        socketZMQ.close();
+    }
+    catch (zmq::error_t & e){
+        cerr << "Error " << e.what() << endl;
+    }
 
 }
 void SimSocket::sendMessage(std::string messageNachricht) {

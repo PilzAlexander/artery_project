@@ -90,7 +90,10 @@ omnetpp::cEvent* TestbedScheduler::takeNextEvent()
 
    // std::cout << "###############################################";
     //hier ssende
-    SimSocket::sendMessageZMQ("JA GEGE");
+    std::thread sendThread(SimSocket::sendMessageZMQ,"JaGGE");
+    sendThread.detach();
+    std::cout<< "senden " <<std::endl;
+
     //SimSocket::sendMessage("JA GEGE");
 
     return next;
