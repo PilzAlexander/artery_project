@@ -18,7 +18,7 @@ public:
     InterfaceConnection();
     static void openSocket(int c);
     static void sendMessage(zmq::context_t context, zmq::socket_t socket, TraCIAPI::VehicleScope);
-    static int writeToFile(const std::string path, const std::string vehicleID, TraCIAPI::VehicleScope traci);
+    static void writeToFile(const std::string path, const std::string vehicleID, TraCIAPI::VehicleScope traci);
     static void closeFile(const std::string path);
     static void openFile(const std::string path);
 
