@@ -5,6 +5,11 @@
 #include <omnetpp/cfutureeventset.h>
 #include <omnetpp/regmacros.h>
 
+#include <fstream>
+#include <zmq.h>
+#include <string.h>
+#include <stdio.h>
+
 namespace artery
 {
 
@@ -56,6 +61,9 @@ omnetpp::cEvent* TestbedScheduler::takeNextEvent()
 
     cEvent* next = sim->getFES()->removeFirst();
     ASSERT(!next->isStale());
+
+    std::cout << "###############################################";
+
     return next;
 }
 

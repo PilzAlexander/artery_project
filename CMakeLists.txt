@@ -93,7 +93,7 @@ endif()
 option(WITH_ENVMOD "Build Artery with environment model feature" ON)
 option(WITH_STORYBOARD "Build Artery with storyboard feature" ON)
 option(WITH_TRANSFUSION "Build Artery with transfusion feature" OFF)
-option(WITH_TESTBED "Build Artery with testbed feature" OFF)
+option(WITH_TESTBED "Build Artery with testbed feature" ON) #TODO: Dynamisch stellen
 
 option(WITH_OTS "Build Artery with support for OpenTrafficSim" OFF)
 if(WITH_OTS)

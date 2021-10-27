@@ -13,7 +13,7 @@
 class InterfaceConnection {
 
 public:
-    static int writeToFile(const std::string path, const std::string vehicleID, TraCIAPI::VehicleScope traci, int cnt);
+    static void writeToFile(const std::string path, const std::string vehicleID, TraCIAPI::VehicleScope traci);
     static void closeFile(const std::string path);
     static void openFile(const std::string path);
 

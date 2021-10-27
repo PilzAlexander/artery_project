@@ -168,8 +168,6 @@ void BasicNodeManager::processVehicles()
         const std::string& id = vehicle.first;
         VehicleSink* sink = vehicle.second;
         updateVehicle(id, sink);
-
-        //std::cout << "Ich bin in der Update drinnen ihr schweine.";
     }
 }
 
@@ -207,12 +205,10 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     auto& traci = m_api->vehicle;
 
     auto path = "/home/vagrant/Desktop/fork_repo/Test1.txt";
-    std::cout << "Open Path \n";
-    std::cout << path << "\n";
+    //std::cout << "Open Path \n";
+    //std::cout << path << "\n";
 
-    std::cout << counter << "\n";
-    counter = InterfaceConnection::writeToFile(path,"flow0.0", traci, counter);
-    std::cout << counter << "\n";
+    InterfaceConnection::writeToFile(path,"flow0.0", traci);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);
