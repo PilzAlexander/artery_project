@@ -9,7 +9,9 @@
 #include <map>
 #include <string>
 #include <string_view>
+#include <thread>
 #include "json.hpp"
+#include "SimSocket.h"
 
 
 std::ofstream myfile;
@@ -187,7 +189,14 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
     if (o.is_open()) {
         o << std::setw(2) << j << std::endl << "\n";
     }
+
+    SimSocket::sendJSON(j);
+    std::thread sendThread(SimSocket::sendJSON,j);
+    sendThread.detach();
+
     o.close();
+
+
 }
 
 // EOF

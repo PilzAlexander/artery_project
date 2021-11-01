@@ -83,13 +83,12 @@ omnetpp::cEvent* TestbedScheduler::takeNextEvent()
 
     //InterfaceConnection::writeToFile(path, m_twinId, traci);
 //#########################################################################################################################
-
-   // std::cout << "###############################################";
-    //hier ssende
+/*
+    //hier sende
     std::thread sendThread(SimSocket::sendMessageZMQ,"JaGGE");
     sendThread.detach();
     std::cout<< "senden " <<std::endl;
-
+*/
     //SimSocket::sendMessage("JA GEGE");
 
     return next;

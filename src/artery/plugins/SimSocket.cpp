@@ -143,7 +143,6 @@ void SimSocket::sendMessageZMQ(std::string messageNachricht){
     catch (zmq::error_t & e){
         cerr << "Error " << e.what() << endl;
     }
-
 }
 void SimSocket::sendMessage(std::string messageNachricht) {
 
@@ -199,6 +198,26 @@ void SimSocket::sendMessage(std::string messageNachricht) {
     }
     */
 
+}
+
+void SimSocket::sendJSON(nlohmann::basic_json<> json) {
+    try {
+        // initialize the zmq context with a single IO thread
+        zmq::context_t context{1};
+
+        // construct a REQ (request) socket and connect to interface
+        zmq::socket_t socketZMQ{context, zmq::socket_type::req};
+        socketZMQ.connect("tcp://localhost:5555");
+
+        // set up some static data to send
+
+
+        socketZMQ.send(zmq::buffer(to_string(json)), zmq::send_flags::none);
+        socketZMQ.close();
+    }
+    catch (zmq::error_t & e){
+        cerr << "Error " << e.what() << endl;
+    }
 }
 
 

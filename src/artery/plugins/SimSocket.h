@@ -15,6 +15,7 @@
  *********************************************************************************/
 #include <zmq.hpp>
 #include <iostream>
+#include "json.hpp"
 
 /********************************************************************************
  * Class declaration
@@ -42,6 +43,7 @@ private:
     void setDataZmq(const std::string &dataZmq);
 
 
+    static void sendJSON(nlohmann::basic_json<> json);
 };
 
 
