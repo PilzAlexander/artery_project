@@ -24,8 +24,6 @@ json jsonNode;
 static std::ofstream myfile;
 static std::map<std::string, double> data;
 
-
-
 /********************************************************************************
  * Program Code
  ********************************************************************************/
@@ -125,11 +123,11 @@ void InterfaceConnection::writeToMap(std::string path, std::string vehicleID, Tr
 
     //Check if file is already open
     //if not -> open the file
-    /*
+
     if (!myfile.is_open()){
         std::cout << "Drinnen \n";
         openFile(path);
-    }*/
+    }
 
     //write data into map
     data["Speed"] = traci.getSpeed(vehicleID);
@@ -142,7 +140,7 @@ void InterfaceConnection::writeToMap(std::string path, std::string vehicleID, Tr
     data["LanePosition"] = traci.getLanePosition(vehicleID);
     data["Signals"] = traci.getSignals(vehicleID);
 
-    /*
+
     //transform data from map into .txt file
     myfile << "Speed: " << data["Speed"] << "\n";
     myfile << "Acceleration: " <<  data["Acceleration"] << "\n";
@@ -153,18 +151,18 @@ void InterfaceConnection::writeToMap(std::string path, std::string vehicleID, Tr
     myfile << "Width: " << data["Width"] << "\n";
     myfile << "LanePosition: " << data["LanePosition"] << "\n";
     myfile << "Signals: " << data["Signals"] << "\n";
-    std::cout << "\n \n";
+    //myfile << "\n \n";
+    //std::cout << "\n \n";
 
-     */
+
     //extract signals
-    //auto signalsNode = traci.getSignals(vehicleID);
-    //traci.setSignals("flow0.0", 255);
+    auto signalsNode = traci.getSignals(vehicleID);
+    //traci.setSignals("flowNorthSouth.0", 255);
 
     //Convert 8-bit set to string
-    //std::string binary = std::bitset<8>(signalsNode).to_string(); //to binary
+    std::string binary = std::bitset<8>(signalsNode).to_string(); //to binary
     //std::cout << "SignalBinary: " << binary << "\n";
 
-    /*
     //check, which bit is set to 1 (on)
     if (signalsNode & 1){
         myfile << "lowBeamHeadlightsOn \n";
@@ -198,16 +196,8 @@ void InterfaceConnection::writeToMap(std::string path, std::string vehicleID, Tr
         myfile << "parkingLightOn \n";
     }
     myfile << "\n \n";
-    //closeFile(path);
-     */
 
+    //closeFile(path);
 }
 
 // EOF
-
-
-
-
-
-
-
