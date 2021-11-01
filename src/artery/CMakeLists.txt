@@ -92,6 +92,7 @@ find_package(cppzmq)
 target_link_libraries(core PUBLIC cppzmq)
 target_link_libraries(core PUBLIC zmqpp)
 
+
 if(TARGET veins)
     message(STATUS "Enable Veins integration")
     set_property(TARGET core APPEND PROPERTY SOURCES

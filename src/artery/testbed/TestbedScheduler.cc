@@ -37,25 +37,22 @@ void TestbedScheduler::executionResumed()
 {
     using namespace std::chrono;
     mBaseTime = system_clock::now() - microseconds(omnetpp::simTime().inUnit(omnetpp::SIMTIME_US));
-
 }
 
 void TestbedScheduler::putBackEvent(omnetpp::cEvent* event)
 {
     sim->getFES()->putBackFirst(event);
-
 }
 
 omnetpp::cEvent* TestbedScheduler::guessNextEvent()
 {
-
     try {
         return peekFirstNonStaleEvent();
     } catch (const omnetpp::cTerminationException&) {
         return nullptr;
     }
 }
-    using namespace omnetpp;
+
 omnetpp::cEvent* TestbedScheduler::takeNextEvent()
 {
     using namespace omnetpp;
@@ -71,9 +68,30 @@ omnetpp::cEvent* TestbedScheduler::takeNextEvent()
     cEvent* next = sim->getFES()->removeFirst();
     ASSERT(!next->isStale());
 
+//#########################################################################################################################
+    //std::cout << m_twinId << std::endl;
+    //std::cout << m_twinName << std::endl;
+    //std::cout << "TESTBEDSCHEDULER \n \n";
+
+    /*
+    auto vehicle = m_subscriptions->getVehicleCache("flowNorthSouth.1");
+    auto &traci = m_api->vehicle;
+    std::cout << traci.getSpeed(m_twinId) << std::endl;
+    std::cout << traci.getSpeed(m_twinName) << std::endl;
+*/
+
+    //auto path = "/home/vagrant/Desktop/fork_repo/Test_JSON.txt";
+
+    //std::cout << "Open Path \n";
+    //std::cout << path << "\n";
+
+    //InterfaceConnection::writeToFile(path, m_twinId, traci);
+//#########################################################################################################################
+
    // std::cout << "###############################################";
     //hier ssende
-    SimSocket::sendMessage("JA GEGE");
+    //SimSocket::sendMessage("JA GEGE");
+
     return next;
 }
 
@@ -99,7 +117,6 @@ void TestbedScheduler::doTiming(omnetpp::cEvent* event)
 omnetpp::cEvent* TestbedScheduler::peekFirstNonStaleEvent()
 {
     omnetpp::cEvent* event = nullptr;
-
     do {
         event = sim->getFES()->peekFirst();
         if (!event) {
@@ -116,7 +133,6 @@ omnetpp::cEvent* TestbedScheduler::peekFirstNonStaleEvent()
 
 void TestbedScheduler::setOtaIndicationQueue(std::shared_ptr<OtaIndicationQueue> queue)
 {
-
     mOtaIndicationQueue = queue;
 }
 

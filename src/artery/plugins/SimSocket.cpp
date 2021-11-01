@@ -12,11 +12,13 @@
  * Includes
  *********************************************************************************/
 #include "SimSocket.h"
+#include "zmqpp/zmqpp.hpp"
+
 #include <chrono>
 #include <thread>
 #include <iostream>
 #include <pthread.h>
-#include "zmqpp/zmqpp.hpp"
+
 /********************************************************************************
  * Function declaration
  ********************************************************************************/

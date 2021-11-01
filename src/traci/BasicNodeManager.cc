@@ -12,6 +12,8 @@
 
 #include <inet/common/ModuleAccess.h>
 #include <fstream>
+#include <string>
+#include <ostream>
 
 using namespace omnetpp;
 
@@ -89,7 +91,6 @@ void BasicNodeManager::initialize()
     m_subscriptions = inet::getModuleFromPar<SubscriptionManager>(par("subscriptionsModule"), this);
     m_destroy_vehicles_on_crash = par("destroyVehiclesOnCrash");
     m_ignore_persons = par("ignorePersons");
-
 }
 
 void BasicNodeManager::finish()
@@ -205,11 +206,12 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     auto& vehicleID = vehicle->getId();
     auto& traci = m_api->vehicle;
 
-    auto path = "/home/vagrant/Desktop/fork_repo/Test1.txt";
+    //std::cout << "TEST:  " << traci.getSpeed("flowNorthSouth.1") << std::endl;
+    auto path = "/home/vagrant/Desktop/fork_repo/Test_JSON.txt";
     //std::cout << "Open Path \n";
     //std::cout << path << "\n";
 
-    //InterfaceConnection::writeToFile(path,"flow0.0", traci);
+    InterfaceConnection::writeToFile(path,"flow0.0", traci);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);
@@ -369,18 +371,5 @@ PersonSink* BasicNodeManager::getPersonSink(const std::string& id)
     auto found = m_persons.find(id);
     return found != m_persons.end() ? found->second : nullptr;
 }
-
-BasicNodeManager::BasicNodeManager() {}
-
-BasicNodeManager::~BasicNodeManager() {
-
-
-    auto path = "/home/vagrant/Desktop/fork_repo/Test1.txt";
-    std::cout << "Close Path \n";
-    std::cout << path << "\n";
-
-    InterfaceConnection::closeFile(path);
-}
-
 
 } // namespace traci

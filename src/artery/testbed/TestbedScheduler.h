@@ -9,8 +9,14 @@
 
 #include <omnetpp/cscheduler.h>
 #include <omnetpp/simtime.h>
+#include <omnetpp/ccomponent.h>
+
 #include <chrono>
 #include <memory>
+
+#include "traci/BasicNodeManager.h"
+#include "artery/plugins/InterfaceConnection.h"
+#include <string>
 
 namespace artery
 {

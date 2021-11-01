@@ -29,8 +29,8 @@ class BasicNodeManager : public NodeManager, public Listener, public omnetpp::cS
 {
 public:
 
-    BasicNodeManager();
-    ~BasicNodeManager();
+    //BasicNodeManager();
+    //~BasicNodeManager();
 
     static const omnetpp::simsignal_t addNodeSignal;
     static const omnetpp::simsignal_t updateNodeSignal;
@@ -96,11 +96,11 @@ protected:
     void traciStep() override;
     void traciClose() override;
 
-private:
     std::shared_ptr<API> m_api;
+    SubscriptionManager* m_subscriptions{};
+private:
     ModuleMapper* m_mapper{};
     Boundary m_boundary;
-    SubscriptionManager* m_subscriptions{};
     unsigned m_nodeIndex{};
     std::map<std::string, omnetpp::cModule*> m_nodes;
     std::map<std::string, PersonSink*> m_persons;

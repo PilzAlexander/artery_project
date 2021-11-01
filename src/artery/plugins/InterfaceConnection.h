@@ -1,15 +1,25 @@
-//
-// Created by vagrant on 10/21/21.
-//
-
-
+/********************************************************************************
+  \project  INFM_HIL_Interface
+  \file     InterfaceConnection.h
+  \brief    Provides the class for collecting the live data from the node
+  \author   Johannes Winter
+  \version  1.0.0
+  \date     18.10.2021
+ ********************************************************************************/
 
 #ifndef ARTERY_INTERFACECONNECTION_H
 #define ARTERY_INTERFACECONNECTION_H
+
+/********************************************************************************
+ * Includes
+ *********************************************************************************/
 #include "../../../../../../../../usr/include/c++/8/fstream"
 #include "../../../../../../../../usr/include/c++/8/iostream"
 
 
+/********************************************************************************
+ * Class declaration
+ ********************************************************************************/
 class InterfaceConnection {
 
 public:
