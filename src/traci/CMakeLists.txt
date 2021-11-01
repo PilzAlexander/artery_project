@@ -22,7 +22,6 @@ set(SOURCES
     sumo/utils/traci/TraCIAPI.cpp
     ../artery/plugins/InterfaceConnection.cc
     ../artery/plugins/SimSocket.cpp
-        ../artery/testbed/TestbedScheduler.cc
         )
 
 add_library(traci SHARED ${SOURCES})

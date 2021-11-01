@@ -7,9 +7,6 @@
 #include <omnetpp/regmacros.h>
 #include <omnetpp/ccomponent.h>
 #include <fstream>
-#include <zmq.h>
-#include <string.h>
-#include <stdio.h>
 #include "omnetpp.h"
 #include <thread>
 namespace artery
@@ -67,29 +64,6 @@ omnetpp::cEvent* TestbedScheduler::takeNextEvent()
 
     cEvent* next = sim->getFES()->removeFirst();
     ASSERT(!next->isStale());
-
-//#########################################################################################################################
-    /*
-    auto vehicle = m_subscriptions->getVehicleCache("flowNorthSouth.1");
-    auto &traci = m_api->vehicle;
-    std::cout << traci.getSpeed(m_twinId) << std::endl;
-    std::cout << traci.getSpeed(m_twinName) << std::endl;
-*/
-
-    //auto path = "/home/vagrant/Desktop/fork_repo/Test_JSON.txt";
-
-    //std::cout << "Open Path \n";
-    //std::cout << path << "\n";
-
-    //InterfaceConnection::writeToFile(path, m_twinId, traci);
-//#########################################################################################################################
-/*
-    //hier sende
-    std::thread sendThread(SimSocket::sendMessageZMQ,"JaGGE");
-    sendThread.detach();
-    std::cout<< "senden " <<std::endl;
-*/
-    //SimSocket::sendMessage("JA GEGE");
 
     return next;
 }

@@ -15,17 +15,18 @@ void TestbedNodeManager::initialize()
 {
     m_twinId = par("twinId").stringValue();
     m_twinName = par("twinName").stringValue();
+
+    std::cout << "DUT ID: " << m_twinId << std::endl;
+
     BasicNodeManager::initialize();
 }
 
 cModule* TestbedNodeManager::createModule(const std::string& id, omnetpp::cModuleType* type)
 {
     if (id == m_twinId) {
-        std::cout << "TEEEEEEEEEEEEEEEEEEEEEEEST NODE" << std::endl;
         return type->create(m_twinName.c_str(), getSystemModule());
 
     } else {
-        std::cout << "TEEEEEEEEEEEEEEEEEEEEEEEST ELSE" << std::endl;
         return BasicNodeManager::createModule(id, type);
     }
 }

@@ -205,15 +205,14 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
 
     auto& vehicleID = vehicle->getId();
     auto& traci = m_api->vehicle;
-
-    //std::cout << "TEST:  " << traci.getSpeed("flowNorthSouth.1") << std::endl;
     auto path = "/home/vagrant/Desktop/fork_repo/Test_JSON.txt";
+
+    //std::cout << "VehicleID: " << vehicleID << std::endl;
     //std::cout << "Open Path \n";
     //std::cout << path << "\n";
 
-    std::cout << "VehicleID: " << vehicleID << std::endl;
-
-    InterfaceConnection::writeToFile(path,"flowNorthSouth.0", traci);
+    InterfaceConnection::writeToJSON("flowNorthSouth.0", traci);
+    //InterfaceConnection::writeToMap(path, "flowNorthSouth.0", traci);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);

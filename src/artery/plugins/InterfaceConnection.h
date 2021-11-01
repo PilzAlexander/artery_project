@@ -27,12 +27,11 @@ public:
     ~InterfaceConnection();
     InterfaceConnection();
 
-    static void writeToFile(const std::string path, const std::string vehicleID, TraCIAPI::VehicleScope traci);
+    static void writeToJSON(const std::string vehicleID, TraCIAPI::VehicleScope traci);
+    static void writeToMap(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci);
     static void closeFile(const std::string path);
     static void openFile(const std::string path);
-
-
-
+    static void ConvertToJSONFile(nlohmann::json JSON);
 };
 
 
