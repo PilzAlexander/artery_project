@@ -27,11 +27,7 @@ private:
 
  public:
 
-
-
-
     SimSocket(const std::string &port, const std::string &dataZmq);
-
 
     ~SimSocket();
 

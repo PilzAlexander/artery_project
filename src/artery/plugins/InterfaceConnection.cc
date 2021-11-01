@@ -5,21 +5,21 @@
 #include "artery/traci/Cast.h"
 #include "InterfaceConnection.h"
 
-//#include "inet/common/INETMath.h"
+#include "inet/common/INETMath.h"
 //#include "inet/mobility/single/TractorMobility.h"
 
 #include <iostream>
 #include <map>
 #include <string>
 #include <string_view>
-//#include "json.hpp"
+#include "json.hpp"
 
 
 std::ofstream myfile;
 std::map<std::string, double> data;
 
 // for convenience
-//using json = nlohmann::json;
+using json = nlohmann::json;
 
 // write prettified JSON to another file
 std::ofstream o("/home/vagrant/Desktop/fork_repo/NodeData.json");
@@ -63,7 +63,6 @@ void InterfaceConnection::openFile(const std::string path) {
     data["LanePosition"] =  0;
     //data["Line"] =  0;
     data["Signals"] =  0;
-
 }
 
 void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci) {
@@ -77,7 +76,7 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
     }*/
 
     // create an empty structure (null)
-//    json j;
+    json j;
 
     //extract vehicle_ID (string to double)
     std::string vehicleID_string = vehicleID; //get vehicle id
@@ -158,8 +157,7 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
     //closeFile(path);
      */
 
-    // add a number that is stored as double (note the implicit conversion of j to an object)
-    /*
+    // add data to json
     j["Speed"] = traci.getSpeed(vehicleID);
     j["Acceleration"] = traci.getAcceleration(vehicleID);
     j["Angle"] = traci.getAngle(vehicleID);
@@ -199,7 +197,6 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
     if (o.is_open()) {
         o << std::setw(2) << j << std::endl << "\n";
     }
-     */
 }
 
 // EOF
