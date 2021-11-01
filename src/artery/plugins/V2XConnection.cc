@@ -18,9 +18,6 @@
 // for convenience
 using json = nlohmann::json;
 
-// create an empty structure (null)
-json jsonNode;
-
 static std::ofstream myfile;
 static std::map<std::string, double> data;
 /********************************************************************************
@@ -74,6 +71,9 @@ void V2XConnection::ConvertToJSONFile(nlohmann::json JSON){
 
 //extract data and write into json object
 void V2XConnection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleScope traci) {
+
+    // create an empty structure (null)
+    json jsonNode;
 
     // add data to json
     jsonNode["Speed"] = traci.getSpeed(vehicleID);
