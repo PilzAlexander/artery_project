@@ -13,7 +13,6 @@
 #include "json.hpp"
 #include "SimSocket.h"
 
-
 std::ofstream myfile;
 std::map<std::string, double> data;
 
@@ -23,10 +22,8 @@ using json = nlohmann::json;
 // write prettified JSON to another file
 std::ofstream o("/home/vagrant/Desktop/fork_repo/NodeData.json");
 
-
 // Constructor without args
-InterfaceConnection::InterfaceConnection() {
-}
+InterfaceConnection::InterfaceConnection() {}
 
 // Deconstructor
 InterfaceConnection::~InterfaceConnection() {
@@ -36,7 +33,6 @@ InterfaceConnection::~InterfaceConnection() {
 
     //closeFile(path);
 }
-
 
 void InterfaceConnection::closeFile(const std::string path) {
     std::cout << "Close Path \n";
@@ -74,9 +70,6 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
         openFile(path);
     }*/
 
-    // create an empty structure (null)
-    json j;
-
     //write data into map
     //data["VehicleID"] = vehicleID_double;
     data["Speed"] = traci.getSpeed(vehicleID);
@@ -90,64 +83,46 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
     //data["Line"] = traci.getLine(vehicleID);
     data["Signals"] = traci.getSignals(vehicleID);
 
-    /*
-    //transform data from map into .txt file
-    myfile << "Speed: " << data["Speed"] << "\n";
-    myfile << "Acceleration: " <<  data["Acceleration"] << "\n";
-    myfile << "Angle: " << data["Angle"] << "\n";
-    myfile << "Distance: " << data["Distance"] << "\n";
-    myfile << "Height: " << data["Height"] << "\n";
-    myfile << "Length: " << data["Length"] << "\n";
-    myfile << "Width: " << data["Width"] << "\n";
-    myfile << "LanePosition: " << data["LanePosition"] << "\n";
-    myfile << "Signals: " << data["Signals"] << "\n";
-    std::cout << "\n \n";
-
-     */
     //extract signals
-    auto signalsNode = traci.getSignals(vehicleID);
+    //auto signalsNode = traci.getSignals(vehicleID);
     //traci.setSignals("flow0.0", 255);
 
     //Convert 8-bit set to string
-    std::string binary = std::bitset<8>(signalsNode).to_string(); //to binary
+    //std::string binary = std::bitset<8>(signalsNode).to_string(); //to binary
     //std::cout << "SignalBinary: " << binary << "\n";
 
-    /*
+    /* // Check which signals are on
     //check, which bit is set to 1 (on)
     if (signalsNode & 1){
         myfile << "lowBeamHeadlightsOn \n";
     }
-
     if (signalsNode & 2){
         myfile << "HighBeamHeadlightsOn \n";
     }
-
     if (signalsNode & 4){
         myfile << "leftTurnSignalOn \n";
     }
-
     if (signalsNode & 8){
         myfile << "rightTurnSignalOn \n";
     }
-
     if (signalsNode & 16){
         myfile << "dayTimeRunningLightsOn \n";
     }
-
     if (signalsNode & 32){
         myfile << "reverseLightOn \n";
     }
-
     if (signalsNode & 64){
         myfile << "fogLightOn \n";
     }
-
     if (signalsNode & 128){
         myfile << "parkingLightOn \n";
     }
     myfile << "\n \n";
     //closeFile(path);
      */
+
+    // create an empty structure (null)
+    json j;
 
     // add data to json
     j["Speed"] = traci.getSpeed(vehicleID);
@@ -190,20 +165,11 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
         o << std::setw(2) << j << std::endl << "\n";
     }
 
-    SimSocket::sendJSON(j);
     std::thread sendThread(SimSocket::sendJSON,j);
     sendThread.detach();
 
     o.close();
 
-
 }
 
 // EOF
-
-
-
-
-
-
-

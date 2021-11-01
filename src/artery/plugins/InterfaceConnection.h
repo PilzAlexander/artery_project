@@ -15,13 +15,13 @@
  *********************************************************************************/
 #include "../../../../../../../../usr/include/c++/8/fstream"
 #include "../../../../../../../../usr/include/c++/8/iostream"
-
+#include "json.hpp"
 
 /********************************************************************************
  * Class declaration
  ********************************************************************************/
 class InterfaceConnection {
-
+    
 public:
 
     ~InterfaceConnection();
@@ -30,6 +30,8 @@ public:
     static void writeToFile(const std::string path, const std::string vehicleID, TraCIAPI::VehicleScope traci);
     static void closeFile(const std::string path);
     static void openFile(const std::string path);
+
+
 
 };
 

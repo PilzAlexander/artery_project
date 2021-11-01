@@ -542,6 +542,8 @@ public:
      */
     class VehicleScope : public TraCIScopeWrapper {
     public:
+        VehicleScope();
+
         VehicleScope(TraCIAPI& parent) : TraCIScopeWrapper(parent, libsumo::CMD_GET_VEHICLE_VARIABLE, libsumo::CMD_SET_VEHICLE_VARIABLE, libsumo::CMD_SUBSCRIBE_VEHICLE_VARIABLE, libsumo::CMD_SUBSCRIBE_VEHICLE_CONTEXT) {}
         virtual ~VehicleScope() {}
 

@@ -17,23 +17,22 @@
 #include <iostream>
 #include <pthread.h>
 #include <zmq.hpp>
+
 /********************************************************************************
  * Function declaration
  ********************************************************************************/
 
 using namespace std::chrono_literals;
 using namespace std;
-int i = 0;
-// Constructor without args
 
+// Constructor without args
+SimSocket::SimSocket() {}
 
 // Constructor with args
 SimSocket::SimSocket(const std::string &port, const std::string &dataZmq) : port(port), data_zmq(dataZmq) {}
 
 // Destructor
-SimSocket::~SimSocket() {
-
-}
+SimSocket::~SimSocket() {}
 
 int SimSocket::createSocket(std::string port, std::string data_zmq) {
    const string endpoint = "tcp://localhost:5555";
@@ -64,7 +63,6 @@ int SimSocket::createSocket(std::string port, std::string data_zmq) {
   //  cout << &socket << endl << endl;
 
 }
-
 
 // Function for creating the communication Socket
 /*int SimSocket::createSocket(std::string port, std::string data_zmq) {
@@ -104,27 +102,6 @@ int SimSocket::createSocket(std::string port, std::string data_zmq) {
 
 }*/
 
-
-/********************************************************************************
- * Getter and Setter
- ********************************************************************************/
-
-const std::string &SimSocket::getPort() const {
-    return port;
-}
-
-void SimSocket::setPort(const std::string &port) {
-    SimSocket::port = port;
-}
-
-
-const std::string &SimSocket::getDataZmq() const {
-    return data_zmq;
-}
-
-void SimSocket::setDataZmq(const std::string &dataZmq) {
-    data_zmq = dataZmq;
-}
 void SimSocket::sendMessageZMQ(std::string messageNachricht){
     try {
         // initialize the zmq context with a single IO thread
@@ -135,15 +112,15 @@ void SimSocket::sendMessageZMQ(std::string messageNachricht){
         socketZMQ.connect("tcp://localhost:5555");
 
         // set up some static data to send
-
-
         socketZMQ.send(zmq::buffer(messageNachricht), zmq::send_flags::none);
         socketZMQ.close();
+
     }
     catch (zmq::error_t & e){
         cerr << "Error " << e.what() << endl;
     }
 }
+
 void SimSocket::sendMessage(std::string messageNachricht) {
 
   /*
@@ -200,19 +177,28 @@ void SimSocket::sendMessage(std::string messageNachricht) {
 
 }
 
+// function to send a json string via zeromq
 void SimSocket::sendJSON(nlohmann::basic_json<> json) {
     try {
         // initialize the zmq context with a single IO thread
+        // TODO this initialisations and connections have to happen somewhere else (just once)
         zmq::context_t context{1};
 
         // construct a REQ (request) socket and connect to interface
         zmq::socket_t socketZMQ{context, zmq::socket_type::req};
         socketZMQ.connect("tcp://localhost:5555");
 
-        // set up some static data to send
+        // json string manipulation stuff
+        // mimic python json.dump();
+        std::string json_str = json.dump();
+        // create buffer size for message
+        zmq::message_t query(json_str.length());
+        // copy the json string into the message data
+        memcpy(query.data(), (json_str.c_str()), (json_str.size()));
 
-
-        socketZMQ.send(zmq::buffer(to_string(json)), zmq::send_flags::none);
+        // send the data
+        socketZMQ.send(query, zmq::send_flags::none);
+        // close the socket TODO close in deconstructor or somewhere else.
         socketZMQ.close();
     }
     catch (zmq::error_t & e){
@@ -220,12 +206,25 @@ void SimSocket::sendJSON(nlohmann::basic_json<> json) {
     }
 }
 
+/********************************************************************************
+ * Getter and Setter
+ ********************************************************************************/
 
+const std::string &SimSocket::getPort() const {
+    return port;
+}
 
+void SimSocket::setPort(const std::string &port) {
+    SimSocket::port = port;
+}
 
+const std::string &SimSocket::getDataZmq() const {
+    return data_zmq;
+}
 
-
-
+void SimSocket::setDataZmq(const std::string &dataZmq) {
+    data_zmq = dataZmq;
+}
 
 /********************************************************************************
  * EOF

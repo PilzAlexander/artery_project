@@ -28,6 +28,7 @@ private:
 
  public:
 
+    SimSocket();
     SimSocket(const std::string &port, const std::string &dataZmq);
 
     ~SimSocket();
@@ -45,10 +46,6 @@ private:
 
     static void sendJSON(nlohmann::basic_json<> json);
 };
-
-
-
-
 
 #endif //ARTERY_SIMSOCKET_H
 
