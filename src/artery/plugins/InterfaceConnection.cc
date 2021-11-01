@@ -4,10 +4,7 @@
 
 #include "artery/traci/Cast.h"
 #include "InterfaceConnection.h"
-
 #include "inet/common/INETMath.h"
-//#include "inet/mobility/single/TractorMobility.h"
-
 #include <iostream>
 #include <map>
 #include <string>
