@@ -2,7 +2,7 @@
  * Includes
  *********************************************************************************/
 #include "artery/traci/Cast.h"
-#include "InterfaceConnection.h"
+#include "V2XConnection.h"
 #include "inet/common/INETMath.h"
 #include <iostream>
 #include <map>
@@ -23,26 +23,25 @@ json jsonNode;
 
 static std::ofstream myfile;
 static std::map<std::string, double> data;
-
 /********************************************************************************
  * Program Code
  ********************************************************************************/
 // Constructor without args
-InterfaceConnection::InterfaceConnection(){
+V2XConnection::V2XConnection(){
 };
 
 // Deconstructor
-InterfaceConnection::~InterfaceConnection() = default;
+V2XConnection::~V2XConnection() = default;
 
 //Close txt File
-void InterfaceConnection::closeFile(const std::string path) {
+void V2XConnection::closeFile(const std::string path) {
     std::cout << "Close Path \n";
     std::cout << path << "\n";
     myfile.close();
 }
 
 //Create txt File and initialize map
-void InterfaceConnection::openFile(const std::string path) {
+void V2XConnection::openFile(const std::string path) {
     myfile.open(path);
 
     //Initialize Map
@@ -57,7 +56,7 @@ void InterfaceConnection::openFile(const std::string path) {
     data["Signals"] =  0;
 }
 
-void InterfaceConnection::ConvertToJSONFile(nlohmann::json JSON){
+void V2XConnection::ConvertToJSONFile(nlohmann::json JSON){
 
     //open new JSON file
     std::ofstream o("/home/vagrant/Desktop/fork_repo/NodeData.json");
@@ -74,7 +73,7 @@ void InterfaceConnection::ConvertToJSONFile(nlohmann::json JSON){
 }
 
 //extract data and write into json object
-void InterfaceConnection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleScope traci) {
+void V2XConnection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleScope traci) {
 
     // add data to json
     jsonNode["Speed"] = traci.getSpeed(vehicleID);
@@ -91,17 +90,17 @@ void InterfaceConnection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleSc
     jsonNode["Position Z-Coordinate"] = traci.getPosition(vehicleID).z;
     jsonNode["Route"] = traci.getRoute(vehicleID);
     jsonNode["Decel"] = traci.getDecel(vehicleID);
-    //j["PersonCapacity"] = traci.getPersonCapacity(vehicleID);
     jsonNode["RoadID"] = traci.getRoadID(vehicleID);
     jsonNode["RouteIndex"] = traci.getRouteIndex(vehicleID);
     jsonNode["LaneChangeState"] = traci.getLaneChangeState(vehicleID, 1);
-    //j["BestLane"] = traci.getBestLanes(vehicleID);
     jsonNode["LaneID"] = traci.getLaneID(vehicleID);
     jsonNode["LaneIndex"] = traci.getLaneIndex(vehicleID);
     jsonNode["Leader"] = traci.getLeader(vehicleID, 10.0);
     jsonNode["3DPos X-Coordiante"] = traci.getPosition3D(vehicleID).x;
     jsonNode["3DPos Y-Coordiante"] = traci.getPosition3D(vehicleID).y;
     jsonNode["3DPos Z-Coordiante"] = traci.getPosition3D(vehicleID).z;
+    //j["PersonCapacity"] = traci.getPersonCapacity(vehicleID);
+    //j["BestLane"] = traci.getBestLanes(vehicleID);
 
     //if(simTime() > 30){
         //j["Follower (5m)"] = traci.getFollower(vehicleID, 5);
@@ -119,7 +118,7 @@ void InterfaceConnection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleSc
     sendThread.detach();
 }
 
-void InterfaceConnection::writeToMap(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci) {
+void V2XConnection::writeToMap(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci) {
 
     //Check if file is already open
     //if not -> open the file

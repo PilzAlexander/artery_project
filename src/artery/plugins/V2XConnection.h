@@ -1,14 +1,14 @@
 /********************************************************************************
   \project  INFM_HIL_Interface
-  \file     InterfaceConnection.h
+  \file     V2XConnection.h
   \brief    Provides the class for collecting the live data from the node
   \author   Johannes Winter
   \version  1.0.0
   \date     18.10.2021
  ********************************************************************************/
 
-#ifndef ARTERY_INTERFACECONNECTION_H
-#define ARTERY_INTERFACECONNECTION_H
+#ifndef ARTERY_V2XCONNECTION_H
+#define ARTERY_V2XCONNECTION_H
 
 /********************************************************************************
  * Includes
@@ -20,12 +20,12 @@
 /********************************************************************************
  * Class declaration
  ********************************************************************************/
-class InterfaceConnection {
+class V2XConnection {
     
 public:
 
-    ~InterfaceConnection();
-    InterfaceConnection();
+    ~V2XConnection();
+    V2XConnection();
 
     static void writeToJSON(const std::string vehicleID, TraCIAPI::VehicleScope traci);
     static void writeToMap(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci);
@@ -35,6 +35,6 @@ public:
 };
 
 
-#endif /* ARTERY_INTERFACECONNECTION_H */
+#endif /* ARTERY_V2XCONNECTION_H */
 
 //EOF

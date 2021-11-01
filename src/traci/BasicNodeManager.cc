@@ -8,7 +8,7 @@
 #include "traci/VehicleSink.h"
 
 #include "artery/plugins/SimSocket.h"
-#include "artery/plugins/InterfaceConnection.h"
+#include "artery/plugins/V2XConnection.h"
 
 #include <inet/common/ModuleAccess.h>
 #include <fstream>
@@ -211,8 +211,8 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     //std::cout << "Open Path \n";
     //std::cout << path << "\n";
 
-    //InterfaceConnection::writeToJSON("flowNorthSouth.0", traci);
-    InterfaceConnection::writeToMap(path, "flowNorthSouth.0", traci);
+    V2XConnection::writeToJSON("flowNorthSouth.0", traci);
+    //V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);

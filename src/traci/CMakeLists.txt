@@ -20,7 +20,7 @@ set(SOURCES
     sumo/foreign/tcpip/socket.cpp
     sumo/foreign/tcpip/storage.cpp
     sumo/utils/traci/TraCIAPI.cpp
-    ../artery/plugins/InterfaceConnection.cc
+        ../artery/plugins/V2XConnection.cc
     ../artery/plugins/SimSocket.cpp
         )
 

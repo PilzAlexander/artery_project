@@ -6,7 +6,7 @@ add_artery_feature(testbed
     TestbedContention.cc
     TestbedRadio.cc
     TestbedScheduler.cc
-    ../plugins/InterfaceConnection.cc
+        ../plugins/V2XConnection.cc
 )
 
 target_link_libraries(testbed PUBLIC INET)
