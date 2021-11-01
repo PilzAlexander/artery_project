@@ -211,7 +211,9 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     //std::cout << "Open Path \n";
     //std::cout << path << "\n";
 
-   // InterfaceConnection::writeToFile(path,"flow0.0", traci);
+    std::cout << "VehicleID: " << vehicleID << std::endl;
+
+    InterfaceConnection::writeToFile(path,"flowNorthSouth.0", traci);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);

@@ -75,15 +75,8 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
     // create an empty structure (null)
     json j;
 
-    //extract vehicle_ID (string to double)
-    std::string vehicleID_string = vehicleID; //get vehicle id
-    double vehicleID_double = 0.0;
-    vehicleID_string = vehicleID.substr(4,5);
-    vehicleID_double = stod(vehicleID_string);
-    std::cout << "################ \n" << vehicleID_string << "\n" << vehicleID_double << "\n" << "########### \n";
-
     //write data into map
-    data["VehicleID"] = vehicleID_double;
+    //data["VehicleID"] = vehicleID_double;
     data["Speed"] = traci.getSpeed(vehicleID);
     data["Acceleration"] = traci.getAcceleration(vehicleID);
     data["Angle"] = traci.getAngle(vehicleID);
@@ -169,12 +162,12 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
     j["Position Z-Coordinate"] = traci.getPosition(vehicleID).z;
     j["Route"] = traci.getRoute(vehicleID);
 
-    if(simTime() > 30){
+    //if(simTime() > 30){
         //j["Follower (5m)"] = traci.getFollower(vehicleID, 5);
         //j["Follower (10m)"] = traci.getFollower(vehicleID, 10.0);
         //j["Follower (25m)"] = traci.getFollower(vehicleID, 25.0);
         //j["Follower (50m)"] = traci.getFollower(vehicleID, 50.0);
-    }
+    //}
 
     j["Decel"] = traci.getDecel(vehicleID);
     //j["ApparentDecel"] = traci.getApparentDecel(vehicleID);
@@ -194,6 +187,7 @@ void InterfaceConnection::writeToFile(std::string path, std::string vehicleID, T
     if (o.is_open()) {
         o << std::setw(2) << j << std::endl << "\n";
     }
+    o.close();
 }
 
 // EOF

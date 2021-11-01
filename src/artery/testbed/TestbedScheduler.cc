@@ -69,10 +69,6 @@ omnetpp::cEvent* TestbedScheduler::takeNextEvent()
     ASSERT(!next->isStale());
 
 //#########################################################################################################################
-    //std::cout << m_twinId << std::endl;
-    //std::cout << m_twinName << std::endl;
-    //std::cout << "TESTBEDSCHEDULER \n \n";
-
     /*
     auto vehicle = m_subscriptions->getVehicleCache("flowNorthSouth.1");
     auto &traci = m_api->vehicle;

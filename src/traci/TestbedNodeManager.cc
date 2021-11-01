@@ -16,8 +16,6 @@ void TestbedNodeManager::initialize()
     m_twinId = par("twinId").stringValue();
     m_twinName = par("twinName").stringValue();
     BasicNodeManager::initialize();
-
-
 }
 
 cModule* TestbedNodeManager::createModule(const std::string& id, omnetpp::cModuleType* type)
