@@ -266,7 +266,6 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
 
     //V2XConnection::writeToJSON("flowNorthSouth.0", traci);
     V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
-
     //****************************************
 
     VehicleObjectImpl update(vehicle);
