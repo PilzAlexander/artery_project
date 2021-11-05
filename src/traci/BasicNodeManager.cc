@@ -97,6 +97,7 @@ void BasicNodeManager::initialize()
     m_destroy_vehicles_on_crash = par("destroyVehiclesOnCrash");
     m_ignore_persons = par("ignorePersons");
 
+    /*
     // HIER AUFRUFEN Alexander Pilz
     // create new content
    // MessageContext * ptrContext = new MessageContext();
@@ -133,11 +134,12 @@ void BasicNodeManager::initialize()
                                                        /*, ptrContext->GetContext("ptrContext")*/
                                                     //   ,context
                                                     //   );});
-    std::thread pubThread([&]{ptrPort->publish("tcp://127.0.0.1:7777"
-                                               , "Hello Testpublishing");});
+
+    //std::thread pubThread([&]{ptrPort->publish("tcp://127.0.0.1:7777"
+     //                                          , "Hello Testpublishing");});
 
     // run thread asynchronous
-    pubThread.detach();
+    //pubThread.detach();*/
 }
 
 void BasicNodeManager::finish()
@@ -249,9 +251,6 @@ void BasicNodeManager::removeVehicle(const std::string& id)
 void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
 {
     auto vehicle = m_subscriptions->getVehicleCache(id);
-
-    //std::cout << vehicle.
-
     //****************************************
     auto& vehicleID = vehicle->getId();
     auto& traci = m_api->vehicle;

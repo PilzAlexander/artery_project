@@ -17,7 +17,6 @@
 #include "../../../../../../../../usr/include/c++/8/fstream"
 #include "../../../../../../../../usr/include/c++/8/iostream"
 #include "json.hpp"
-
 /********************************************************************************
  * Class declaration
  ********************************************************************************/
@@ -63,8 +62,6 @@ public:
     static void initializeMap();
     //void save();
     //void load();
-
-    //static int Save(const std::string fname, const double &c);
 
 private:
     friend class boost::serialization::access;

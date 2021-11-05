@@ -18,6 +18,8 @@
 #include <zmq.hpp>
 #include "zmq_addon.hpp"
 #include <iostream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 #include "json.hpp"
 
 /********************************************************************************
@@ -31,8 +33,10 @@ class SimSocket
     using PortContext = zmq::context_t; // context
     using DataSim = std::string; // data to send
 
-    // constructors and deconstructor
     SimSocket();
+
+// constructors and deconstructor
+    SimSocket(DataSim dataSim);
     SimSocket(PortName portName
               , DataSim dataSim
               , PortContext &context);

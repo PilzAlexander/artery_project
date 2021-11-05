@@ -25,6 +25,8 @@
 #include "traci/Core.h"
 #include "artery/plugins/MessageContext.h"
 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 /********************************************************************************
  * Function declarations
  ********************************************************************************/

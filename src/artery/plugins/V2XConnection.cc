@@ -8,14 +8,26 @@
 #include <map>
 #include <string>
 #include <string_view>
-#include <thread>
 #include "json.hpp"
 #include "SimSocket.h"
+
+// Alexander Pilz
+#include <thread>
+#include <zmq.hpp>
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+
+#include "traci/API.h"
+#include "traci/BasicNodeManager.h"
+#include "traci/CheckTimeSync.h"
+#include "traci/Core.h"
+#include "traci/ModuleMapper.h"
+#include "traci/PersonSink.h"
+#include "traci/VariableCache.h"
+#include "traci/VehicleSink.h"
 /********************************************************************************
  * Declarations
  ********************************************************************************/
@@ -72,13 +84,16 @@ void serialize(Archive &ar, V2XConnection &a, const unsigned int version) {
 }
 
 void save(std::map<std::string, double> data) {
-    std::ofstream dataStream_txt{"/home/vagrant/Desktop/fork_repo/#####################1234.txt"};
+    std::ofstream dataStream_txt{"/home/vagrant/Desktop/fork_repo/#Text#.txt"};
+    std::ofstream dataStream_bin{"/home/vagrant/Desktop/fork_repo/#Bin#.txt"};
+
     boost::archive::text_oarchive oa_txt{dataStream_txt};
+    boost::archive::binary_oarchive oa_bin{dataStream_bin};
 
     /*
     V2XConnection a{25, 12, 232,13,243,45,6745,23,
                     4354.4,232,23.34,2.3434,232.2,0.076,345.4,45,
-                    34/*,45,23,34.554, "\n"};*/
+                    34,45,23,34.554, "\n"};*/
 
     V2XConnection a{data["Speed"],data["Acceleration"],data["Angle"],data["Distance"],data["Height"],data["Length"],data["Width"],
                     data["LanePosition"],data["Signals"],data["Position_X-Coordinate"],data["Position_Y-Coordinate"],
@@ -86,14 +101,69 @@ void save(std::map<std::string, double> data) {
                     "\n"};
 
     oa_txt << a;
+    oa_bin << a;
+
+    /*
+    SimSocket newSocket;
+    newSocket.publish("tcp://127.0.0.1:7777", dataStream_bin);
+*/
+/*
+    // HIER AUFRUFEN Alexander Pilz
+    // create new content
+    // MessageContext * ptrContext = new MessageContext();
+    //ptrContext->AddContext("ptrContext", 1);
+
+    zmq::context_t context{1};
+    // create object of SimSocket with initial parameters
+
+    SimSocket *ptrPort = new SimSocket();
+
+    /*SimSocket * ptrPort = new SimSocket("tcp://127.0.0.1:7777"
+            , "hello test"
+            , context
+            , ptrContext->GetContext("ptrContext"));*/
+
+    // Testausgaben
+    //std::cout << "Context: " << context/*ptrContext->GetContext("ptrContext")*/ << endl;
+    //std::cout << "Port Name: " << ptrPort->getPortName() << endl;
+    //std::cout << "Daten: " << ptrPort->getDataSim() << endl;
+    //std::cout << "Socket: " << ptrPort->getSocketSim() << endl;
+
+    //ptrPort->sendToInterface(ptrPort->getPortName(),ptrPort->getDataSim(),zmq::send_flags::none);
+
+    /*std::thread sendThread(&SimSocket::sendToInterface
+                           , &ptrPort
+                           , ptrPort->getPortName()
+                           , ptrPort->getDataSim()
+                           , zmq::send_flags::none);*/
+
+    // start send Thread
+    /*std::thread pubThread([&]{ptrPort->sendToInterface(ptrPort->getPortName()
+                                                       ,ptrPort->getDataSim()
+                                                       ,zmq::send_flags::none
+                                                       /*, ptrContext->GetContext("ptrContext")*/
+    //   ,context
+    //   );});
+
+    //std::thread pubThread([&]{ptrPort->publish("tcp://127.0.0.1:7777", oa_bin);});
+    //std::thread pubThread(ptrPort->publish,"tcp://127.0.0.1:7777", oa_bin);
+
+    // run thread asynchronous
+    //pubThread.detach();
 }
 
 void load() {
-    std::ifstream in_dataStream_txt("/home/vagrant/Desktop/fork_repo/#####################.txt");
+    std::ifstream in_dataStream_txt("/home/vagrant/Desktop/fork_repo/#Text#.txt");
+    std::ifstream in_dataStream_bin("/home/vagrant/Desktop/fork_repo/#Bin#.txt");
+
     // create and open an archive for input
     boost::archive::text_iarchive ia_txt(in_dataStream_txt);
+    boost::archive::binary_iarchive ia_bin(in_dataStream_bin);
+
     V2XConnection a;
-    ia_txt >> a;
+    //ia_txt >> a;
+    ia_bin >> a;
+
     std::cout << a.Speed() << std::endl;
     std::cout << a.Acc() << std::endl;
     std::cout << a.Angle() << std::endl;
