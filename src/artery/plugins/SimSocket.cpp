@@ -78,17 +78,20 @@ const simsignal_t SimSocket::dataStateChanged = cComponent::registerSignal("data
 
 void SimSocket::initialize() {
 
+    //get rtaci from ModulePath
     cModule* traci = getModuleByPath(par("traciModule_2"));
 
+    //Subscribe signal to actual Traci
     if (traci) {
         traci->subscribe(traci::BasicNodeManager::updateSendStatus, this);
-        std::cout << "ERRRROOOOOOOOOOOOOOOOOOOOOOOOOOOOR" << std::endl;
+        std::cout << "*************************" << std::endl;
     } else {
         throw cRuntimeError("No TraCI module found for signal subscription");
     }
 
     context_ = zmq::context_t(1);
-    portName_ = "tcp://127.0.0.1:7777";
+    //portName_ = "tcp://127.0.0.1:7777";
+    portName_ = "tcp://*:7777";
     auto *msgPtr = new SimMessage();
 
     /*auto * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
@@ -112,6 +115,7 @@ void SimSocket::initialize() {
 
     dataSim_ = msgPtr;
     socketSim_ = zmq::socket_t(context_, zmq::socket_type::pub);
+    bind(portName_);
 
     EV_INFO << "portName_ " << portName_ << endl;
     EV_INFO << "context_ " << context_<< endl;
@@ -422,6 +426,7 @@ void SimSocket::sendJSON(nlohmann::basic_json<> json) {
 void SimSocket::receiveSignal(cComponent*, simsignal_t signal, unsigned long, cObject*)
 {
     if (signal == traci::BasicNodeManager::updateSendStatus) {
+        publishNew();
         std::cout << "Zeit: " << simTime() << std::endl;
     }
 }
