@@ -90,6 +90,9 @@ target_link_libraries(core PUBLIC traci)
 target_link_libraries(core PUBLIC Vanetza::vanetza)
 target_link_libraries(core PUBLIC zmq)
 
+target_link_libraries(core PUBLIC boost_serialization)
+#target_link_libraries(core PUBLIC boost_archive)
+
 
 if(TARGET veins)
     message(STATUS "Enable Veins integration")

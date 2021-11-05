@@ -65,6 +65,9 @@ omnetpp::cEvent* TestbedScheduler::takeNextEvent()
     cEvent* next = sim->getFES()->removeFirst();
     ASSERT(!next->isStale());
 
+    //std::cout << "********************************" << std::endl;
+    //std::cout << "NEXT: " << next->getTargetObject()->str() << std::endl;
+
     return next;
 }
 
@@ -92,6 +95,7 @@ omnetpp::cEvent* TestbedScheduler::peekFirstNonStaleEvent()
     omnetpp::cEvent* event = nullptr;
     do {
         event = sim->getFES()->peekFirst();
+
         if (!event) {
             throw omnetpp::cTerminationException("No more events");
         } else if (event->isStale()) {

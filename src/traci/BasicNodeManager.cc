@@ -203,16 +203,24 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
 {
     auto vehicle = m_subscriptions->getVehicleCache(id);
 
+    //std::cout << vehicle.
+
+    //****************************************
     auto& vehicleID = vehicle->getId();
     auto& traci = m_api->vehicle;
     auto path = "/home/vagrant/Desktop/fork_repo/Test_JSON.txt";
+
+    //std::cout << "SPEED: " << traci.getSpeed(vehicleID) << std::endl;
+    //std::cout << "NEXTUP: " << nextup(traci.getSpeed(vehicleID)) << std::endl << "\n\n";
 
     //std::cout << "VehicleID: " << vehicleID << std::endl;
     //std::cout << "Open Path \n";
     //std::cout << path << "\n";
 
-    V2XConnection::writeToJSON("flowNorthSouth.0", traci);
-    //V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
+    //V2XConnection::writeToJSON("flowNorthSouth.0", traci);
+    V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
+
+    //****************************************
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);

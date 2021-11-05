@@ -12,6 +12,10 @@
 #include "json.hpp"
 #include "SimSocket.h"
 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
 /********************************************************************************
  * Declarations
  ********************************************************************************/
@@ -19,7 +23,13 @@
 using json = nlohmann::json;
 
 static std::ofstream myfile;
+
 static std::map<std::string, double> data;
+static std::map<std::string, double> tmp_data;
+
+const std::string filename = "emp.dat";
+/******************************************************************************** */
+//BOOST_IS_BITWISE_SERIALIZABLE(A)
 /********************************************************************************
  * Program Code
  ********************************************************************************/
@@ -30,19 +40,125 @@ V2XConnection::V2XConnection(){
 // Deconstructor
 V2XConnection::~V2XConnection() = default;
 
+template<typename Archive>
+void serialize(Archive &ar, V2XConnection &a, const unsigned int version) {
+    ar & a.speed_;
+    ar & a.acc_;
+    ar & a.angle_;
+    ar & a.distance_;
+    ar & a.height_;
+    ar & a.length_;
+    ar & a.width_;
+    ar & a.lanePos_;
+    ar & a.angle_;
+    ar & a.distance_;
+    ar & a.height_;
+    ar & a.length_;
+    ar & a.width_;
+    ar & a.lanePos_;
+    ar & a.signals_;
+    ar & a.posX_;
+    ar & a.posY_;
+    ar & a.posZ_;
+    ar & a.decel_;
+    ar & a.roadID_;
+    ar & a.roadIndex_;
+    ar & a.laneID_;
+    ar & a.laneIndex_;
+    ar & a.end_;
+    /*ar & a.pos3DX_;
+    ar & a.pos3DY_;
+    ar & a.pos3DZ_;*/
+}
+
+void save(std::map<std::string, double> data) {
+    std::ofstream dataStream_txt{"/home/vagrant/Desktop/fork_repo/#####################1234.txt"};
+    boost::archive::text_oarchive oa_txt{dataStream_txt};
+
+    /*
+    V2XConnection a{25, 12, 232,13,243,45,6745,23,
+                    4354.4,232,23.34,2.3434,232.2,0.076,345.4,45,
+                    34/*,45,23,34.554, "\n"};*/
+
+    V2XConnection a{data["Speed"],data["Acceleration"],data["Angle"],data["Distance"],data["Height"],data["Length"],data["Width"],
+                    data["LanePosition"],data["Signals"],data["Position_X-Coordinate"],data["Position_Y-Coordinate"],
+                    data["Position_Z-Coordinate"],data["Decel"],data["RoadID"],data["RouteIndex"],data["LaneID"],data["LaneIndex"],
+                    "\n"};
+
+    oa_txt << a;
+}
+
+void load() {
+    std::ifstream in_dataStream_txt("/home/vagrant/Desktop/fork_repo/#####################.txt");
+    // create and open an archive for input
+    boost::archive::text_iarchive ia_txt(in_dataStream_txt);
+    V2XConnection a;
+    ia_txt >> a;
+    std::cout << a.Speed() << std::endl;
+    std::cout << a.Acc() << std::endl;
+    std::cout << a.Angle() << std::endl;
+    std::cout << a.Distance() << std::endl;
+    std::cout << a.Height() << std::endl;
+    std::cout << a.Length() << std::endl;
+    std::cout << a.Width() << std::endl;
+    std::cout << a.LanePos() << std::endl;
+    std::cout << a.Signals() << std::endl;
+    std::cout << a.PosX() << std::endl;
+    std::cout << a.PosY() << std::endl;
+    std::cout << a.PosZ() << std::endl;
+    std::cout << a.Decel() << std::endl;
+    std::cout << a.RoadID() << std::endl;
+    std::cout << a.RoadIndex() << std::endl;
+    std::cout << a.LaneID() << std::endl;
+    std::cout << a.LaneIndex() << std::endl;
+    /*std::cout << a.Pos3DX() << std::endl;
+    std::cout << a.Pos3DY() << std::endl;
+    std::cout << a.Pos3DZ() << std::endl;*/
+    std::cout << a.End() << std::endl;
+}
+
 //Close txt File
 void V2XConnection::closeFile(const std::string path) {
-    std::cout << "Close Path \n";
-    std::cout << path << "\n";
+    //std::cout << "Close Path \n";
+    //std::cout << path << "\n";
     myfile.close();
 }
 
 //Create txt File and initialize map
 void V2XConnection::openFile(const std::string path) {
+    //open txt file
     myfile.open(path);
 
+    /*
     //Initialize Map
-    data["Speed"] =  0;
+    tmp_data["Speed"] = 0;
+    tmp_data["Acceleration"] =  0;
+    tmp_data["Angle"] =  0;
+    tmp_data["Distance"] =  0;
+    tmp_data["Height"] =  0;
+    tmp_data["Length"] =  0;
+    tmp_data["Width"] =  0;
+    tmp_data["LanePosition"] =  0;
+    tmp_data["Signals"] =  0;
+    tmp_data["Position X-Coordinate"] = 0;
+    tmp_data["Position Y-Coordinate"] = 0;
+    tmp_data["Position Z-Coordinate"] = 0;
+    //data["Route"] = traci.getRoute(vehicleID);
+    tmp_data["Decel"] = 0;
+    tmp_data["RoadID"] = 0;
+    tmp_data["RouteIndex"] = 0;
+    //data["LaneChangeState"] = traci.getLaneChangeState(vehicleID, 1);
+    tmp_data["LaneID"] = 0;
+    tmp_data["LaneIndex"] = 0;
+    //data["Leader"] = traci.getLeader(vehicleID, 10.0);
+    tmp_data["3DPos X-Coordiante"] = 0;
+    tmp_data["3DPos Y-Coordiante"] = 0;
+    tmp_data["3DPos Z-Coordiante"] = 0;*/
+}
+
+void V2XConnection::initializeMap(){
+    //Initialize Map
+    data["Speed"] = 0;
     data["Acceleration"] =  0;
     data["Angle"] =  0;
     data["Distance"] =  0;
@@ -51,6 +167,20 @@ void V2XConnection::openFile(const std::string path) {
     data["Width"] =  0;
     data["LanePosition"] =  0;
     data["Signals"] =  0;
+    data["Position_X-Coordinate"] = 0;
+    data["Position_Y-Coordinate"] = 0;
+    data["Position_Z-Coordinate"] = 0;
+    //data["Route"] = traci.getRoute(vehicleID);
+    data["Decel"] = 0;
+    data["RoadID"] = 0;
+    data["RouteIndex"] = 0;
+    //data["LaneChangeState"] = traci.getLaneChangeState(vehicleID, 1);
+    data["LaneID"] = 0;
+    data["LaneIndex"] = 0;
+    //data["Leader"] = traci.getLeader(vehicleID, 10.0);
+    data["3DPos_X-Coordiante"] = 0;
+    data["3DPos_Y-Coordiante"] = 0;
+    data["3DPos_Z-Coordiante"] = 0;
 }
 
 void V2XConnection::ConvertToJSONFile(nlohmann::json JSON){
@@ -99,6 +229,7 @@ void V2XConnection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleScope tr
     jsonNode["3DPos X-Coordiante"] = traci.getPosition3D(vehicleID).x;
     jsonNode["3DPos Y-Coordiante"] = traci.getPosition3D(vehicleID).y;
     jsonNode["3DPos Z-Coordiante"] = traci.getPosition3D(vehicleID).z;
+
     //j["PersonCapacity"] = traci.getPersonCapacity(vehicleID);
     //j["BestLane"] = traci.getBestLanes(vehicleID);
 
@@ -122,23 +253,35 @@ void V2XConnection::writeToMap(std::string path, std::string vehicleID, TraCIAPI
 
     //Check if file is already open
     //if not -> open the file
-
     if (!myfile.is_open()){
-        std::cout << "Drinnen \n";
         openFile(path);
     }
+    initializeMap();
 
     //write data into map
     data["Speed"] = traci.getSpeed(vehicleID);
     data["Acceleration"] = traci.getAcceleration(vehicleID);
     data["Angle"] = traci.getAngle(vehicleID);
-    data["Distance"] = traci.getDistance(vehicleID);
+    data["Distance"] = traci.getAngle(vehicleID);
     data["Height"] = traci.getHeight(vehicleID);
     data["Length"] = traci.getLength(vehicleID);
     data["Width"] = traci.getWidth(vehicleID);
     data["LanePosition"] = traci.getLanePosition(vehicleID);
     data["Signals"] = traci.getSignals(vehicleID);
-
+    data["Position_X-Coordinate"] = traci.getPosition(vehicleID).x;
+    data["Position_Y-Coordinate"] = traci.getPosition(vehicleID).y;
+    data["Position_Z-Coordinate"] = traci.getPosition(vehicleID).z;
+    data["Decel"] = traci.getDecel(vehicleID);
+    data["RouteIndex"] = traci.getRouteIndex(vehicleID);
+    data["LaneIndex"] = traci.getLaneIndex(vehicleID);
+    data["3DPos_X-Coordiante"] = traci.getPosition3D(vehicleID).x;
+    data["3DPos_Y-Coordiante"] = traci.getPosition3D(vehicleID).y;
+    data["3DPos_Z-Coordiante"] = traci.getPosition3D(vehicleID).z;
+    //data["Route"] = traci.getRoute(vehicleID);
+    //data["Leader"] = traci.getLeader(vehicleID, 10.0);
+    //data["LaneChangeState"] = traci.getLaneChangeState(vehicleID, 1);
+    //data["LaneID"] = traci.getLaneID(vehicleID);
+    //data["RoadID"] = traci.getRoadID(vehicleID);
 
     //transform data from map into .txt file
     myfile << "Speed: " << data["Speed"] << "\n";
@@ -149,10 +292,16 @@ void V2XConnection::writeToMap(std::string path, std::string vehicleID, TraCIAPI
     myfile << "Length: " << data["Length"] << "\n";
     myfile << "Width: " << data["Width"] << "\n";
     myfile << "LanePosition: " << data["LanePosition"] << "\n";
+    myfile << "Position X-Coordinate: " << data["Position_X-Coordinate"] << "\n";
+    myfile << "Position Y-Coordinate: " << data["Position_Y-Coordinate"] << "\n";
+    myfile << "Position Z-Coordinate: " << data["Position_Z-Coordinate"] << "\n";
+    myfile << "Decel: " << data["Decel"] << "\n";
+    myfile << "RouteIndex: " << data["RouteIndex"] << "\n";
+    myfile << "LaneIndex: " << data["LaneIndex"] << "\n";
+    myfile << "3DPosition X-Coordinate: " << data["3DPos_X-Coordiante"] << "\n";
+    myfile << "3DPosition Y-Coordinate: " << data["3DPos_y-Coordiante"] << "\n";
+    myfile << "3DPosition Z-Coordinate: " << data["3DPos_z-Coordiante"] << "\n";
     myfile << "Signals: " << data["Signals"] << "\n";
-    //myfile << "\n \n";
-    //std::cout << "\n \n";
-
 
     //extract signals
     auto signalsNode = traci.getSignals(vehicleID);
@@ -195,6 +344,9 @@ void V2XConnection::writeToMap(std::string path, std::string vehicleID, TraCIAPI
         myfile << "parkingLightOn \n";
     }
     myfile << "\n \n";
+
+    save(data);
+    load();
 
     //closeFile(path);
 }

@@ -113,7 +113,7 @@ void Storyboard::receiveSignal(cComponent* source, simsignal_t signalId, const c
 
 void Storyboard::receiveSignal(cComponent* source, simsignal_t signalId, const simtime_t&, cObject*)
 {
-    if (signalId == traciStepSignal) {
+     if (signalId == traciStepSignal) {
         updateStoryboard();
         if(mDrawConditions) {
             drawConditions();
