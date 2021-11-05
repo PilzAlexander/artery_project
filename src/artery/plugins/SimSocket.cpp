@@ -67,7 +67,6 @@ void SimSocket::close()
 void SimSocket::connect(const PortName & portName)
 {
     try {
-
         socketSim_.connect(portName_);
         connections_.push_back(portName);
         // DEBUG
@@ -116,7 +115,6 @@ void SimSocket::unbind(const PortName & portName) {
     connections_.erase(bindingIterator);
 
     socketSim_.unbind(portName_);
-
 }
 
 // function for creating the communication Socket
@@ -163,17 +161,14 @@ void SimSocket::sendMessageZMQ(std::string data_zmq
                                , zmq::context_t context){
 
     try {
-
         // construct a REQ (request) socket and connect to interface
         zmq::socket_t socketZMQ{context, zmq::socket_type::req};
         // socket.connect(port);
         socket.connect(port);
 
         for(;;){
-
             // set up some static data to send
             socketZMQ.send(zmq::buffer(data_zmq), zmq::send_flags::none);
-
         }
         socketZMQ.close();
     }
@@ -202,7 +197,6 @@ int i = 0;
             socketSim_.send(data, zmq::send_flags::none);
             // testausgabe
 
-
             std::cout << i++ << std::endl;
             //std::cout << dataSim << std::endl;
             //std::cout << "SimTime: " << simTime() << std::endl;
@@ -216,8 +210,6 @@ int i = 0;
         }
     } // loop
 }
-
-
 
 // function for sending data to the interface
 void SimSocket::sendToInterface(const SimSocket::PortName & portName
@@ -246,9 +238,6 @@ void SimSocket::sendToInterface(const SimSocket::PortName & portName
         }
     } // loop
 }
-
-
-
 
 void SimSocket::sendMessage(std::string messageNachricht)
 {
@@ -337,8 +326,6 @@ void SimSocket::sendJSON(nlohmann::basic_json<> json)
     }
 }
 
-
-
 /********************************************************************************
  * Getter and Setter
  ********************************************************************************/
@@ -378,21 +365,6 @@ void SimSocket::setPortName(const SimSocket::PortName &portName) {
 void SimSocket::setDataSim(const SimSocket::DataSim &dataSim) {
     dataSim_ = dataSim;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /********************************************************************************
  * EOF
  ********************************************************************************/
