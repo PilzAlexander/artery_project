@@ -4,6 +4,7 @@
   \brief    Provides the functions for setting up a socket to send data from the simulation to the interface component
   \author   Alexander Pilz
   \author   Fabian Genes
+  \author   Johannes Winter
   \version  1.0.0
   \date     31.10.2021
  ********************************************************************************/
@@ -22,8 +23,8 @@
 #include "artery/traci/Cast.h"
 #include "inet/common/INETMath.h"
 #include "traci/CheckTimeSync.h"
-#include "traci/Core.h"
 #include "artery/plugins/MessageContext.h"
+#include "traci/BasicNodeManager.h"
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -31,22 +32,65 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <sstream>
 
+#include "traci/Angle.h"
+
+#include "traci/API.h"
+#include <boost/geometry/strategies/transform/matrix_transformers.hpp>
+#include <omnetpp/checkandcast.h>
+#include <algorithm>
+#include <array>
+#include <omnetpp/clistener.h>
+#include <omnetpp/csimplemodule.h>
+
+
+//Alles mögliche
+#include "artery/inet/gemv2/VehicleIndex.h"
+#include "artery/inet/gemv2/Visualizer.h"
+#include "artery/traci/Cast.h"
+#include "traci/BasicNodeManager.h"
+#include "traci/API.h"
+#include <boost/geometry.hpp>
+#include <boost/geometry/geometries/register/linestring.hpp>
+#include <boost/geometry/strategies/transform/matrix_transformers.hpp>
+#include <boost/range/adaptor/indexed.hpp>
+#include <boost/range/adaptor/transformed.hpp>
+#include <boost/units/cmath.hpp>
+#include <inet/common/ModuleAccess.h>
+#include <omnetpp/checkandcast.h>
+#include <algorithm>
+#include <array>
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
 using namespace std;
 using namespace omnetpp;
+//using namespace traci;
 namespace artery {
 
 
 Define_Module(SimSocket)
 
+//Define signal
+//omnetpp::simsignal_t SimSocket::dataStateChanged = omnetpp::cComponent::registerSignal("dataStateChanged");
+
+
+const simsignal_t SimSocket::dataStateChanged = cComponent::registerSignal("dataStateChanged");
 
 void SimSocket::initialize() {
+
+    cModule* traci = getModuleByPath(par("traciModule_2"));
+
+    if (traci) {
+        traci->subscribe(traci::BasicNodeManager::updateSendStatus, this);
+        std::cout << "ERRRROOOOOOOOOOOOOOOOOOOOOOOOOOOOR" << std::endl;
+    } else {
+        throw cRuntimeError("No TraCI module found for signal subscription");
+    }
 
     context_ = zmq::context_t(1);
     portName_ = "tcp://127.0.0.1:7777";
     auto *msgPtr = new SimMessage();
+
     /*auto * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
             ,traci.getAcceleration(vehicleID)
             ,traci.getAngle(vehicleID)
@@ -65,13 +109,14 @@ void SimSocket::initialize() {
             ,traci.getLaneID(vehicleID)
             ,traci.getLaneIndex(vehicleID)
             ,"\n");*/
+
     dataSim_ = msgPtr;
     socketSim_ = zmq::socket_t(context_, zmq::socket_type::pub);
 
-    EV_INFO << "portName_ " << portName_;
-    EV_INFO << "context_ " << context_;
-    EV_INFO << "dataSim_" << dataSim_;
-    EV_INFO << "socketSim_" << socketSim_;
+    EV_INFO << "portName_ " << portName_ << endl;
+    EV_INFO << "context_ " << context_<< endl;
+    EV_INFO << "dataSim_" << dataSim_<< endl;
+    EV_INFO << "socketSim_" << socketSim_<< endl;
 
     cout << "Initialisierung erfolgt" << endl;
 
@@ -82,7 +127,6 @@ void SimSocket::initialize() {
 }
 
 void SimSocket::finish() {
-
     unbind(portName_);
     cSimpleModule::finish();
 }
@@ -160,46 +204,7 @@ void SimSocket::unbind(const PortName &portName) {
     socketSim_.unbind(portName_);
 }
 
-// function for creating the communication Socket
-/*int SimSocket::createSocket(std::string port, std::string data_zmq) {
-
-    using namespace std::chrono_literals;
-
-    // initialize the zmq context with a single IO thread
-    zmq::context_t context{1};
-
-    // construct a REP (reply) socket and bind to interface
-    zmq::socket_t socket{context, zmq::socket_type::rep};
-    socket.bind(port);
-
-    for (int i = 0; i < 10; i ++)
-    {
-        zmq::message_t request;
-
-        // receive a request from client
-        try {
-            socket.recv(request, zmq::recv_flags::none);
-        } catch (zmq::error_t) {
-            std::cout << "Fehler bei Receive" << std::endl;
-        }
-
-        std::cout << "Received " << request.to_string() << std::endl;
-
-        // simulate work
-        std::this_thread::sleep_for(1s);
-
-        // send the reply to the client
-        socket.send(zmq::buffer(data_zmq), zmq::send_flags::none);
-
-    }
-
-    socket.close();
-    return 0;
-
-}*/
-
-void
-SimSocket::sendMessageZMQ(std::string data_zmq, std::string port, zmq::socket_t socket, zmq::context_t context) {
+void SimSocket::sendMessageZMQ(std::string data_zmq, std::string port, zmq::socket_t socket, zmq::context_t context) {
 
     try {
         // construct a REQ (request) socket and connect to interface
@@ -228,10 +233,15 @@ void SimSocket::publishNew() {
     boost::archive::text_oarchive archive(archive_stream);
     archive << dataSim_;
 
-    for (;;) {
+    std::cout << "######################################### \n";
+    //emit(dataStateChanged, );
+
+    //for (;;) {
         std::string outbound_data = archive_stream.str();
         // create buffer size for message
-        zmq::message_t msgToSend(outbound_data.length());
+        //zmq::message_t msgToSend(outbound_data.length());
+    zmq::message_t msgToSend("TEST Nachricht");
+
         //zmq::message_t msgToSend(sizeof(dataSim));
         // copy the data string into the message data
 
@@ -252,7 +262,7 @@ void SimSocket::publishNew() {
             unbind(portName_);
             // break;
         }
-    } // loop
+    //} // loop
 
 }
 
@@ -327,7 +337,6 @@ void SimSocket::sendToInterface(const SimSocket::PortName & portName
         }
     } // loop
 }*/
-
 
 void SimSocket::sendMessage(std::string messageNachricht) {
 
@@ -406,6 +415,14 @@ void SimSocket::sendJSON(nlohmann::basic_json<> json) {
     }
     catch (zmq::error_t &e) {
         cerr << "Error " << e.what() << endl;
+    }
+}
+
+//recieve NodeUpdate Signal from BasicNodeManager
+void SimSocket::receiveSignal(cComponent*, simsignal_t signal, unsigned long, cObject*)
+{
+    if (signal == traci::BasicNodeManager::updateSendStatus) {
+        std::cout << "Zeit: " << simTime() << std::endl;
     }
 }
 

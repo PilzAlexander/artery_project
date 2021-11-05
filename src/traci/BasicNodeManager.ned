@@ -13,6 +13,8 @@ simple BasicNodeManager like NodeManager
         @signal[traci.vehicle.add](type=string);
         @signal[traci.vehicle.update](type=string);
         @signal[traci.vehicle.remove](type=string);
+        @signal[traci.send.update](type=unsigned long);
+
         string coreModule;
         string mapperModule;
         string personSinkModule;

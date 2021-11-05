@@ -85,7 +85,7 @@ const simsignal_t BasicNodeManager::removePersonSignal = cComponent::registerSig
 const simsignal_t BasicNodeManager::addVehicleSignal = cComponent::registerSignal("traci.vehicle.add");
 const simsignal_t BasicNodeManager::updateVehicleSignal = cComponent::registerSignal("traci.vehicle.update");
 const simsignal_t BasicNodeManager::removeVehicleSignal = cComponent::registerSignal("traci.vehicle.remove");
-
+const simsignal_t BasicNodeManager::updateSendStatus = cComponent::registerSignal("traci.send.update");
 
 void BasicNodeManager::initialize()
 {
@@ -184,6 +184,7 @@ void BasicNodeManager::traciStep()
         processPersons();
     }
     emit(updateNodeSignal, getNumberOfNodes());
+    emit(updateSendStatus, getNumberOfNodes());
 }
 
 void BasicNodeManager::traciClose()

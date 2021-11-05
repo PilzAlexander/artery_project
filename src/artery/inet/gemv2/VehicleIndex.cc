@@ -21,6 +21,8 @@
 #include <algorithm>
 #include <array>
 
+#include "artery/plugins/SimSocket.h"
+
 namespace { using LineOfSight = std::array<artery::Position, 2>; }
 BOOST_GEOMETRY_REGISTER_LINESTRING(LineOfSight)
 
@@ -48,6 +50,7 @@ void VehicleIndex::initialize()
         traci->subscribe(traci::BasicNodeManager::addVehicleSignal, this);
         traci->subscribe(traci::BasicNodeManager::updateVehicleSignal, this);
         traci->subscribe(traci::BasicNodeManager::removeVehicleSignal, this);
+        traci->subscribe(traci::BasicNodeManager::updateSendStatus, this);
     } else {
         throw cRuntimeError("No TraCI module found for signal subscription");
     }
@@ -55,6 +58,7 @@ void VehicleIndex::initialize()
     mVisualizer = inet::findModuleFromPar<Visualizer>(par("visualizerModule"), this, false);
     mVehicleMargin = std::abs(par("vehicleMargin").doubleValue());
 }
+
 
 void VehicleIndex::receiveSignal(cComponent* source, simsignal_t signal, unsigned long, cObject* obj)
 {
@@ -99,7 +103,7 @@ void VehicleIndex::receiveSignal(cComponent* source, simsignal_t signal, const c
     }
 }
 
-bool VehicleIndex::anyBlockage(const Position& a, const Position& b) const
+    bool VehicleIndex::anyBlockage(const Position& a, const Position& b) const
 {
     ASSERT(!mRtreeTainted && mVehicles.size() == mVehicleRtree.size());
     const LineOfSight los { a, b };

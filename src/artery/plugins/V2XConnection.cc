@@ -102,54 +102,6 @@ void save(std::map<std::string, double> data) {
 
     oa_txt << a;
     oa_bin << a;
-
-    /*
-    SimSocket newSocket;
-    newSocket.publish("tcp://127.0.0.1:7777", dataStream_bin);
-*/
-/*
-    // HIER AUFRUFEN Alexander Pilz
-    // create new content
-    // MessageContext * ptrContext = new MessageContext();
-    //ptrContext->AddContext("ptrContext", 1);
-
-    zmq::context_t context{1};
-    // create object of SimSocket with initial parameters
-
-    SimSocket *ptrPort = new SimSocket();
-
-    /*SimSocket * ptrPort = new SimSocket("tcp://127.0.0.1:7777"
-            , "hello test"
-            , context
-            , ptrContext->GetContext("ptrContext"));*/
-
-    // Testausgaben
-    //std::cout << "Context: " << context/*ptrContext->GetContext("ptrContext")*/ << endl;
-    //std::cout << "Port Name: " << ptrPort->getPortName() << endl;
-    //std::cout << "Daten: " << ptrPort->getDataSim() << endl;
-    //std::cout << "Socket: " << ptrPort->getSocketSim() << endl;
-
-    //ptrPort->sendToInterface(ptrPort->getPortName(),ptrPort->getDataSim(),zmq::send_flags::none);
-
-    /*std::thread sendThread(&SimSocket::sendToInterface
-                           , &ptrPort
-                           , ptrPort->getPortName()
-                           , ptrPort->getDataSim()
-                           , zmq::send_flags::none);*/
-
-    // start send Thread
-    /*std::thread pubThread([&]{ptrPort->sendToInterface(ptrPort->getPortName()
-                                                       ,ptrPort->getDataSim()
-                                                       ,zmq::send_flags::none
-                                                       /*, ptrContext->GetContext("ptrContext")*/
-    //   ,context
-    //   );});
-
-    //std::thread pubThread([&]{ptrPort->publish("tcp://127.0.0.1:7777", oa_bin);});
-    //std::thread pubThread(ptrPort->publish,"tcp://127.0.0.1:7777", oa_bin);
-
-    // run thread asynchronous
-    //pubThread.detach();
 }
 
 void load() {
@@ -164,6 +116,7 @@ void load() {
     //ia_txt >> a;
     ia_bin >> a;
 
+    /*
     std::cout << a.Speed() << std::endl;
     std::cout << a.Acc() << std::endl;
     std::cout << a.Angle() << std::endl;
@@ -181,10 +134,14 @@ void load() {
     std::cout << a.RoadIndex() << std::endl;
     std::cout << a.LaneID() << std::endl;
     std::cout << a.LaneIndex() << std::endl;
+     */
+
     /*std::cout << a.Pos3DX() << std::endl;
     std::cout << a.Pos3DY() << std::endl;
     std::cout << a.Pos3DZ() << std::endl;*/
+    /*
     std::cout << a.End() << std::endl;
+    */
 }
 
 //Close txt File
@@ -331,7 +288,7 @@ void V2XConnection::writeToMap(std::string path, std::string vehicleID, TraCIAPI
     data["Speed"] = traci.getSpeed(vehicleID);
     data["Acceleration"] = traci.getAcceleration(vehicleID);
     data["Angle"] = traci.getAngle(vehicleID);
-    data["Distance"] = traci.getAngle(vehicleID);
+    data["Distance"] = traci.getDistance(vehicleID);
     data["Height"] = traci.getHeight(vehicleID);
     data["Length"] = traci.getLength(vehicleID);
     data["Width"] = traci.getWidth(vehicleID);
@@ -366,7 +323,9 @@ void V2XConnection::writeToMap(std::string path, std::string vehicleID, TraCIAPI
     myfile << "Position Z-Coordinate: " << data["Position_Z-Coordinate"] << "\n";
     myfile << "Decel: " << data["Decel"] << "\n";
     myfile << "RouteIndex: " << data["RouteIndex"] << "\n";
+    myfile << "RoadID:" << traci.getRoadID(vehicleID);
     myfile << "LaneIndex: " << data["LaneIndex"] << "\n";
+    myfile << "LaneID: " << traci.getLaneID(vehicleID);
     myfile << "3DPosition X-Coordinate: " << data["3DPos_X-Coordiante"] << "\n";
     myfile << "3DPosition Y-Coordinate: " << data["3DPos_y-Coordiante"] << "\n";
     myfile << "3DPosition Z-Coordinate: " << data["3DPos_z-Coordiante"] << "\n";

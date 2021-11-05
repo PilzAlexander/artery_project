@@ -39,11 +39,40 @@
 #include <iostream>
 #include <bitset>
 
+#include "artery/utility/Geometry.h"
+#include "traci/Angle.h"
+#include "traci/Boundary.h"
+#include "traci/Position.h"
+#include <boost/geometry/index/rtree.hpp>
+#include <omnetpp/clistener.h>
+#include <omnetpp/csimplemodule.h>
+#include <functional>
+#include <set>
+#include <vector>
+
+#include "artery/inet/gemv2/VehicleIndex.h"
+#include "artery/inet/gemv2/Visualizer.h"
+#include "artery/traci/Cast.h"
+//#include "traci/Core.h"
+#include "traci/BasicNodeManager.h"
+#include "traci/API.h"
+#include <boost/geometry.hpp>
+#include <boost/geometry/geometries/register/linestring.hpp>
+#include <boost/geometry/strategies/transform/matrix_transformers.hpp>
+#include <boost/range/adaptor/indexed.hpp>
+#include <boost/range/adaptor/transformed.hpp>
+#include <boost/units/cmath.hpp>
+#include <inet/common/ModuleAccess.h>
+#include <omnetpp/checkandcast.h>
+#include <algorithm>
+#include <array>
 /********************************************************************************
  * Class declaration
  ********************************************************************************/
+// forward declaration
+namespace traci { class API; }
 
-class API;
+//class API;
 class ModuleMapper;
 class PersonSink;
 class VehicleCache;
@@ -51,7 +80,10 @@ class VehicleSink;
 
 namespace artery {
 
-    class SimSocket : public traci::Listener, public omnetpp::cSimpleModule {
+
+    //class SimSocket : public omnetpp::cSimpleModule, public omnetpp::cListener {
+
+    class SimSocket : public traci::Listener, public omnetpp::cSimpleModule{
     public:
 
         // signals to define!!!!!!! see basicNodeManager
@@ -60,6 +92,7 @@ namespace artery {
         using PortContext = zmq::context_t; // context
         //using DataSim = std::string; // data to send
         using DataSim = SimMessage;
+        static const omnetpp::simsignal_t dataStateChanged;
 
         // constructors and deconstructor
         SimSocket();
@@ -126,6 +159,9 @@ namespace artery {
         zmq::message_t nullMessage_;
         std::vector<PortName> connections_;
         std::vector<PortName> bindings_;
+        //static const simsignal_t dataStateChanged;
+
+    void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *);
     };
 
 }//namespace artery

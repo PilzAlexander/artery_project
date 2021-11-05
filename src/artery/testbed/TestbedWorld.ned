@@ -11,6 +11,6 @@ network TestbedWorld extends World
                 @display("p=70,40");
         }
         SimSocket: SimSocket{
-
+            traciModule_2 = default("traci");
         }
 }
