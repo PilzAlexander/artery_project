@@ -3,6 +3,7 @@
   \file     SimSocket.h
   \brief    Provides the functions for setting up a socket to send data from the simulation to the interface component
   \author   Alexander Pilz
+  \author   Fabian Genes
   \version  1.0.0
   \date     31.10.2021
  ********************************************************************************/
@@ -11,60 +12,114 @@
 /********************************************************************************
  * Includes
  *********************************************************************************/
+
 #include "SimSocket.h"
 #include <chrono>
 #include <thread>
 #include <iostream>
-#include <pthread.h>
 #include <zmq.hpp>
 
+#include "artery/traci/Cast.h"
+#include "inet/common/INETMath.h"
+#include "traci/CheckTimeSync.h"
+#include "traci/Core.h"
+#include "artery/plugins/MessageContext.h"
+
 /********************************************************************************
- * Function declaration
+ * Function declarations
  ********************************************************************************/
 
-using namespace std::chrono_literals;
 using namespace std;
 
-// Constructor without args
+// constructor without args
 SimSocket::SimSocket() {}
 
-// Constructor with args
-SimSocket::SimSocket(const std::string &port, const std::string &dataZmq) : port(port), data_zmq(dataZmq) {}
+// constructor with args
+SimSocket::SimSocket(SimSocket::PortName portName
+                     , SimSocket::DataSim dataSim
+                     ,PortContext &context)
+        : portName_(portName)
+        , dataSim_(dataSim)
+        , socketSim_(context, zmq::socket_type::pub)
+        , subscriber_ (context, zmq::socket_type::sub)
+        //nullMessage_(0)
+{
 
-// Destructor
-SimSocket::~SimSocket() {}
+    //socketSim_.set(zmq::sockopt::immediate, false);
 
-int SimSocket::createSocket(std::string port, std::string data_zmq) {
-   const string endpoint = "tcp://localhost:5555";
+    bind(portName_);
+    // DEBUG
+    cout << "Bound to port Address: " << portName_ << endl;
+}
 
-    // initialize the 0MQ context
-   // zmqpp::context context;
+// destructor
+SimSocket::~SimSocket()
+{
+    //close();
+}
 
-    // generate a push socket
-  //  zmqpp::socket_type type = zmqpp::socket_type::req;
-   //zmqpp::socket socket (context, type);
-     //   void *socket =  zmq_socket(context, ZMQ_PAIR);
-   // assert(socket);
-    // open the connection
-    cout << "Connecting to hello world server…" << endl;
-   // int rc = zmq_connect(socket, "tcp://localhost:5555");
-  // socket.connect(endpoint);
-  // socketPointer = &socket;
-    data_zmq = "tt";
-   // zmqpp::socket& socketPointer = socket;
+void SimSocket::close()
+{
+    socketSim_.close();
+}
 
-   // socketPointer = &socket;
+// connect the socket to a port
+void SimSocket::connect(const PortName & portName)
+{
+    try {
 
-    // compose a message from a string and a number
+        socketSim_.connect(portName_);
+        connections_.push_back(portName);
+        // DEBUG
+        cout << "Connected to Socket: " << portName << endl;
+    } catch (zmq::error_t cantConnect) {
+        cerr << "Socket can't connect to port: " <<  cantConnect.what() << endl;
+        close();
+        return;
+    }
+}
 
+// disconnect the socket from a port
+void SimSocket::disconnect(const PortName & portName)
+{
+    auto connectionIterator = std::find(connections_.begin()
+            , connections_.end()
+            , portName);
+    if(connectionIterator == connections_.end()){
+        cerr << "SimSocket::" << portName << "failed to disconnect from SimSocket::" << portName << endl;
+        return;
+    }
 
-  //  sendTest(socket, "FICKT EUCH ALLE");
-    cout << "T-Dog " ;
-  //  cout << &socket << endl << endl;
+    socketSim_.disconnect(portName_);
+    connections_.erase(connectionIterator);
+}
+
+// bind the socket to a port
+void SimSocket::bind(const PortName & portName)
+{
+    socketSim_.bind(portName_);
+    bindings_.push_back(portName);
+}
+
+// unbind the socket from a port
+void SimSocket::unbind(const PortName & portName) {
+
+    auto bindingIterator = std::find(bindings_.begin()
+                                , bindings_.end()
+                                , portName);
+    if(bindingIterator == bindings_.end()){
+        cerr << "SimSocket::" << portName << "failed to unbind from SimSocket::" << portName << endl;
+        return;
+    }
+
+    socketSim_.disconnect(portName_);
+    connections_.erase(bindingIterator);
+
+    socketSim_.unbind(portName_);
 
 }
 
-// Function for creating the communication Socket
+// function for creating the communication Socket
 /*int SimSocket::createSocket(std::string port, std::string data_zmq) {
 
     using namespace std::chrono_literals;
@@ -102,26 +157,101 @@ int SimSocket::createSocket(std::string port, std::string data_zmq) {
 
 }*/
 
-void SimSocket::sendMessageZMQ(std::string messageNachricht){
+void SimSocket::sendMessageZMQ(std::string data_zmq
+                               , std::string port
+                               , zmq::socket_t socket
+                               , zmq::context_t context){
+
     try {
-        // initialize the zmq context with a single IO thread
-        zmq::context_t context{1};
 
         // construct a REQ (request) socket and connect to interface
         zmq::socket_t socketZMQ{context, zmq::socket_type::req};
-        socketZMQ.connect("tcp://localhost:5555");
+        // socket.connect(port);
+        socket.connect(port);
 
-        // set up some static data to send
-        socketZMQ.send(zmq::buffer(messageNachricht), zmq::send_flags::none);
+        for(;;){
+
+            // set up some static data to send
+            socketZMQ.send(zmq::buffer(data_zmq), zmq::send_flags::none);
+
+        }
         socketZMQ.close();
-
     }
     catch (zmq::error_t & e){
         cerr << "Error " << e.what() << endl;
     }
 }
 
-void SimSocket::sendMessage(std::string messageNachricht) {
+void SimSocket::publish(const SimSocket::PortName & portName
+        , SimSocket::DataSim dataSim)
+        {
+
+    MessageContext messageContext;
+    messageContext.AddContext("pubContext", 1);
+    zmq::socket_t socketSim_(messageContext.GetContext("pubContext")
+                             , zmq::socket_type::pub);
+int i = 0;
+    for (;;) {
+        // create buffer size for message
+        zmq::message_t data(dataSim.length());
+        // copy the data string into the message data
+        memcpy(data.data(), dataSim.c_str(), data.size());
+
+        try {
+            //publish the data
+            socketSim_.send(data, zmq::send_flags::none);
+            // testausgabe
+
+
+            std::cout << i++ << std::endl;
+            //std::cout << dataSim << std::endl;
+            //std::cout << "SimTime: " << simTime() << std::endl;
+            if(i > 100000) {
+                break;
+            }
+        } catch (zmq::error_t cantSend) {
+            cerr << "Socket can't send: " << cantSend.what() << endl;
+            unbind(portName);
+            break;
+        }
+    } // loop
+}
+
+
+
+// function for sending data to the interface
+void SimSocket::sendToInterface(const SimSocket::PortName & portName
+        , SimSocket::DataSim dataSim
+        , zmq::send_flags flags
+        , zmq::context_t &context) {
+
+    zmq::context_t contextPub{1};
+    zmq::socket_t socketSim_(contextPub, zmq::socket_type::pub);
+
+    for(;;){
+        // create buffer size for message
+        zmq::message_t data(dataSim.length());
+        // copy the data string into the message data
+        memcpy(data.data(), dataSim.c_str(), data.size());
+
+        try {
+            //publish the data
+            socketSim_.send(data, zmq::send_flags::none);
+            // testausgabe
+            std::cout << "SimTime: " << simTime() << std::endl;
+        } catch (zmq::error_t cantSend) {
+            cerr << "Socket can't send: " <<  cantSend.what() << endl;
+            unbind(portName);
+            break;
+        }
+    } // loop
+}
+
+
+
+
+void SimSocket::sendMessage(std::string messageNachricht)
+{
 
   /*
 
@@ -178,7 +308,8 @@ void SimSocket::sendMessage(std::string messageNachricht) {
 }
 
 // function to send a json string via zeromq
-void SimSocket::sendJSON(nlohmann::basic_json<> json) {
+void SimSocket::sendJSON(nlohmann::basic_json<> json)
+{
     try {
         // initialize the zmq context with a single IO thread
         // TODO this initialisations and connections have to happen somewhere else (just once)
@@ -206,25 +337,61 @@ void SimSocket::sendJSON(nlohmann::basic_json<> json) {
     }
 }
 
+
+
 /********************************************************************************
  * Getter and Setter
  ********************************************************************************/
 
-const std::string &SimSocket::getPort() const {
-    return port;
+const SimSocket::PortName &SimSocket::getPortName() const {
+    return portName_;
 }
 
-void SimSocket::setPort(const std::string &port) {
-    SimSocket::port = port;
+const SimSocket::DataSim &SimSocket::getDataSim() const {
+    return dataSim_;
 }
 
-const std::string &SimSocket::getDataZmq() const {
-    return data_zmq;
+const zmq::socket_t &SimSocket::getSocketSim() const {
+    return socketSim_;
 }
 
-void SimSocket::setDataZmq(const std::string &dataZmq) {
-    data_zmq = dataZmq;
+const zmq::message_t &SimSocket::getNullMessage() const {
+    return nullMessage_;
 }
+
+const vector<SimSocket::PortName> &SimSocket::getConnections() const {
+    return connections_;
+}
+
+const vector<SimSocket::PortName> &SimSocket::getBindings() const {
+    return bindings_;
+}
+
+const zmq::context_t &SimSocket::getContext() const {
+    return context_;
+}
+
+void SimSocket::setPortName(const SimSocket::PortName &portName) {
+    portName_ = portName;
+}
+
+void SimSocket::setDataSim(const SimSocket::DataSim &dataSim) {
+    dataSim_ = dataSim;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /********************************************************************************
  * EOF

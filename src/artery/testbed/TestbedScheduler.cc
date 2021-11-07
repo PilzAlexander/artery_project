@@ -1,6 +1,5 @@
 #include "artery/testbed/OtaIndicationQueue.h"
 #include "artery/testbed/TestbedScheduler.h"
-#include "artery/plugins/SimSocket.h"
 #include <omnetpp/cconfigoption.h>
 #include <omnetpp/cconfiguration.h>
 #include <omnetpp/cfutureeventset.h>
@@ -25,8 +24,6 @@ void TestbedScheduler::startRun()
     mThresholdTooSlow = std::chrono::milliseconds(config->getAsInt(CFG_SIMULATION_TOO_SLOW));
     mStartupTime = config->getAsDouble(CFG_STARTUP_TIME);
     mBaseTime = std::chrono::system_clock::now();
-    //Hier socket erstellen
-  // SimSocket::createSocket("5555", "Tesst");
 
 }
 

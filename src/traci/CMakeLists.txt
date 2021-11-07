@@ -22,6 +22,7 @@ set(SOURCES
     sumo/utils/traci/TraCIAPI.cpp
     ../artery/plugins/V2XConnection.cc
     ../artery/plugins/SimSocket.cpp
+    ../artery/plugins/MessageContext.cpp
         )
 
 add_library(traci SHARED ${SOURCES})
