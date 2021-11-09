@@ -11,6 +11,7 @@
 /********************************************************************************
  * Includes
  *********************************************************************************/
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -28,86 +29,112 @@
  * Class declaration
  ********************************************************************************/
 
-template <class T>
 class SimMessage {
 
 public:
     SimMessage();
-    ~SimMessage() = default;
-    SimMessage(double speed, double acc, double angle, double distance, double height, double length,
-               double width, double lanePos, double signals, double posX, double posY, double posZ, double decel,
-               double roadID, double roadIndex, double laneID, double laneIndex/*, double pos3DX, double pos3DY, double pos3DZ*/, std::string end) :
-            speed_{speed}, acc_{acc}, angle_{angle}, distance_{distance}, height_{height}, length_{length},
-            width_{width}, lanePos_{lanePos}, signals_{signals}, posX_{posX}, posY_{posY}, posZ_{posZ}, decel_{decel},
-            roadID_{roadID}, roadIndex_{roadIndex}, laneID_{laneID}, laneIndex_{laneIndex}
-            /*, pos3Dx_{pos3DX}, pos3DY_{pos3DY}, pos3DZ_{pos3DZ}*/, end_{end}{}
+    // constructor with args
+    SimMessage(double speed, double acc, double angle, double distance, double height, double length, double width,
+               double lanePos, int signals, double posX, double posY, double posZ, double decel, std::string roadID,
+               int roadIndex, std::string laneID, int laneIndex, const char end[2]);
 
-   // T getData();
+    ~SimMessage();
+
+    double getSpeed() const;
+
+    double getAcc() const;
+
+    double getAngle() const;
+
+    double getDistance() const;
+
+    double getHeight() const;
+
+    double getLength() const;
+
+    double getWidth() const;
+
+    double getLanePos() const;
+
+    int getSignals() const;
+
+    double getPosX() const;
+
+    double getPosY() const;
+
+    double getPosZ() const;
+
+    double getDecel() const;
+
+    const std::string &getRoadId() const;
+
+    int getRoadIndex() const;
+
+    const std::string &getLaneId() const;
+
+    int getLaneIndex() const;
+
+    const std::string &getEnd() const;
+    // T getData();
    // std::string toString();
 
 private:
     friend class boost::serialization::access;
 
     template <class Archive>
-    void serialize(Archive &ar, V2XConnection &a, const unsigned int version)
+    void serialize(Archive &ar, const unsigned int version)
     {
-        {
-            ar & a.speed_;
-            ar & a.acc_;
-            ar & a.angle_;
-            ar & a.distance_;
-            ar & a.height_;
-            ar & a.length_;
-            ar & a.width_;
-            ar & a.lanePos_;
-            ar & a.angle_;
-            ar & a.distance_;
-            ar & a.height_;
-            ar & a.length_;
-            ar & a.width_;
-            ar & a.lanePos_;
-            ar & a.signals_;
-            ar & a.posX_;
-            ar & a.posY_;
-            ar & a.posZ_;
-            ar & a.decel_;
-            ar & a.roadID_;
-            ar & a.roadIndex_;
-            ar & a.laneID_;
-            ar & a.laneIndex_;
-            ar & a.end_;
+            ar & speed_;
+            ar & acc_;
+            ar & angle_;
+            ar & distance_;
+            ar & height_;
+            ar & length_;
+            ar & width_;
+            ar & lanePos_;
+            ar & angle_;
+            ar & distance_;
+            ar & height_;
+            ar & length_;
+            ar & width_;
+            ar & lanePos_;
+            ar & signals_;
+            ar & posX_;
+            ar & posY_;
+            ar & posZ_;
+            ar & decel_;
+            ar & roadID_;
+            ar & roadIndex_;
+            ar & laneID_;
+            ar & laneIndex_;
+            ar & end_;
             /*ar & a.pos3DX_;
             ar & a.pos3DY_;
             ar & a.pos3DZ_;*/
-        }
-
-
     }
 
-    double speed_;
-    double acc_;
-    double angle_;
-    double distance_;
-    double height_;
-    double length_;
-    double width_;
-    double lanePos_;
-    double signals_;
-    double posX_;
-    double posY_;
-    double posZ_;
-    double decel_;
-    double roadID_;
-    double roadIndex_;
-    double laneID_;
-    double laneIndex_;
+    double speed_{};
+    double acc_{};
+    double angle_{};
+    double distance_{};
+    double height_{};
+    double length_{};
+    double width_{};
+    double lanePos_{};
+    int signals_{};
+    double posX_{};
+    double posY_{};
+    double posZ_{};
+    double decel_{};
+    std::string roadID_{};
+    int roadIndex_{};
+    std::string laneID_{};
+    int laneIndex_{};
     std::string end_;
     /*double pos3DX_;
     double pos3DY_;
     double pos3DZ_;*/
 };
-
-
 
 #endif //ARTERY_SIMMESSAGE_H
 

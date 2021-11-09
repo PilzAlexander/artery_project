@@ -21,6 +21,7 @@
 #include "json.hpp"
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
+#include "artery/plugins/SimMessage.h"
 
 /********************************************************************************
  * Class declaration
@@ -31,7 +32,8 @@ class SimSocket
  public:
     using PortName = std::string; // port address
     using PortContext = zmq::context_t; // context
-    using DataSim = std::string; // data to send
+    //using DataSim = std::string; // data to send
+    using DataSim = SimMessage;
 
     // constructors and deconstructor
     SimSocket();
@@ -58,7 +60,7 @@ class SimSocket
                          , zmq::send_flags flags
                          , zmq::context_t &context);
     void publish(const SimSocket::PortName & portName
-            , SimSocket::DataSim dataSim);
+            , SimSocket::DataSim *dataSim);
     static void sendJSON(nlohmann::basic_json<> json);
 
     // getter

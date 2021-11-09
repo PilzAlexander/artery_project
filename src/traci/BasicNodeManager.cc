@@ -19,6 +19,9 @@
 // Alexander Pilz
 #include <thread>
 #include <zmq.hpp>
+#include "artery/plugins/SimMessage.h"
+
+
 
 using namespace omnetpp;
 
@@ -255,8 +258,55 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     auto& traci = m_api->vehicle;
     auto path = "/home/vagrant/Desktop/fork_repo/Test_JSON.txt";
 
-    V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
+    //V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
     //****************************************
+
+    // create and ope a character archive for output
+    std::ofstream ofs("senddata");
+
+    // create class instance
+    // wtf warum geht das hier nicht?
+    SimMessage * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
+            ,traci.getAcceleration(vehicleID)
+            ,traci.getAngle(vehicleID)
+            ,traci.getDistance(vehicleID)
+            ,traci.getHeight(vehicleID)
+            ,traci.getLength(vehicleID)
+            ,traci.getWidth(vehicleID)
+            ,traci.getLanePosition(vehicleID)
+            ,traci.getSignals(vehicleID)
+            ,traci.getPosition(vehicleID).x
+            ,traci.getPosition(vehicleID).y
+            ,traci.getPosition(vehicleID).z
+            ,traci.getDecel(vehicleID)
+            ,traci.getRoadID(vehicleID)
+            ,traci.getRouteIndex(vehicleID)
+            ,traci.getLaneID(vehicleID)
+            ,traci.getLaneIndex(vehicleID)
+            ,"\n");
+
+    /*SimMessage msgPtr(traci.getSpeed(vehicleID)
+            ,traci.getAcceleration(vehicleID)
+            ,traci.getAngle(vehicleID)
+            ,traci.getDistance(vehicleID)
+            ,traci.getHeight(vehicleID)
+            ,traci.getLength(vehicleID)
+            ,traci.getWidth(vehicleID)
+            ,traci.getLanePosition(vehicleID)
+            ,traci.getSignals(vehicleID)
+            ,traci.getPosition(vehicleID).x
+            ,traci.getPosition(vehicleID).y
+            ,traci.getPosition(vehicleID).z
+            ,traci.getDecel(vehicleID)
+            ,traci.getRoadID(vehicleID)
+            ,traci.getRouteIndex(vehicleID)
+            ,traci.getLaneID(vehicleID)
+            ,traci.getLaneIndex(vehicleID)
+            ,"\n");*/
+
+    auto * socketPtr = new SimSocket();
+
+    socketPtr->publish("tcp://127.0.0.1:7777",msgPtr);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);

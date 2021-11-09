@@ -60,7 +60,7 @@ SimSocket::SimSocket(SimSocket::PortName portName
 // destructor
 SimSocket::~SimSocket()
 {
-    //close();
+    close();
 }
 
 void SimSocket::close()
@@ -183,37 +183,50 @@ void SimSocket::sendMessageZMQ(std::string data_zmq
 }
 
 void SimSocket::publish(const SimSocket::PortName & portName
-        , SimSocket::DataSim dataSim)
+        , SimSocket::DataSim *dataSim)
         {
 
     MessageContext messageContext;
     messageContext.AddContext("pubContext", 1);
     zmq::socket_t socketSim_(messageContext.GetContext("pubContext")
                              , zmq::socket_type::pub);
-int i = 0;
-    for (;;) {
-        // create buffer size for message
-        zmq::message_t data(dataSim.length());
-        // copy the data string into the message data
-        memcpy(data.data(), dataSim.c_str(), data.size());
 
+   // std::stringstream ss(std::ios_base::binary| std::ios_base::out| std::ios_base::in);
+    //boost::archive::binary_oarchive oa(ss, boost::archive::no_header);
+
+    std::ofstream ofstream("/home/vagrant/Desktop/#testtesttest1#.txt");
+    std::ostringstream archive_stream;
+    boost::archive::text_oarchive archive(ofstream);
+
+    archive << dataSim;
+
+    std::string outbound_data = archive_stream.str();
+
+    //for (;;) {
+
+        // create buffer size for message
+        zmq::message_t msgToSend(outbound_data.length());
+        // copy the data string into the message data
+
+        /*memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length());
+
+        if((memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length())) != 0) {
+            cerr << "error memcpy" << endl;
+        }
+*/
         try {
             //publish the data
-            socketSim_.send(data, zmq::send_flags::none);
+            zmq::message_t msgTest("hellotest");
+           // socketSim_.send(msgToSend, zmq::send_flags::none);
+            socketSim_.send(msgTest, zmq::send_flags::none);
             // testausgabe
-
-            std::cout << i++ << std::endl;
-            //std::cout << dataSim << std::endl;
-            //std::cout << "SimTime: " << simTime() << std::endl;
-            if(i > 100000) {
-                break;
-            }
+            std::cout << "TestMessage nach .send: " << msgTest.to_string() << std::endl;
         } catch (zmq::error_t cantSend) {
             cerr << "Socket can't send: " << cantSend.what() << endl;
             unbind(portName);
-            break;
+           // break;
         }
-    } // loop
+   // } // loop
 }
 
 // function for sending data to the interface
@@ -273,8 +286,6 @@ void SimSocket::sendMessage(std::string messageNachricht)
     pthread_join(t1,NULL);
         socket.close();
 
-
-         *
     int request_nbr;
     for (request_nbr = 0; request_nbr != 10; request_nbr++) {
         // send a message
@@ -288,9 +299,6 @@ void SimSocket::sendMessage(std::string messageNachricht)
        // pthread_join(t1,NULL);
        cout << &socketPointer;
        socket.send(message);
-
-
-
 
        // socketPointer->receive(buffer);
        // socket.receive(buffer);
@@ -372,6 +380,7 @@ void SimSocket::setPortName(const SimSocket::PortName &portName) {
 void SimSocket::setDataSim(const SimSocket::DataSim &dataSim) {
     dataSim_ = dataSim;
 }
+
 /********************************************************************************
  * EOF
  ********************************************************************************/
