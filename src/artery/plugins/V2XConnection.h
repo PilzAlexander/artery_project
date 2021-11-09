@@ -14,6 +14,7 @@
  * Includes
  *********************************************************************************/
 #include <boost/serialization/access.hpp>
+#include <utils/traci/TraCIAPI.h>
 #include "../../../../../../../../usr/include/c++/8/fstream"
 #include "../../../../../../../../usr/include/c++/8/iostream"
 #include "json.hpp"
@@ -60,6 +61,8 @@ public:
     static void openFile(const std::string path);
     static void ConvertToJSONFile(nlohmann::json JSON);
     static void initializeMap();
+    static void prepareSerializing();
+
     //void save();
     //void load();
 

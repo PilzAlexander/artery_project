@@ -26,7 +26,11 @@
 #include "artery/plugins/MessageContext.h"
 
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
+#include <sstream>
+
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
@@ -48,7 +52,6 @@ SimSocket::SimSocket(SimSocket::PortName portName
 {
 
     //socketSim_.set(zmq::sockopt::immediate, false);
-
     bind(portName_);
     // DEBUG
     cout << "Bound to port Address: " << portName_ << endl;
@@ -214,6 +217,7 @@ int i = 0;
 }
 
 // function for sending data to the interface
+/*void SimSocket::sendToInterface(const SimSocket::PortName & portName
 void SimSocket::sendToInterface(const SimSocket::PortName & portName
         , SimSocket::DataSim dataSim
         , zmq::send_flags flags
@@ -239,7 +243,8 @@ void SimSocket::sendToInterface(const SimSocket::PortName & portName
             break;
         }
     } // loop
-}
+}*/
+
 
 void SimSocket::sendMessage(std::string messageNachricht)
 {

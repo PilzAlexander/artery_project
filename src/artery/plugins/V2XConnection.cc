@@ -313,8 +313,6 @@ void V2XConnection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleScope tr
     //Converts JSON Object to JSON file
     ConvertToJSONFile(jsonNode);
 
-    //send JSON
-    std::cout << "SimTime: " << simTime() << std::endl;
     //std::thread sendThread(SimSocket::sendJSON, jsonNode);
    // sendThread.detach();
 

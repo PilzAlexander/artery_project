@@ -103,10 +103,10 @@ void BasicNodeManager::initialize()
    // MessageContext * ptrContext = new MessageContext();
     //ptrContext->AddContext("ptrContext", 1);
 
-    zmq::context_t context{1};
+    //zmq::context_t context{1};
     // create object of SimSocket with initial parameters
 
-    SimSocket *ptrPort = new SimSocket();
+   // SimSocket *ptrPort = new SimSocket();
 
     /*SimSocket * ptrPort = new SimSocket("tcp://127.0.0.1:7777"
             , "hello test"
@@ -137,7 +137,6 @@ void BasicNodeManager::initialize()
 
     //std::thread pubThread([&]{ptrPort->publish("tcp://127.0.0.1:7777"
      //                                          , "Hello Testpublishing");});
-
     // run thread asynchronous
     //pubThread.detach();*/
 }
@@ -256,14 +255,6 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     auto& traci = m_api->vehicle;
     auto path = "/home/vagrant/Desktop/fork_repo/Test_JSON.txt";
 
-    //std::cout << "SPEED: " << traci.getSpeed(vehicleID) << std::endl;
-    //std::cout << "NEXTUP: " << nextup(traci.getSpeed(vehicleID)) << std::endl << "\n\n";
-
-    //std::cout << "VehicleID: " << vehicleID << std::endl;
-    //std::cout << "Open Path \n";
-    //std::cout << path << "\n";
-
-    //V2XConnection::writeToJSON("flowNorthSouth.0", traci);
     V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
     //****************************************
 
