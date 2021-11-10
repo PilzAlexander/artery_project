@@ -28,10 +28,6 @@ class VehicleSink;
 class BasicNodeManager : public NodeManager, public Listener, public omnetpp::cSimpleModule
 {
 public:
-
-    //BasicNodeManager();
-    //~BasicNodeManager();
-
     static const omnetpp::simsignal_t addNodeSignal;
     static const omnetpp::simsignal_t updateNodeSignal;
     static const omnetpp::simsignal_t removeNodeSignal;

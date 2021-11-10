@@ -100,16 +100,18 @@ void BasicNodeManager::initialize()
     m_destroy_vehicles_on_crash = par("destroyVehiclesOnCrash");
     m_ignore_persons = par("ignorePersons");
 
+    //std::cout << "Accelleration after Thread created: " << socketPtr->getDataSim().getAcc() << endl;
+
     /*
     // HIER AUFRUFEN Alexander Pilz
     // create new content
-   // MessageContext * ptrContext = new MessageContext();
+    // MessageContext * ptrContext = new MessageContext();
     //ptrContext->AddContext("ptrContext", 1);
 
     //zmq::context_t context{1};
     // create object of SimSocket with initial parameters
 
-   // SimSocket *ptrPort = new SimSocket();
+    // SimSocket *ptrPort = new SimSocket();
 
     /*SimSocket * ptrPort = new SimSocket("tcp://127.0.0.1:7777"
             , "hello test"
@@ -138,8 +140,7 @@ void BasicNodeManager::initialize()
                                                     //   ,context
                                                     //   );});
 
-    //std::thread pubThread([&]{ptrPort->publish("tcp://127.0.0.1:7777"
-     //                                          , "Hello Testpublishing");});
+
     // run thread asynchronous
     //pubThread.detach();*/
 }
@@ -261,12 +262,8 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     //V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
     //****************************************
 
-    // create and ope a character archive for output
-    std::ofstream ofs("senddata");
-
     // create class instance
-    // wtf warum geht das hier nicht?
-    SimMessage * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
+    auto * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
             ,traci.getAcceleration(vehicleID)
             ,traci.getAngle(vehicleID)
             ,traci.getDistance(vehicleID)
@@ -285,6 +282,7 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
             ,traci.getLaneIndex(vehicleID)
             ,"\n");
 
+    //std::cout << "Acceleration msgPtr: " << msgPtr->getAcc() << endl;
     /*SimMessage msgPtr(traci.getSpeed(vehicleID)
             ,traci.getAcceleration(vehicleID)
             ,traci.getAngle(vehicleID)
@@ -304,9 +302,6 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
             ,traci.getLaneIndex(vehicleID)
             ,"\n");*/
 
-    auto * socketPtr = new SimSocket();
-
-    socketPtr->publish("tcp://127.0.0.1:7777",msgPtr);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);

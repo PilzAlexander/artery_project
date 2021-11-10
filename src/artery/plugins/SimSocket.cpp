@@ -9,6 +9,7 @@
  ********************************************************************************/
 
 
+
 /********************************************************************************
  * Includes
  *********************************************************************************/
@@ -17,6 +18,7 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <utility>
 #include <zmq.hpp>
 
 #include "artery/traci/Cast.h"
@@ -34,8 +36,54 @@
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
-
 using namespace std;
+
+Define_Module(SimSocket)
+
+void SimSocket::initialize() {
+
+    context_ = zmq::context_t(1);
+    portName_ = "tcp://127.0.0.1:7777";
+    auto *msgPtr = new SimMessage();
+    /*auto * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
+            ,traci.getAcceleration(vehicleID)
+            ,traci.getAngle(vehicleID)
+            ,traci.getDistance(vehicleID)
+            ,traci.getHeight(vehicleID)
+            ,traci.getLength(vehicleID)
+            ,traci.getWidth(vehicleID)
+            ,traci.getLanePosition(vehicleID)
+            ,traci.getSignals(vehicleID)
+            ,traci.getPosition(vehicleID).x
+            ,traci.getPosition(vehicleID).y
+            ,traci.getPosition(vehicleID).z
+            ,traci.getDecel(vehicleID)
+            ,traci.getRoadID(vehicleID)
+            ,traci.getRouteIndex(vehicleID)
+            ,traci.getLaneID(vehicleID)
+            ,traci.getLaneIndex(vehicleID)
+            ,"\n");*/
+    dataSim_ = msgPtr;
+    socketSim_ = zmq::socket_t(context_, zmq::socket_type::pub);
+
+    EV_INFO << "portName_ " << portName_;
+    EV_INFO << "context_ " << context_;
+    EV_INFO << "dataSim_" << dataSim_;
+    EV_INFO << "socketSim_" << socketSim_;
+
+
+    //std::thread pubThread();
+
+    //std::thread pubThread([&]{socketPtr->publish("tcp://127.0.0.1:7777", socketPtr->getDataSim());});
+    // pubThread.detach();
+}
+
+void SimSocket::finish() {
+
+    unbind(portName_);
+    cSimpleModule::finish();
+}
+
 
 // constructor without args
 SimSocket::SimSocket() {}
@@ -44,8 +92,8 @@ SimSocket::SimSocket() {}
 SimSocket::SimSocket(SimSocket::PortName portName
                      , SimSocket::DataSim dataSim
                      ,PortContext &context)
-        : portName_(portName)
-        , dataSim_(dataSim)
+        : portName_(std::move(portName))
+        , dataSim_(&dataSim)
         , socketSim_(context, zmq::socket_type::pub)
         , subscriber_ (context, zmq::socket_type::sub)
         //nullMessage_(0)
@@ -182,51 +230,87 @@ void SimSocket::sendMessageZMQ(std::string data_zmq
     }
 }
 
-void SimSocket::publish(const SimSocket::PortName & portName
-        , SimSocket::DataSim *dataSim)
-        {
+void SimSocket::publishNew() {
 
-    MessageContext messageContext;
-    messageContext.AddContext("pubContext", 1);
-    zmq::socket_t socketSim_(messageContext.GetContext("pubContext")
-                             , zmq::socket_type::pub);
-
-   // std::stringstream ss(std::ios_base::binary| std::ios_base::out| std::ios_base::in);
+    //std::stringstream ss(std::ios_base::binary| std::ios_base::out| std::ios_base::in);
     //boost::archive::binary_oarchive oa(ss, boost::archive::no_header);
 
-    std::ofstream ofstream("/home/vagrant/Desktop/#testtesttest1#.txt");
+    //std::ofstream ofstream("/home/vagrant/Desktop/#testtesttest1#.txt");
     std::ostringstream archive_stream;
-    boost::archive::text_oarchive archive(ofstream);
+    boost::archive::text_oarchive archive(archive_stream);
+    archive << dataSim_;
 
-    archive << dataSim;
-
-    std::string outbound_data = archive_stream.str();
-
-    //for (;;) {
-
+    for (;;) {
+        std::string outbound_data = archive_stream.str();
         // create buffer size for message
         zmq::message_t msgToSend(outbound_data.length());
+        //zmq::message_t msgToSend(sizeof(dataSim));
         // copy the data string into the message data
 
         /*memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length());
 
         if((memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length())) != 0) {
             cerr << "error memcpy" << endl;
-        }
-*/
+        }*/
+
         try {
             //publish the data
-            zmq::message_t msgTest("hellotest");
-           // socketSim_.send(msgToSend, zmq::send_flags::none);
-            socketSim_.send(msgTest, zmq::send_flags::none);
+            socketSim_.send(msgToSend, zmq::send_flags::none);
             // testausgabe
-            std::cout << "TestMessage nach .send: " << msgTest.to_string() << std::endl;
+            //std::cout << "Accelleration after Thread created: " << dataSim.getAcc() << endl;
+            //std::cout << "TestMessage nach .send: " << msgToSend.to_string() << std::endl;
         } catch (zmq::error_t cantSend) {
             cerr << "Socket can't send: " << cantSend.what() << endl;
-            unbind(portName);
-           // break;
+            unbind(portName_);
+            // break;
         }
-   // } // loop
+    } // loop
+
+}
+
+
+void SimSocket::publish(const SimSocket::PortName & portName
+        , SimSocket::DataSim dataSim_)
+        {
+
+    MessageContext messageContext;
+    messageContext.AddContext("pubContext", 1);
+    //zmq::socket_t socketSim_(messageContext.GetContext("pubContext")
+    //                       , zmq::socket_type::pub);
+
+    //std::stringstream ss(std::ios_base::binary| std::ios_base::out| std::ios_base::in);
+    //boost::archive::binary_oarchive oa(ss, boost::archive::no_header);
+
+    //std::ofstream ofstream("/home/vagrant/Desktop/#testtesttest1#.txt");
+    std::ostringstream archive_stream;
+    boost::archive::text_oarchive archive(archive_stream);
+    archive << dataSim_;
+
+        for (;;) {
+            std::string outbound_data = archive_stream.str();
+            // create buffer size for message
+            zmq::message_t msgToSend(outbound_data.length());
+            //zmq::message_t msgToSend(sizeof(dataSim));
+            // copy the data string into the message data
+
+            /*memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length());
+
+            if((memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length())) != 0) {
+                cerr << "error memcpy" << endl;
+            }*/
+
+            try {
+                //publish the data
+                socketSim_.send(msgToSend, zmq::send_flags::none);
+                // testausgabe
+                //std::cout << "Accelleration after Thread created: " << dataSim.getAcc() << endl;
+                //std::cout << "TestMessage nach .send: " << msgToSend.to_string() << std::endl;
+            } catch (zmq::error_t cantSend) {
+                cerr << "Socket can't send: " << cantSend.what() << endl;
+                unbind(portName);
+                // break;
+            }
+        } // loop
 }
 
 // function for sending data to the interface
@@ -350,7 +434,7 @@ const SimSocket::PortName &SimSocket::getPortName() const {
 }
 
 const SimSocket::DataSim &SimSocket::getDataSim() const {
-    return dataSim_;
+    return *dataSim_;
 }
 
 const zmq::socket_t &SimSocket::getSocketSim() const {
@@ -371,14 +455,6 @@ const vector<SimSocket::PortName> &SimSocket::getBindings() const {
 
 const zmq::context_t &SimSocket::getContext() const {
     return context_;
-}
-
-void SimSocket::setPortName(const SimSocket::PortName &portName) {
-    portName_ = portName;
-}
-
-void SimSocket::setDataSim(const SimSocket::DataSim &dataSim) {
-    dataSim_ = dataSim;
 }
 
 /********************************************************************************
