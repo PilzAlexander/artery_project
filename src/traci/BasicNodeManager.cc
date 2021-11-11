@@ -100,49 +100,6 @@ void BasicNodeManager::initialize()
     m_destroy_vehicles_on_crash = par("destroyVehiclesOnCrash");
     m_ignore_persons = par("ignorePersons");
 
-    //std::cout << "Accelleration after Thread created: " << socketPtr->getDataSim().getAcc() << endl;
-
-    /*
-    // HIER AUFRUFEN Alexander Pilz
-    // create new content
-    // MessageContext * ptrContext = new MessageContext();
-    //ptrContext->AddContext("ptrContext", 1);
-
-    //zmq::context_t context{1};
-    // create object of SimSocket with initial parameters
-
-    // SimSocket *ptrPort = new SimSocket();
-
-    /*SimSocket * ptrPort = new SimSocket("tcp://127.0.0.1:7777"
-            , "hello test"
-            , context
-            , ptrContext->GetContext("ptrContext"));*/
-
-    // Testausgaben
-    //std::cout << "Context: " << context/*ptrContext->GetContext("ptrContext")*/ << endl;
-    //std::cout << "Port Name: " << ptrPort->getPortName() << endl;
-    //std::cout << "Daten: " << ptrPort->getDataSim() << endl;
-    //std::cout << "Socket: " << ptrPort->getSocketSim() << endl;
-
-    //ptrPort->sendToInterface(ptrPort->getPortName(),ptrPort->getDataSim(),zmq::send_flags::none);
-
-    /*std::thread sendThread(&SimSocket::sendToInterface
-                           , &ptrPort
-                           , ptrPort->getPortName()
-                           , ptrPort->getDataSim()
-                           , zmq::send_flags::none);*/
-
-    // start send Thread
-    /*std::thread pubThread([&]{ptrPort->sendToInterface(ptrPort->getPortName()
-                                                       ,ptrPort->getDataSim()
-                                                       ,zmq::send_flags::none
-                                                       /*, ptrContext->GetContext("ptrContext")*/
-                                                    //   ,context
-                                                    //   );});
-
-
-    // run thread asynchronous
-    //pubThread.detach();*/
 }
 
 void BasicNodeManager::finish()

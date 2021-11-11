@@ -41,40 +41,15 @@
 #include <array>
 #include <omnetpp/clistener.h>
 #include <omnetpp/csimplemodule.h>
-
-
-//Alles mögliche
-#include "artery/inet/gemv2/VehicleIndex.h"
-#include "artery/inet/gemv2/Visualizer.h"
-#include "artery/traci/Cast.h"
-#include "traci/BasicNodeManager.h"
-#include "traci/API.h"
-#include <boost/geometry.hpp>
-#include <boost/geometry/geometries/register/linestring.hpp>
-#include <boost/geometry/strategies/transform/matrix_transformers.hpp>
-#include <boost/range/adaptor/indexed.hpp>
-#include <boost/range/adaptor/transformed.hpp>
-#include <boost/units/cmath.hpp>
-#include <inet/common/ModuleAccess.h>
-#include <omnetpp/checkandcast.h>
-#include <algorithm>
-#include <array>
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
 using namespace std;
 using namespace omnetpp;
-//using namespace traci;
 namespace artery {
 
 
 Define_Module(SimSocket)
-
-//Define signal
-//omnetpp::simsignal_t SimSocket::dataStateChanged = omnetpp::cComponent::registerSignal("dataStateChanged");
-
-
-const simsignal_t SimSocket::dataStateChanged = cComponent::registerSignal("dataStateChanged");
 
 void SimSocket::initialize() {
 
@@ -90,7 +65,6 @@ void SimSocket::initialize() {
     }
 
     context_ = zmq::context_t(1);
-    //portName_ = "tcp://127.0.0.1:7777";
     portName_ = "tcp://*:7777";
     auto *msgPtr = new SimMessage();
 
@@ -116,18 +90,6 @@ void SimSocket::initialize() {
     dataSim_ = msgPtr;
     socketSim_ = zmq::socket_t(context_, zmq::socket_type::pub);
     bind(portName_);
-
-    EV_INFO << "portName_ " << portName_ << endl;
-    EV_INFO << "context_ " << context_<< endl;
-    EV_INFO << "dataSim_" << dataSim_<< endl;
-    EV_INFO << "socketSim_" << socketSim_<< endl;
-
-    cout << "Initialisierung erfolgt" << endl;
-
-    //std::thread pubThread();
-
-    //std::thread pubThread([&]{socketPtr->publish("tcp://127.0.0.1:7777", socketPtr->getDataSim());});
-    // pubThread.detach();
 }
 
 void SimSocket::finish() {
@@ -237,35 +199,31 @@ void SimSocket::publishNew() {
     boost::archive::text_oarchive archive(archive_stream);
     archive << dataSim_;
 
-    std::cout << "######################################### \n";
-    //emit(dataStateChanged, );
-
-    //for (;;) {
-        std::string outbound_data = archive_stream.str();
-        // create buffer size for message
-        //zmq::message_t msgToSend(outbound_data.length());
+    std::string outbound_data = archive_stream.str();
+    // create buffer size for message
+    //zmq::message_t msgToSend(outbound_data.length());
     zmq::message_t msgToSend("TEST Nachricht");
 
-        //zmq::message_t msgToSend(sizeof(dataSim));
-        // copy the data string into the message data
+    //zmq::message_t msgToSend(sizeof(dataSim));
+    // copy the data string into the message data
 
-        /*memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length());
+    /*memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length());
 
-        if((memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length())) != 0) {
-            cerr << "error memcpy" << endl;
-        }*/
+    if((memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length())) != 0) {
+        cerr << "error memcpy" << endl;
+    }*/
 
-        try {
-            //publish the data
-            socketSim_.send(msgToSend, zmq::send_flags::none);
-            // testausgabe
-            //std::cout << "Accelleration after Thread created: " << dataSim.getAcc() << endl;
-            //std::cout << "TestMessage nach .send: " << msgToSend.to_string() << std::endl;
-        } catch (zmq::error_t cantSend) {
-            cerr << "Socket can't send: " << cantSend.what() << endl;
-            unbind(portName_);
-            // break;
-        }
+    try {
+        //publish the data
+        socketSim_.send(msgToSend, zmq::send_flags::none);
+        // testausgabe
+        //std::cout << "Accelleration after Thread created: " << dataSim.getAcc() << endl;
+        //std::cout << "TestMessage nach .send: " << msgToSend.to_string() << std::endl;
+    } catch (zmq::error_t cantSend) {
+        cerr << "Socket can't send: " << cantSend.what() << endl;
+        unbind(portName_);
+        // break;
+    }
     //} // loop
 
 }
