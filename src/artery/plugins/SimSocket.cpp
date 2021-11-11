@@ -53,7 +53,6 @@
  ********************************************************************************/
 using namespace std;
 using namespace omnetpp;
-
 namespace artery {
 
 
@@ -186,35 +185,31 @@ void SimSocket::publish() {
     boost::archive::text_oarchive archive(archive_stream);
     archive << dataSim_;
 
-    std::cout << "######################################### \n";
-    //emit(dataStateChanged, );
-
-    //for (;;) {
-        std::string outbound_data = archive_stream.str();
-        // create buffer size for message
-        //zmq::message_t msgToSend(outbound_data.length());
+    std::string outbound_data = archive_stream.str();
+    // create buffer size for message
+    //zmq::message_t msgToSend(outbound_data.length());
     zmq::message_t msgToSend("TEST Nachricht");
 
-        //zmq::message_t msgToSend(sizeof(dataSim));
-        // copy the data string into the message data
+    //zmq::message_t msgToSend(sizeof(dataSim));
+    // copy the data string into the message data
 
-        /*memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length());
+    /*memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length());
 
-        if((memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length())) != 0) {
-            cerr << "error memcpy" << endl;
-        }*/
+    if((memcpy(msgToSend.data(), outbound_data.data(),outbound_data.length())) != 0) {
+        cerr << "error memcpy" << endl;
+    }*/
 
-        try {
-            //publish the data
-            socketSim_.send(msgToSend, zmq::send_flags::none);
-            // testausgabe
-            //std::cout << "Accelleration after Thread created: " << dataSim.getAcc() << endl;
-            //std::cout << "TestMessage nach .send: " << msgToSend.to_string() << std::endl;
-        } catch (zmq::error_t cantSend) {
-            cerr << "Socket can't send: " << cantSend.what() << endl;
-            unbind(portName_);
-            // break;
-        }
+    try {
+        //publish the data
+        socketSim_.send(msgToSend, zmq::send_flags::none);
+        // testausgabe
+        //std::cout << "Accelleration after Thread created: " << dataSim.getAcc() << endl;
+        //std::cout << "TestMessage nach .send: " << msgToSend.to_string() << std::endl;
+    } catch (zmq::error_t cantSend) {
+        cerr << "Socket can't send: " << cantSend.what() << endl;
+        unbind(portName_);
+        // break;
+    }
     //} // loop
 
 }
