@@ -113,16 +113,7 @@ namespace artery {
         void unbind(const PortName &portName);
 
         // send and receive functions
-        static void sendMessage(std::string message); // delete
-        static void
-        sendMessageZMQ(std::string data_zmq, std::string port, zmq::socket_t socket, zmq::context_t context);
-
-        void sendToInterface(const SimSocket::PortName &portName, SimSocket::DataSim dataSim, zmq::send_flags flags,
-                             zmq::context_t &context);
-
-        void publish(const SimSocket::PortName &portName, SimSocket::DataSim dataSim);
-
-        void publishNew();
+        void publish();
 
         static void sendJSON(nlohmann::basic_json<> json);
 
