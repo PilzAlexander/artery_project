@@ -10,7 +10,7 @@ import artery.envmod.GlobalEnvironmentModel;
 import artery.envmod.LocalEnvironmentModel;
 import artery.inet.World;
 import artery.utility.IdentityRegistry;
-import artery.plugins.SimSocket;
+
 
 network World extends artery.inet.World
 {
@@ -29,8 +29,5 @@ network World extends artery.inet.World
         idRegistry: IdentityRegistry {
             parameters:
                 @display("p=180,20");
-        }
-        SimSocket: SimSocket{
-
         }
 }

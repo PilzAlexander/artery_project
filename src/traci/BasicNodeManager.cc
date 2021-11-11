@@ -282,27 +282,6 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
             ,traci.getLaneIndex(vehicleID)
             ,"\n");
 
-    //std::cout << "Acceleration msgPtr: " << msgPtr->getAcc() << endl;
-    /*SimMessage msgPtr(traci.getSpeed(vehicleID)
-            ,traci.getAcceleration(vehicleID)
-            ,traci.getAngle(vehicleID)
-            ,traci.getDistance(vehicleID)
-            ,traci.getHeight(vehicleID)
-            ,traci.getLength(vehicleID)
-            ,traci.getWidth(vehicleID)
-            ,traci.getLanePosition(vehicleID)
-            ,traci.getSignals(vehicleID)
-            ,traci.getPosition(vehicleID).x
-            ,traci.getPosition(vehicleID).y
-            ,traci.getPosition(vehicleID).z
-            ,traci.getDecel(vehicleID)
-            ,traci.getRoadID(vehicleID)
-            ,traci.getRouteIndex(vehicleID)
-            ,traci.getLaneID(vehicleID)
-            ,traci.getLaneIndex(vehicleID)
-            ,"\n");*/
-
-
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);
     if (sink) {
