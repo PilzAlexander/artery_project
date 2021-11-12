@@ -213,6 +213,7 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     //V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
     //****************************************
 
+
     // create class instance
     auto * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
             ,traci.getAcceleration(vehicleID)

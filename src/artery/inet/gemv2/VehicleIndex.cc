@@ -7,21 +7,16 @@
 #include "artery/inet/gemv2/VehicleIndex.h"
 #include "artery/inet/gemv2/Visualizer.h"
 #include "artery/traci/Cast.h"
-#include "traci/Core.h"
 #include "traci/BasicNodeManager.h"
 #include "traci/API.h"
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/register/linestring.hpp>
 #include <boost/geometry/strategies/transform/matrix_transformers.hpp>
-#include <boost/range/adaptor/indexed.hpp>
-#include <boost/range/adaptor/transformed.hpp>
 #include <boost/units/cmath.hpp>
 #include <inet/common/ModuleAccess.h>
 #include <omnetpp/checkandcast.h>
 #include <algorithm>
 #include <array>
-
-#include "artery/plugins/SimSocket.h"
 
 namespace { using LineOfSight = std::array<artery::Position, 2>; }
 BOOST_GEOMETRY_REGISTER_LINESTRING(LineOfSight)

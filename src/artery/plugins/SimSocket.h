@@ -53,7 +53,6 @@
 #include "artery/inet/gemv2/VehicleIndex.h"
 #include "artery/inet/gemv2/Visualizer.h"
 #include "artery/traci/Cast.h"
-//#include "traci/Core.h"
 #include "traci/BasicNodeManager.h"
 #include "traci/API.h"
 #include <boost/geometry.hpp>

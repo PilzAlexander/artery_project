@@ -19,35 +19,12 @@
 #include <utility>
 #include <zmq.hpp>
 #include "traci/CheckTimeSync.h"
-#include "artery/plugins/MessageContext.h"
 #include "traci/BasicNodeManager.h"
 #include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-#include <sstream>
-#include "traci/Angle.h"
-#include "traci/API.h"
-#include <boost/geometry/strategies/transform/matrix_transformers.hpp>
-#include <omnetpp/checkandcast.h>
 #include <algorithm>
 #include <array>
 #include <omnetpp/clistener.h>
 #include <omnetpp/csimplemodule.h>
-#include "artery/inet/gemv2/VehicleIndex.h"
-#include "artery/inet/gemv2/Visualizer.h"
-#include "artery/traci/Cast.h"
-#include "traci/BasicNodeManager.h"
-
-#include <boost/geometry.hpp>
-#include <boost/geometry/geometries/register/linestring.hpp>
-#include <boost/geometry/strategies/transform/matrix_transformers.hpp>
-#include <boost/range/adaptor/indexed.hpp>
-#include <boost/range/adaptor/transformed.hpp>
-#include <boost/units/cmath.hpp>
-#include <inet/common/ModuleAccess.h>
-#include <omnetpp/checkandcast.h>
-
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
@@ -59,7 +36,7 @@ namespace artery {
 Define_Module(SimSocket)
 
 // Define signal
-const simsignal_t SimSocket::dataStateChanged = cComponent::registerSignal("dataStateChanged");
+//const simsignal_t SimSocket::dataStateChanged = cComponent::registerSignal("dataStateChanged");
 
 void SimSocket::initialize() {
 
@@ -81,7 +58,8 @@ void SimSocket::initialize() {
     socketSim_ = zmq::socket_t(context_, zmq::socket_type::pub);
     bind(portName_);
 
-    /*auto * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
+    /*
+    auto * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
             ,traci.getAcceleration(vehicleID)
             ,traci.getAngle(vehicleID)
             ,traci.getDistance(vehicleID)
@@ -183,12 +161,17 @@ void SimSocket::publish() {
     //std::ofstream ofstream("/home/vagrant/Desktop/#testtesttest1#.txt");
     std::ostringstream archive_stream;
     boost::archive::text_oarchive archive(archive_stream);
+    SimTime sendingTime = simTime();
+    std::string sendingTime_str = sendingTime.str();
+
     archive << dataSim_;
+    archive << "sendingTime: ";
+    archive << sendingTime_str;
 
     std::string outbound_data = archive_stream.str();
     // create buffer size for message
     //zmq::message_t msgToSend(outbound_data.length());
-    zmq::message_t msgToSend("TEST Nachricht");
+    zmq::message_t msgToSend(outbound_data);
 
     //zmq::message_t msgToSend(sizeof(dataSim));
     // copy the data string into the message data
@@ -200,6 +183,7 @@ void SimSocket::publish() {
     }*/
 
     try {
+        std::cout << "MEssage: " << msgToSend << endl;
         //publish the data
         socketSim_.send(msgToSend, zmq::send_flags::none);
         // testausgabe

@@ -12,7 +12,6 @@
 #include "SimSocket.h"
 
 // Alexander Pilz
-#include <thread>
 #include <zmq.hpp>
 
 #include <boost/archive/text_oarchive.hpp>
@@ -22,12 +21,6 @@
 
 #include "traci/API.h"
 #include "traci/BasicNodeManager.h"
-#include "traci/CheckTimeSync.h"
-#include "traci/Core.h"
-#include "traci/ModuleMapper.h"
-#include "traci/PersonSink.h"
-#include "traci/VariableCache.h"
-#include "traci/VehicleSink.h"
 /********************************************************************************
  * Declarations
  ********************************************************************************/

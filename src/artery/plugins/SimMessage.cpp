@@ -11,11 +11,12 @@
 /********************************************************************************
  * Includes
  *********************************************************************************/
-
 #include "SimMessage.h"
 #include <utility>
 #include <string>
-
+/********************************************************************************
+ *
+ *********************************************************************************/
 SimMessage::SimMessage(double speed, double acc, double angle, double distance, double height, double length,
                        double width, double lanePos, int signals, double posX, double posY, double posZ, double decel,
                        std::string roadID, int roadIndex, std::string laneID, int laneIndex, const char *end)
