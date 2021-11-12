@@ -89,14 +89,14 @@ void SimSocket::finish() {
 SimSocket::SimSocket() {}
 
 // constructor with args
-SimSocket::SimSocket(SimSocket::PortName portName, SimSocket::DataSim dataSim, PortContext &context)
-        : portName_(std::move(portName)), dataSim_(&dataSim), socketSim_(context, zmq::socket_type::pub),
+/*SimSocket::SimSocket(SimSocket::PortName portName, SimSocket::DataSim dataSim, PortContext &context)
+        : portName_(std::move(portName)), dataSim_(*dataSim), socketSim_(context, zmq::socket_type::pub),
           subscriber_(context, zmq::socket_type::sub)
 {
     bind(portName_);
     // DEBUG
     cout << "Bound to port Address: " << portName_ << endl;
-}
+}*/
 
 // destructor
 SimSocket::~SimSocket() {
@@ -157,7 +157,7 @@ void SimSocket::publish() {
 
     //std::stringstream ss(std::ios_base::binary| std::ios_base::out| std::ios_base::in);
     //boost::archive::binary_oarchive oa(ss, boost::archive::no_header);
-
+    dataSim_ = VehicleData;
     //std::ofstream ofstream("/home/vagrant/Desktop/#testtesttest1#.txt");
     std::ostringstream archive_stream;
     boost::archive::text_oarchive archive(archive_stream);
@@ -167,6 +167,8 @@ void SimSocket::publish() {
     archive << dataSim_;
     archive << "sendingTime: ";
     archive << sendingTime_str;
+
+    cout << "Speed:" << dataSim_->getSpeed() << endl;
 
     std::string outbound_data = archive_stream.str();
     // create buffer size for message
@@ -227,6 +229,31 @@ void SimSocket::sendJSON(nlohmann::basic_json<> json) {
     }
 }
 
+void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
+
+    auto * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
+        ,traci.getAcceleration(vehicleID)
+        ,traci.getAngle(vehicleID)
+        ,traci.getDistance(vehicleID)
+        ,traci.getHeight(vehicleID)
+        ,traci.getLength(vehicleID)
+        ,traci.getWidth(vehicleID)
+        ,traci.getLanePosition(vehicleID)
+        ,traci.getSignals(vehicleID)
+        ,traci.getPosition(vehicleID).x
+        ,traci.getPosition(vehicleID).y
+        ,traci.getPosition(vehicleID).z
+        ,traci.getDecel(vehicleID)
+        ,traci.getRoadID(vehicleID)
+        ,traci.getRouteIndex(vehicleID)
+        ,traci.getLaneID(vehicleID)
+        ,traci.getLaneIndex(vehicleID)
+        ,"\n");
+
+    VehicleData = msgPtr;
+}
+
+
 //receive NodeUpdate Signal from BasicNodeManager
 void SimSocket::receiveSignal(cComponent*, simsignal_t signal, unsigned long, cObject*)
 {
@@ -267,6 +294,8 @@ const vector<SimSocket::PortName> &SimSocket::getBindings() const {
 const zmq::context_t &SimSocket::getContext() const {
     return context_;
 }
+
+
 
 }// namespace artery
 /********************************************************************************

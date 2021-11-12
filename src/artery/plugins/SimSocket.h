@@ -79,11 +79,14 @@ class VehicleSink;
 
 namespace artery {
 
+    inline SimMessage *VehicleData;
 
     //class SimSocket : public omnetpp::cSimpleModule, public omnetpp::cListener {
 
     class SimSocket : public traci::Listener, public omnetpp::cSimpleModule{
     public:
+
+
 
         // signals to define!!!!!!! see basicNodeManager
 
@@ -96,7 +99,7 @@ namespace artery {
         // constructors and deconstructor
         SimSocket();
 
-        SimSocket(PortName portName, DataSim dataSim, PortContext &context);
+        //SimSocket(PortName portName, DataSim dataSim, PortContext &context);
 
         ~SimSocket();
 
@@ -113,6 +116,8 @@ namespace artery {
 
         // send and receive functions
         void publish();
+
+        static void getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci);
 
         static void sendJSON(nlohmann::basic_json<> json);
 
@@ -141,8 +146,8 @@ namespace artery {
         traci::SubscriptionManager *subscriptions_{};
 
     private:
+        DataSim *dataSim_ ;
         PortName portName_;
-        DataSim *dataSim_{};
         zmq::socket_t socketSim_;
         zmq::socket_t subscriber_;
         zmq::context_t context_;

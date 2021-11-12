@@ -6,14 +6,11 @@
 #include "traci/PersonSink.h"
 #include "traci/VariableCache.h"
 #include "traci/VehicleSink.h"
-
-#include "artery/plugins/SimSocket.h"
 #include <inet/common/ModuleAccess.h>
 #include <string>
 #include <ostream>
-
 #include "artery/plugins/SimMessage.h"
-
+#include "artery/plugins/SimSocket.h"
 
 
 using namespace omnetpp;
@@ -213,26 +210,8 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     //V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
     //****************************************
 
-
-    // create class instance
-    auto * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
-            ,traci.getAcceleration(vehicleID)
-            ,traci.getAngle(vehicleID)
-            ,traci.getDistance(vehicleID)
-            ,traci.getHeight(vehicleID)
-            ,traci.getLength(vehicleID)
-            ,traci.getWidth(vehicleID)
-            ,traci.getLanePosition(vehicleID)
-            ,traci.getSignals(vehicleID)
-            ,traci.getPosition(vehicleID).x
-            ,traci.getPosition(vehicleID).y
-            ,traci.getPosition(vehicleID).z
-            ,traci.getDecel(vehicleID)
-            ,traci.getRoadID(vehicleID)
-            ,traci.getRouteIndex(vehicleID)
-            ,traci.getLaneID(vehicleID)
-            ,traci.getLaneIndex(vehicleID)
-            ,"\n");
+    // get vehicle data to send
+    artery::SimSocket::getVehicleData("flowNorthSouth.0", traci);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);
