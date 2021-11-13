@@ -170,6 +170,8 @@ void SimSocket::publish() {
 
     cout << "Speed:" << dataSim_->getSpeed() << endl;
 
+    std::cout << "SPEED: " << dataSim_->getSpeed() << endl;
+
     std::string outbound_data = archive_stream.str();
     // create buffer size for message
     //zmq::message_t msgToSend(outbound_data.length());
@@ -259,7 +261,6 @@ void SimSocket::receiveSignal(cComponent*, simsignal_t signal, unsigned long, cO
 {
     if (signal == traci::BasicNodeManager::updateSendStatus) {
         publish();
-        std::cout << "Zeit: " << simTime() << std::endl;
     }
 }
 
