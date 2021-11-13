@@ -91,6 +91,7 @@ target_link_libraries(core PUBLIC Vanetza::vanetza)
 target_link_libraries(core PUBLIC zmq)
 
 target_link_libraries(core PUBLIC boost_serialization)
+#target_link_libraries(core PUBLIC boost_variant)
 #target_link_libraries(core PUBLIC boost_archive)
 
 

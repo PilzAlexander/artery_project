@@ -21,6 +21,8 @@
 #include "traci/CheckTimeSync.h"
 #include "traci/BasicNodeManager.h"
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/variant.hpp>
 #include <algorithm>
 #include <array>
 #include <omnetpp/clistener.h>
@@ -37,7 +39,6 @@ Define_Module(SimSocket)
 
 // Define signal
 //const simsignal_t SimSocket::dataStateChanged = cComponent::registerSignal("dataStateChanged");
-
 void SimSocket::initialize() {
 
     //get traci from ModulePath
@@ -155,24 +156,14 @@ void SimSocket::unbind(const PortName &portName) {
 
 void SimSocket::publish() {
 
-    //std::stringstream ss(std::ios_base::binary| std::ios_base::out| std::ios_base::in);
-    //boost::archive::binary_oarchive oa(ss, boost::archive::no_header);
-    dataSim_ = VehicleData;
-    //std::ofstream ofstream("/home/vagrant/Desktop/#testtesttest1#.txt");
-    std::ostringstream archive_stream;
-    boost::archive::text_oarchive archive(archive_stream);
-    SimTime sendingTime = simTime();
-    std::string sendingTime_str = sendingTime.str();
+    //serialize map
+    std::ostringstream ss;
+    boost::archive::text_oarchive archive(ss);
+    archive << vehicleData;
 
-    archive << dataSim_;
-    archive << "sendingTime: ";
-    archive << sendingTime_str;
+    //std::string outbound_data = archive_stream.str();
+    std::string outbound_data = ss.str();
 
-    cout << "Speed:" << dataSim_->getSpeed() << endl;
-
-    std::cout << "SPEED: " << dataSim_->getSpeed() << endl;
-
-    std::string outbound_data = archive_stream.str();
     // create buffer size for message
     //zmq::message_t msgToSend(outbound_data.length());
     zmq::message_t msgToSend(outbound_data);
@@ -187,7 +178,7 @@ void SimSocket::publish() {
     }*/
 
     try {
-        std::cout << "MEssage: " << msgToSend << endl;
+        std::cout << "Message: " << msgToSend << endl;
         //publish the data
         socketSim_.send(msgToSend, zmq::send_flags::none);
         // testausgabe
@@ -233,6 +224,34 @@ void SimSocket::sendJSON(nlohmann::basic_json<> json) {
 
 void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
 
+    DataMap map; // = new DataMap();
+
+    SimTime sendingTime = simTime();
+    std::string sendingTime_str = sendingTime.str();
+
+    map.insert(std::pair<std::string, std::string>("origin", "Origin"));
+    map.insert(std::pair<std::string, std::string>("current", sendingTime_str));
+    map.insert(std::pair<std::string, double>("Speed", traci.getSpeed(vehicleID)));
+    map.insert(std::pair<std::string, double>("Acceleration", traci.getAcceleration(vehicleID)));
+    map.insert(std::pair<std::string, double>("Angle", traci.getAngle(vehicleID)));
+    map.insert(std::pair<std::string, double>("Distance", traci.getDistance(vehicleID)));
+    map.insert(std::pair<std::string, double>("Height", traci.getHeight(vehicleID)));
+    map.insert(std::pair<std::string, double>("Length", traci.getLength(vehicleID)));
+    map.insert(std::pair<std::string, double>("Width", traci.getWidth(vehicleID)));
+    map.insert(std::pair<std::string, double>("LanePosition", traci.getLanePosition(vehicleID)));
+    map.insert(std::pair<std::string, int>("Signals", traci.getSignals(vehicleID)));
+    map.insert(std::pair<std::string, double>("Position_X-Coordinate", traci.getPosition(vehicleID).x));
+    map.insert(std::pair<std::string, double>("Position_Y-Coordinate", traci.getPosition(vehicleID).y));
+    map.insert(std::pair<std::string, double>("Position_Z-Coordinate", traci.getPosition(vehicleID).z));
+    map.insert(std::pair<std::string, double>("Decel", traci.getDecel(vehicleID)));
+    map.insert(std::pair<std::string, std::string>("RoadID", traci.getRoadID(vehicleID)));
+    map.insert(std::pair<std::string, double>("RouteIndex", traci.getRouteIndex(vehicleID)));
+    map.insert(std::pair<std::string, std::string>("LaneID", traci.getLaneID(vehicleID)));
+    map.insert(std::pair<std::string, double>("LaneIndex", traci.getLaneIndex(vehicleID)));
+
+    vehicleData = map;
+
+    /*
     auto * msgPtr = new SimMessage(traci.getSpeed(vehicleID)
         ,traci.getAcceleration(vehicleID)
         ,traci.getAngle(vehicleID)
@@ -251,8 +270,8 @@ void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope tra
         ,traci.getLaneID(vehicleID)
         ,traci.getLaneIndex(vehicleID)
         ,"\n");
-
-    VehicleData = msgPtr;
+*/
+    //VehicleData = msgPtr;*/
 }
 
 
@@ -295,8 +314,6 @@ const vector<SimSocket::PortName> &SimSocket::getBindings() const {
 const zmq::context_t &SimSocket::getContext() const {
     return context_;
 }
-
-
 
 }// namespace artery
 /********************************************************************************

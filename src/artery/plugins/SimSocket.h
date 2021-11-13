@@ -21,6 +21,7 @@
 #include "json.hpp"
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
+#include <boost/variant/variant.hpp>
 #include "artery/plugins/SimMessage.h"
 
 // testzeug
@@ -79,14 +80,13 @@ class VehicleSink;
 
 namespace artery {
 
-    inline SimMessage *VehicleData;
+    //inline SimMessage *VehicleData;
+    inline std::map <std::string, boost::variant<int, double, std::string>> vehicleData;
 
     //class SimSocket : public omnetpp::cSimpleModule, public omnetpp::cListener {
 
     class SimSocket : public traci::Listener, public omnetpp::cSimpleModule{
     public:
-
-
 
         // signals to define!!!!!!! see basicNodeManager
 
@@ -94,6 +94,7 @@ namespace artery {
         using PortContext = zmq::context_t; // context
         //using DataSim = std::string; // data to send
         using DataSim = SimMessage;
+        using DataMap = std::map <std::string, boost::variant<int, double, std::string>>;
         static const omnetpp::simsignal_t dataStateChanged;
 
         // constructors and deconstructor
@@ -147,6 +148,7 @@ namespace artery {
 
     private:
         DataSim *dataSim_ ;
+        DataMap dataMap_;
         PortName portName_;
         zmq::socket_t socketSim_;
         zmq::socket_t subscriber_;
