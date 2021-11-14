@@ -18,6 +18,7 @@
 #include <iostream>
 #include <utility>
 #include <zmq.hpp>
+#include <thread>
 #include "traci/CheckTimeSync.h"
 #include "traci/BasicNodeManager.h"
 #include <boost/archive/text_oarchive.hpp>
@@ -51,10 +52,11 @@ void SimSocket::initialize() {
     // set up zmq socket and stuff
     context_ = zmq::context_t(1);
     portName_ = "tcp://*:7777";
-    subPortName_ = "tcp://*:7778";
+    subPortName_ = "tcp://localhost:7778";
     publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
     subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
-    subscriberSocket_.bind(subPortName_); // TODO anderer Port als publisher
+    subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+    subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
     bind(portName_);
 
 }
@@ -134,7 +136,7 @@ void SimSocket::publish() {
     zmq::message_t msgToSend(outbound_data);
 
     try {
-        std::cout << "Message: " << msgToSend << endl;
+     //   std::cout << "Message: " << msgToSend << endl;
         publisherSocket_.send(msgToSend, zmq::send_flags::none);
 
     } catch (zmq::error_t cantSend) {
@@ -146,33 +148,53 @@ void SimSocket::publish() {
 // subscribe to incoming data
 void SimSocket::subscribe() {
 
-    zmq::message_t msgToReceive;
+    zmq::message_t reply;
 
     try {
         std::cout << "Receiving... " << endl;
-        subscriberSocket_.recv(&msgToReceive);
+        subscriberSocket_.recv(&reply);
 
     } catch (zmq::error_t cantReceive) {
         cerr << "Socket can't receive: " << cantReceive.what() << endl;
         // TODO unbind
     }
 
-    const char *buf = static_cast<const char*>(msgToReceive.data());
-    std::cout << "CHAR [" << buf << "]" << std::endl;
+        const char *buf = static_cast<const char*>(reply.data());
+            std::cout << "CHAR [" << buf << "]" << std::endl;
 
-    std::string input_data_( buf, msgToReceive.size() );
-    std::istringstream archive_stream(input_data_);
-    boost::archive::text_iarchive archive(archive_stream);
+            std::string input_data_( buf, reply.size() );
+            std::istringstream archive_stream(input_data_);
+            boost::archive::text_iarchive archive(archive_stream);
 
-    try
-    {
-        archive >> inputDataMap;
-    } catch (boost::archive::archive_exception& ex) {
-        std::cout << "Archive Exception during deserializing:" << std::endl;
-        std::cout << ex.what() << std::endl;
-    } catch (int e) {
-        std::cout << "EXCEPTION " << e << std::endl;
-    }
+            std::map<std::string , boost::variant<int, double, std::string>> receiveMap;
+            // With time  not working
+       // std::map<std::string , boost::variant<int, double, std::string, std::time_t>> simEventMap;
+
+            try
+            {
+                archive >> receiveMap;
+            } catch (boost::archive::archive_exception& ex) {
+                std::cout << "Archive Exception during deserializing:" << std::endl;
+                std::cout << ex.what() << std::endl;
+            } catch (int e) {
+                std::cout << "EXCEPTION " << e << std::endl;
+            }
+
+
+            std::vector<std::string> keyVektor;
+            std::vector<boost::variant<int, double, std::string>> valueVektor;
+            for (auto const& element: receiveMap) {
+                keyVektor.push_back(element.first);
+                valueVektor.push_back(element.second);
+                std::string keyAsString = element.first;
+
+                auto valueAsAny =   element.second;
+                std::stringstream stringStreamValue ;
+                stringStreamValue <<  valueAsAny;
+                std::cout << "Key: " << element.first << std::endl;
+                std::cout << "value: " << stringStreamValue.str() << std::endl;
+
+            }
 }
 
 // call in basic node manager to get data and write to a global map
@@ -238,6 +260,7 @@ void SimSocket::receiveSignal(cComponent*, simsignal_t signal, unsigned long, cO
     if (signal == traci::BasicNodeManager::updateSendStatus) {
         //getVehicleData("flowNorthSouth.1");
         publish();
+        subscribe();
     }
 }
 
