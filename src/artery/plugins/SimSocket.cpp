@@ -8,13 +8,12 @@
   \version  1.0.0
   \date     31.10.2021
  ********************************************************************************/
-
-
 /********************************************************************************
  * Includes
  *********************************************************************************/
-
 #include "SimSocket.h"
+#include <omnetpp/clistener.h>
+#include <omnetpp/csimplemodule.h>
 #include <iostream>
 #include <utility>
 #include <zmq.hpp>
@@ -24,10 +23,12 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/variant.hpp>
+
 #include <algorithm>
 #include <array>
-#include <omnetpp/clistener.h>
-#include <omnetpp/csimplemodule.h>
+#include <iostream>
+#include <utility>
+#include <zmq.hpp>
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
@@ -58,14 +59,12 @@ void SimSocket::initialize() {
     subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
     subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
     bind(portName_);
-
 }
 
 void SimSocket::finish() {
     unbind(portName_);
     cSimpleModule::finish();
 }
-
 
 // constructor without args
 SimSocket::SimSocket() {}
@@ -136,7 +135,7 @@ void SimSocket::publish() {
     zmq::message_t msgToSend(outbound_data);
 
     try {
-     //   std::cout << "Message: " << msgToSend << endl;
+        std::cout << "Message: " << msgToSend << endl;
         publisherSocket_.send(msgToSend, zmq::send_flags::none);
 
     } catch (zmq::error_t cantSend) {
@@ -263,11 +262,9 @@ void SimSocket::receiveSignal(cComponent*, simsignal_t signal, unsigned long, cO
         subscribe();
     }
 }
-
 /********************************************************************************
  * Getter and Setter
  ********************************************************************************/
-
 const SimSocket::PortName &SimSocket::getPortName() const {
     return portName_;
 }
@@ -291,7 +288,6 @@ const vector<SimSocket::PortName> &SimSocket::getBindings() const {
 const zmq::context_t &SimSocket::getContext() const {
     return context_;
 }
-
 
 }// namespace artery
 /********************************************************************************

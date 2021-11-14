@@ -4,23 +4,20 @@
 #include "artery/traci/Cast.h"
 #include "V2XConnection.h"
 #include "inet/common/INETMath.h"
-#include <iostream>
-#include <map>
-#include <string>
-#include <string_view>
-#include "json.hpp"
-#include "SimSocket.h"
-
-// Alexander Pilz
-#include <zmq.hpp>
-
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
-
 #include "traci/API.h"
 #include "traci/BasicNodeManager.h"
+#include "json.hpp"
+#include "SimSocket.h"
+
+#include <zmq.hpp>
+#include <iostream>
+#include <map>
+#include <string>
+#include <string_view>
 /********************************************************************************
  * Declarations
  ********************************************************************************/
@@ -250,26 +247,11 @@ void V2XConnection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleScope tr
     jsonNode["3DPos Y-Coordiante"] = traci.getPosition3D(vehicleID).y;
     jsonNode["3DPos Z-Coordiante"] = traci.getPosition3D(vehicleID).z;
 
-    //j["PersonCapacity"] = traci.getPersonCapacity(vehicleID);
-    //j["BestLane"] = traci.getBestLanes(vehicleID);
-
-    //if(simTime() > 30){
-        //j["Follower (5m)"] = traci.getFollower(vehicleID, 5);
-        //j["Follower (10m)"] = traci.getFollower(vehicleID, 10.0);
-        //j["Follower (25m)"] = traci.getFollower(vehicleID, 25.0);
-        //j["Follower (50m)"] = traci.getFollower(vehicleID, 50.0);
-    //}
-
     //Converts JSON Object to JSON file
     ConvertToJSONFile(jsonNode);
-
-    //std::thread sendThread(SimSocket::sendJSON, jsonNode);
-   // sendThread.detach();
-
 }
 
 void V2XConnection::writeToMap(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci) {
-
     //Check if file is already open
     //if not -> open the file
     if (!myfile.is_open()){
@@ -296,11 +278,6 @@ void V2XConnection::writeToMap(std::string path, std::string vehicleID, TraCIAPI
     data["3DPos_X-Coordiante"] = traci.getPosition3D(vehicleID).x;
     data["3DPos_Y-Coordiante"] = traci.getPosition3D(vehicleID).y;
     data["3DPos_Z-Coordiante"] = traci.getPosition3D(vehicleID).z;
-    //data["Route"] = traci.getRoute(vehicleID);
-    //data["Leader"] = traci.getLeader(vehicleID, 10.0);
-    //data["LaneChangeState"] = traci.getLaneChangeState(vehicleID, 1);
-    //data["LaneID"] = traci.getLaneID(vehicleID);
-    //data["RoadID"] = traci.getRoadID(vehicleID);
 
     //transform data from map into .txt file
     myfile << "Speed: " << data["Speed"] << "\n";
