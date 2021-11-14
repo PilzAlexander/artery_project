@@ -95,6 +95,7 @@ protected:
 
     std::shared_ptr<API> m_api;
     SubscriptionManager* m_subscriptions{};
+
 private:
     ModuleMapper* m_mapper{};
     Boundary m_boundary;

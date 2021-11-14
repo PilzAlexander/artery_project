@@ -73,90 +73,65 @@
 namespace traci { class API; }
 
 //class API;
-class ModuleMapper;
-class PersonSink;
 class VehicleCache;
-class VehicleSink;
 
 namespace artery {
 
-    //inline SimMessage *VehicleData;
-    inline std::map <std::string, boost::variant<int, double, std::string>> vehicleData;
-
-    //class SimSocket : public omnetpp::cSimpleModule, public omnetpp::cListener {
+    inline std::map <std::string, boost::variant<int, double, std::string>> vehicleDataMap;
+    inline std::map <std::string, boost::variant<int, double, std::string>> tmpVehicleDataMap;
+    inline std::map <std::string, boost::variant<int, double, std::string>> inputDataMap;
 
     class SimSocket : public traci::Listener, public omnetpp::cSimpleModule{
     public:
 
-        // signals to define!!!!!!! see basicNodeManager
-
         using PortName = std::string; // port address
         using PortContext = zmq::context_t; // context
-        //using DataSim = std::string; // data to send
-        using DataSim = SimMessage;
         using DataMap = std::map <std::string, boost::variant<int, double, std::string>>;
         static const omnetpp::simsignal_t dataStateChanged;
 
-        // constructors and deconstructor
+        // constructor and deconstructor
         SimSocket();
-
-        //SimSocket(PortName portName, DataSim dataSim, PortContext &context);
-
         ~SimSocket();
 
         // socket functions
         void close();
-
         void connect(const PortName &portName);
-
         void disconnect(const PortName &portName);
-
         void bind(const PortName &portName);
-
         void unbind(const PortName &portName);
 
         // send and receive functions
         void publish();
-
+        void subscribe();
+        // get the vehicle data for the map to send
         static void getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci);
 
-        static void sendJSON(nlohmann::basic_json<> json);
+        //static void setVehicleData(TraCIAPI::VehicleScope traci, DataMap map);
 
         // getter
         const PortName &getPortName() const;
-
-        const DataSim &getDataSim() const;
-
         const zmq::socket_t &getSocketSim() const;
-
         const zmq::message_t &getNullMessage() const;
-
         const std::vector<SimSocket::PortName> &getConnections() const;
-
         const std::vector<SimSocket::PortName> &getBindings() const;
-
         const zmq::context_t &getContext() const;
-
         traci::SubscriptionManager *getSubscriptions() { return subscriptions_; }
 
     protected:
         void initialize() override;
-
         void finish() override;
-
+        std::shared_ptr<traci::API> api_;
         traci::SubscriptionManager *subscriptions_{};
 
     private:
-        DataSim *dataSim_ ;
-        DataMap dataMap_;
         PortName portName_;
-        zmq::socket_t socketSim_;
-        zmq::socket_t subscriber_;
+        PortName subPortName_;
+        zmq::socket_t publisherSocket_;
+        zmq::socket_t subscriberSocket_;
         zmq::context_t context_;
         zmq::message_t nullMessage_;
         std::vector<PortName> connections_;
         std::vector<PortName> bindings_;
-        //static const simsignal_t dataStateChanged;
 
     void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *);
     };

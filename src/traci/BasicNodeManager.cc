@@ -15,8 +15,6 @@
 
 using namespace omnetpp;
 
-int counter = 0;
-
 namespace traci
 {
 
@@ -205,10 +203,6 @@ void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
     //****************************************
     auto& vehicleID = vehicle->getId();
     auto& traci = m_api->vehicle;
-    auto path = "/home/vagrant/Desktop/fork_repo/Test_JSON.txt";
-
-    //V2XConnection::writeToMap(path, "flowNorthSouth.0", traci);
-    //****************************************
 
     // get vehicle data to send
     artery::SimSocket::getVehicleData("flowNorthSouth.0", traci);
