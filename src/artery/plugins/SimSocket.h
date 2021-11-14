@@ -3,28 +3,22 @@
   \file     SimSocket.h
   \brief    Provides the class for setting up a socket to send data from the simulation to the interface component
   \author   Alexander Pilz
+  \author   Johannes Winter
   \author   Fabian Genes
   \version  1.0.0
   \date     31.10.2021
  ********************************************************************************/
-
 #ifndef ARTERY_SIMSOCKET_H
 #define ARTERY_SIMSOCKET_H
-
 /********************************************************************************
  * Includes
  *********************************************************************************/
-
-#include <zmq.hpp>
 #include "zmq_addon.hpp"
-#include <iostream>
 #include "json.hpp"
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/variant/variant.hpp>
 #include "artery/plugins/SimMessage.h"
-
-// testzeug
 #include "traci/Angle.h"
 #include "traci/Boundary.h"
 #include "traci/NodeManager.h"
@@ -32,25 +26,6 @@
 #include "traci/Position.h"
 #include "traci/SubscriptionManager.h"
 #include <omnetpp/ccomponent.h>
-#include <omnetpp/csimplemodule.h>
-#include <functional>
-#include <map>
-#include <memory>
-#include <string>
-#include <iostream>
-#include <bitset>
-
-#include "artery/utility/Geometry.h"
-#include "traci/Angle.h"
-#include "traci/Boundary.h"
-#include "traci/Position.h"
-#include <boost/geometry/index/rtree.hpp>
-#include <omnetpp/clistener.h>
-#include <omnetpp/csimplemodule.h>
-#include <functional>
-#include <set>
-#include <vector>
-
 #include "artery/inet/gemv2/VehicleIndex.h"
 #include "artery/inet/gemv2/Visualizer.h"
 #include "artery/traci/Cast.h"
@@ -64,6 +39,21 @@
 #include <boost/units/cmath.hpp>
 #include <inet/common/ModuleAccess.h>
 #include <omnetpp/checkandcast.h>
+#include "artery/utility/Geometry.h"
+#include <boost/geometry/index/rtree.hpp>
+#include <omnetpp/clistener.h>
+#include <omnetpp/csimplemodule.h>
+
+#include <iostream>
+#include <functional>
+#include <map>
+#include <memory>
+#include <string>
+#include <iostream>
+#include <bitset>
+#include <zmq.hpp>
+#include <set>
+#include <vector>
 #include <algorithm>
 #include <array>
 /********************************************************************************
@@ -138,7 +128,6 @@ namespace artery {
 
 }//namespace artery
 #endif //ARTERY_SIMSOCKET_H
-
 /********************************************************************************
  * EOF
  ********************************************************************************/
