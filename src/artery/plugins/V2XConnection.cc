@@ -11,7 +11,6 @@
 #include "traci/API.h"
 #include "traci/BasicNodeManager.h"
 #include "json.hpp"
-#include "SimSocket.h"
 
 #include <zmq.hpp>
 #include <iostream>
@@ -23,12 +22,9 @@
  ********************************************************************************/
 // for convenience
 using json = nlohmann::json;
-
 static std::ofstream myfile;
-
 static std::map<std::string, double> data;
 static std::map<std::string, double> tmp_data;
-
 const std::string filename = "emp.dat";
 /******************************************************************************** */
 //BOOST_IS_BITWISE_SERIALIZABLE(A)
@@ -76,14 +72,8 @@ void serialize(Archive &ar, V2XConnection &a, const unsigned int version) {
 void save(std::map<std::string, double> data) {
     std::ofstream dataStream_txt{"/home/vagrant/Desktop/fork_repo/#Text#.txt"};
     std::ofstream dataStream_bin{"/home/vagrant/Desktop/fork_repo/#Bin#.txt"};
-
     boost::archive::text_oarchive oa_txt{dataStream_txt};
     boost::archive::binary_oarchive oa_bin{dataStream_bin};
-
-    /*
-    V2XConnection a{25, 12, 232,13,243,45,6745,23,
-                    4354.4,232,23.34,2.3434,232.2,0.076,345.4,45,
-                    34,45,23,34.554, "\n"};*/
 
     V2XConnection a{data["Speed"],data["Acceleration"],data["Angle"],data["Distance"],data["Height"],data["Length"],data["Width"],
                     data["LanePosition"],data["Signals"],data["Position_X-Coordinate"],data["Position_Y-Coordinate"],

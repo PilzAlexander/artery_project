@@ -6,23 +6,17 @@
   \version  1.0.0
   \date     04.11.2021
  ********************************************************************************/
-
 #ifndef ARTERY_MESSAGECONTEXT_H
 #define ARTERY_MESSAGECONTEXT_H
-
 /********************************************************************************
  * Includes
  *********************************************************************************/
-
 #include <zmq.hpp>
 #include <unordered_map>
 #include <iostream>
-
-
 /********************************************************************************
  * Class declaration
  ********************************************************************************/
-
 class MessageContext
         {
         public:
@@ -34,8 +28,6 @@ class MessageContext
         private:
             std::unordered_map<ContextName,zmq::context_t*> contextMap_;
 };
-
-
 
 #endif //ARTERY_MESSAGECONTEXT_H
 
