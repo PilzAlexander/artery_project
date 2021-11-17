@@ -23,8 +23,8 @@ set(SOURCES
     ../artery/plugins/V2XConnection.cc
     ../artery/plugins/SimSocket.cpp
     ../artery/plugins/MessageContext.cpp
-    ../artery/plugins/SimMessage.cpp
-        )
+        DutNodeManager.cpp
+        DutModuleMapper.cpp)
 
 add_library(traci SHARED ${SOURCES})
 target_include_directories(traci PUBLIC

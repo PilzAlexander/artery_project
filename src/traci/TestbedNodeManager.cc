@@ -1,7 +1,6 @@
 #include <thread>
 #include "TestbedNodeManager.h"
 #include "omnetpp.h"
-
 #include "iostream"
 
 using namespace omnetpp;

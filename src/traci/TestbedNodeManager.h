@@ -2,7 +2,6 @@
 #define SRC_TRACI_TESTBEDNODEMANAGER_H_
 
 #include "traci/BasicNodeManager.h"
-#include "artery/plugins/V2XConnection.h"
 #include <string>
 
 namespace traci

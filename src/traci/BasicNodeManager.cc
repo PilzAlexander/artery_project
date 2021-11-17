@@ -9,7 +9,6 @@
 #include <inet/common/ModuleAccess.h>
 #include <string>
 #include <ostream>
-#include "artery/plugins/SimMessage.h"
 #include "artery/plugins/SimSocket.h"
 
 

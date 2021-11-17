@@ -1,9 +1,9 @@
-package artery.testbed;
+package artery.plugins;
 
 import artery.inet.World;
 import artery.plugins.SimSocket;
 
-network TestbedWorld extends World
+network DutWorld extends World
 {
     submodules:
         otaInterface: <default("OtaInterfaceStub")> like OtaInterface {
@@ -11,6 +11,6 @@ network TestbedWorld extends World
                 @display("p=70,40");
         }
         SimSocket: SimSocket{
-           traciModule_2 = default("traci");
-       }
+            traciModule_2 = default("traci");
+        }
 }

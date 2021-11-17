@@ -13,12 +13,10 @@
 /********************************************************************************
  * Includes
  *********************************************************************************/
-#include "zmq_addon.hpp"
 #include "json.hpp"
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/variant/variant.hpp>
-#include "artery/plugins/SimMessage.h"
 #include "traci/Angle.h"
 #include "traci/Boundary.h"
 #include "traci/NodeManager.h"

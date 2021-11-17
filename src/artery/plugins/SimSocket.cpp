@@ -8,6 +8,7 @@
   \version  1.0.0
   \date     31.10.2021
  ********************************************************************************/
+
 /********************************************************************************
  * Includes
  *********************************************************************************/
@@ -17,13 +18,13 @@
 #include "traci/CheckTimeSync.h"
 #include "traci/BasicNodeManager.h"
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/variant.hpp>
 
 #include <iostream>
 #include <utility>
 #include <zmq.hpp>
-#include <thread>
 #include <algorithm>
 #include <array>
 /********************************************************************************
@@ -115,7 +116,6 @@ void SimSocket::unbind(const PortName &portName) {
         return;
     }
 
-    publisherSocket_.disconnect(portName_);
     connections_.erase(bindingIterator);
     publisherSocket_.unbind(portName_);
 }
