@@ -10,7 +10,7 @@ import artery.envmod.GlobalEnvironmentModel;
 import artery.envmod.LocalEnvironmentModel;
 import artery.inet.World;
 import artery.utility.IdentityRegistry;
-import artery.plugins.SimSocket;
+import artery.plugins.DutWorld;
 import artery.testbed.TestbedWorld;
 
 network World extends artery.inet.World
@@ -25,11 +25,6 @@ network World extends artery.inet.World
                 identityRegistryModule = default("idRegistry");
                 traciModule = default("traci");
                 nodeMobilityModule = default(".mobility");
-        }
-
-        plugin: SimSocket {
-            parameters:
-                traciModule_2 = default("traci");
         }
 
         idRegistry: IdentityRegistry {

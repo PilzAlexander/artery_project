@@ -45,6 +45,7 @@ void VehicleIndex::initialize()
         traci->subscribe(traci::BasicNodeManager::addVehicleSignal, this);
         traci->subscribe(traci::BasicNodeManager::updateVehicleSignal, this);
         traci->subscribe(traci::BasicNodeManager::removeVehicleSignal, this);
+        // TODO auch noch entfernen????
         traci->subscribe(traci::BasicNodeManager::updateSendStatus, this);
     } else {
         throw cRuntimeError("No TraCI module found for signal subscription");

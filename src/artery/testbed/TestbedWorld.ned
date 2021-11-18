@@ -1,7 +1,6 @@
 package artery.testbed;
 
 import artery.inet.World;
-import artery.plugins.SimSocket;
 
 network TestbedWorld extends World
 {
@@ -10,7 +9,4 @@ network TestbedWorld extends World
             parameters:
                 @display("p=70,40");
         }
-        SimSocket: SimSocket{
-           traciModule_2 = default("traci");
-       }
 }

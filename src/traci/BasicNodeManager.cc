@@ -9,8 +9,6 @@
 #include <inet/common/ModuleAccess.h>
 #include <string>
 #include <ostream>
-#include "artery/plugins/SimSocket.h"
-
 
 using namespace omnetpp;
 
@@ -72,7 +70,6 @@ const simsignal_t BasicNodeManager::removePersonSignal = cComponent::registerSig
 const simsignal_t BasicNodeManager::addVehicleSignal = cComponent::registerSignal("traci.vehicle.add");
 const simsignal_t BasicNodeManager::updateVehicleSignal = cComponent::registerSignal("traci.vehicle.update");
 const simsignal_t BasicNodeManager::removeVehicleSignal = cComponent::registerSignal("traci.vehicle.remove");
-const simsignal_t BasicNodeManager::updateSendStatus = cComponent::registerSignal("traci.send.update");
 
 void BasicNodeManager::initialize()
 {
@@ -199,12 +196,6 @@ void BasicNodeManager::removeVehicle(const std::string& id)
 void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
 {
     auto vehicle = m_subscriptions->getVehicleCache(id);
-    //****************************************
-    auto& vehicleID = vehicle->getId();
-    auto& traci = m_api->vehicle;
-
-    // get vehicle data to send
-    artery::SimSocket::getVehicleData("flowNorthSouth.0", traci);
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);

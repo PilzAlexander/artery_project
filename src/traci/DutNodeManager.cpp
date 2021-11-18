@@ -25,6 +25,8 @@ namespace traci {
 
     Define_Module(DutNodeManager)
 
+    const simsignal_t BasicNodeManager::updateSendStatus = cComponent::registerSignal("traci.send.update");
+
     void DutNodeManager::initialize() {
         m_twinId = par("twinId").stringValue();
         m_twinName = par("twinName").stringValue();
@@ -32,6 +34,14 @@ namespace traci {
         std::cout << "DUT ID: " << m_twinId << std::endl;
 
         BasicNodeManager::initialize();
+
+        // kopie aus dem basicnodemanager aus der update vehicle
+        //auto& vehicleID = vehicle->getId();
+        //auto& traci = m_api->vehicle;
+
+        // get vehicle data to send
+        //artery::SimSocket::getVehicleData("flowNorthSouth.0", traci);
+
     }
 
     cModule *DutNodeManager::createModule(const std::string &id, omnetpp::cModuleType *type) {
@@ -42,6 +52,11 @@ namespace traci {
             return BasicNodeManager::createModule(id, type);
         }
     }
+
+
+
+
+
 
 }// namespace traci
 
