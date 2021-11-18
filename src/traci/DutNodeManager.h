@@ -24,14 +24,20 @@
 
 namespace traci
 {
+    class API;
+    class ModuleMapper;
+    class PersonSink;
+    class VehicleCache;
+    class VehicleSink;
 
-    class DutNodeManager : public BasicNodeManager
+class DutNodeManager : public BasicNodeManager
     {
     public:
         void initialize() override;
 
     protected:
         virtual omnetpp::cModule* createModule(const std::string&, omnetpp::cModuleType*) override;
+        virtual void updateVehicle(const std::string&, VehicleSink*) override;
 
     private:
         std::string m_twinId;

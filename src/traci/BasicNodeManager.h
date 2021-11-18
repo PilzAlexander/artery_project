@@ -1,7 +1,6 @@
 #ifndef BASICNODEMANAGER_H_XL6ISC2V
 #define BASICNODEMANAGER_H_XL6ISC2V
 
-
 #include "traci/Angle.h"
 #include "traci/Boundary.h"
 #include "traci/NodeManager.h"

@@ -10,8 +10,6 @@ import artery.envmod.GlobalEnvironmentModel;
 import artery.envmod.LocalEnvironmentModel;
 import artery.inet.World;
 import artery.utility.IdentityRegistry;
-import artery.plugins.DutWorld;
-import artery.testbed.TestbedWorld;
 
 network World extends artery.inet.World
 {
