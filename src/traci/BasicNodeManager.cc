@@ -125,7 +125,6 @@ void BasicNodeManager::traciStep()
         processPersons();
     }
     emit(updateNodeSignal, getNumberOfNodes());
-    emit(updateSendStatus, getNumberOfNodes());
 }
 
 void BasicNodeManager::traciClose()

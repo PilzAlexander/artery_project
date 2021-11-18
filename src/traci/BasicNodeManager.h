@@ -37,7 +37,6 @@ public:
     static const omnetpp::simsignal_t addVehicleSignal;
     static const omnetpp::simsignal_t updateVehicleSignal;
     static const omnetpp::simsignal_t removeVehicleSignal;
-    static const omnetpp::simsignal_t updateSendStatus;
 
     std::shared_ptr<API> getAPI() override { return m_api; }
     SubscriptionManager* getSubscriptions() { return m_subscriptions; }

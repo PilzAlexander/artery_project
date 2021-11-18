@@ -39,11 +39,11 @@ namespace artery {
 void SimSocket::initialize() {
 
     //get traci from ModulePath
-    cModule* traci = getModuleByPath(par("traciModule_2"));
+    cModule* traci = getModuleByPath(par("traciModule"));
 
     //Subscribe signal to actual Traci
     if (traci) {
-        traci->subscribe(traci::BasicNodeManager::updateSendStatus, this);
+        traci->subscribe(traci::BasicNodeManager::updateNodeSignal, this);
     } else {
         throw cRuntimeError("No TraCI module found for signal subscription");
     }
@@ -246,7 +246,7 @@ void SimSocket::setVehicleData(TraCIAPI::VehicleScope traci, DataMap map) {
 //receive NodeUpdate Signal from BasicNodeManager
 void SimSocket::receiveSignal(cComponent*, simsignal_t signal, unsigned long, cObject*)
 {
-    if (signal == traci::BasicNodeManager::updateSendStatus) {
+    if (signal == traci::BasicNodeManager::updateNodeSignal) {
         publish();
         subscribe();
     }

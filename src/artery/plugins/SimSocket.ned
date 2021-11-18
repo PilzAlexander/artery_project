@@ -4,5 +4,6 @@ module SimSocket
 {
     parameters:
                 @class(SimSocket);
-                string traciModule_2;
+                string traciModule = default("^.traci");
+
 }

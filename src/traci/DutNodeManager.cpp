@@ -25,8 +25,6 @@ namespace traci {
 
     Define_Module(DutNodeManager)
 
-    const simsignal_t BasicNodeManager::updateSendStatus = cComponent::registerSignal("traci.send.update");
-
     void DutNodeManager::initialize() {
         m_twinId = par("twinId").stringValue();
         m_twinName = par("twinName").stringValue();
@@ -34,6 +32,8 @@ namespace traci {
         std::cout << "DUT ID: " << m_twinId << std::endl;
 
         BasicNodeManager::initialize();
+
+
 
         // kopie aus dem basicnodemanager aus der update vehicle
         //auto& vehicleID = vehicle->getId();

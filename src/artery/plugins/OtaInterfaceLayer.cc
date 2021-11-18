@@ -41,6 +41,8 @@ void OtaInterfaceLayer::finish()
 
 void OtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
 {
+
+    EV_DEBUG << "OtaInterfaceLayerMessage########################################" << message << std::endl;
     if (message->getArrivalGate() == mRadioDriverIn) {
         auto packet = check_and_cast<GeoNetPacket*>(message);
         auto info = check_and_cast<GeoNetIndication*>(message->removeControlInfo());

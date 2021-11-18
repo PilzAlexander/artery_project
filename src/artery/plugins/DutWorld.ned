@@ -10,7 +10,5 @@ network DutWorld extends World
             parameters:
                 @display("p=70,40");
         }
-        SimSocket: SimSocket{
-            traciModule_2 = default("traci");
-        }
+        SimSocket: SimSocket{}
 }
