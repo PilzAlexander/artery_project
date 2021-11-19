@@ -142,8 +142,8 @@ void SimSocket::unbind(const PortName &portName) {
 // publish data
 void SimSocket::publish() {
 
-    std::cout << "Speed Data: " << vehicleDataMap["Speed"] << endl;
-    std::cout << "Speed Data: " << vehicleDynamicsMap["Speed Dynamics"] << endl;
+    //std::cout << "Speed Data: " << vehicleDataMap["Speed"] << endl;
+    //std::cout << "Speed Data: " << vehicleDynamicsMap["Speed Dynamics"] << endl;
 
     //serialize map
     std::ostringstream ss;
@@ -254,7 +254,33 @@ void SimSocket::getVehicleDynamics(VehicleKinematics dynamics){
     map.insert(std::pair<std::string, double>("PosX Dynamics", dynamics.position.x.value()));
     map.insert(std::pair<std::string, double>("PoY Dynamics", dynamics.position.y.value()));
 
+    for(const auto& elem : map)
+    {
+        std::cout << elem.first << " " << elem.second << " " << "\n";
+    }
+
     vehicleDynamicsMap = map;
+}
+
+void SimSocket::getEvent(omnetpp::cEvent* event){
+    std::map <std::string, std::string> dataMap;
+
+    /*
+    std::cout << "*****************************" << std::endl;
+    std::cout << "EVENT:    " << event << std::endl;
+    std::cout << "String:    " << event->str() << std::endl;
+    std::cout << "Name:    " << event->getName() << std::endl;
+    std::cout << "Target:    " << event->getTargetObject() << std::endl;
+    std::cout << "Target String:    " << event->getTargetObject()->str() << std::endl;
+    std::cout << "Owner:    " << event->getOwner() << std::endl;
+    std::cout << "Owner String:    " << event->getOwner()->str() << std::endl;
+    std::cout << "Descriptor:    " << event->getDescriptor() << std::endl;
+    std::cout << "Descriptor String:    " << event->getDescriptor()->str() << std::endl;
+    std::cout << "ArrivalTime:    " << event->getArrivalTime() << std::endl;
+    std::cout << "PreviousEventNumber:    " << event->getPreviousEventNumber() << std::endl;
+    std::cout << "NamePooling:    " << event->getNamePooling() << std::endl;
+    std::cout << "*****************************" << std::endl;
+     */
 }
 
 /*

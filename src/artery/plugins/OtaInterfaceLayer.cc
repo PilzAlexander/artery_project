@@ -41,8 +41,7 @@ void OtaInterfaceLayer::finish()
 
 void OtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
 {
-
-    EV_DEBUG << "OtaInterfaceLayerMessage########################################" << message << std::endl;
+    EV_DEBUG << "OtaInterfaceLayerMessage ########################################" << message << std::endl;
     if (message->getArrivalGate() == mRadioDriverIn) {
         auto packet = check_and_cast<GeoNetPacket*>(message);
         auto info = check_and_cast<GeoNetIndication*>(message->removeControlInfo());
@@ -50,9 +49,16 @@ void OtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
             using namespace vanetza;
             auto range = create_byte_view(packet->getPayload(), OsiLayer::Network, OsiLayer::Application);
             mOtaModule->sendMessage(info->source, info->destination, range);
+
+            /*
+            std::cout << "*****************************" << std::endl;
+            std::cout <<"INFO : " << info << std::endl;
+            std::cout <<"PACKET : " << packet << std::endl;
+            std::cout <<"MESSAGE : " << message->str() << std::endl;
+            std::cout <<"MESSAGE SendingTime : " << message->getSendingTime() << std::endl;
+*/
         }
     }
-
     delete message;
 }
 

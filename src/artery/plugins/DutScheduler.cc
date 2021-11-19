@@ -5,6 +5,7 @@
 #include <omnetpp/cfutureeventset.h>
 #include <omnetpp/regmacros.h>
 #include <omnetpp/ccomponent.h>
+#include "SimSocket.h"
 #include <fstream>
 #include "omnetpp.h"
 #include <thread>
@@ -24,7 +25,6 @@ void DutScheduler::startRun()
     mThresholdTooSlow = std::chrono::milliseconds(config->getAsInt(CFG_SIMULATION_TOO_SLOW));
     mStartupTime = config->getAsDouble(CFG_STARTUP_TIME);
     mBaseTime = std::chrono::system_clock::now();
-
 }
 
 void DutScheduler::executionResumed()
@@ -62,14 +62,13 @@ omnetpp::cEvent* DutScheduler::takeNextEvent()
     cEvent* next = sim->getFES()->removeFirst();
     ASSERT(!next->isStale());
 
-    //std::cout << "********************************" << std::endl;
-    //std::cout << "NEXT: " << next->getTargetObject()->str() << std::endl;
-
     return next;
 }
 
 void DutScheduler::doTiming(omnetpp::cEvent* event)
 {
+    SimSocket::getEvent(event);
+
     using namespace std::chrono;
     auto arrival = mBaseTime + microseconds(event->getArrivalTime().inUnit(omnetpp::SIMTIME_US));
     auto waitFor = arrival - system_clock::now();
