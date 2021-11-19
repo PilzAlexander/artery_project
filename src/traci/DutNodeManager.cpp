@@ -94,8 +94,6 @@ void DutNodeManager::updateVehicle(const std::string & id, VehicleSink * sink)
     // kopie aus dem basicnodemanager aus der update vehicle
     auto& traci = m_api->vehicle;
 
-    std::cout << "DUT ID: " << id << std::endl;
-
     // get vehicle data to send
     artery::SimSocket::getVehicleData("flowNorthSouth.0", traci);
 

@@ -36,7 +36,6 @@ namespace {
     const bg::de9im::mask cutting("T**FF****");
 }
 
-
 void VehicleIndex::initialize()
 {
     cModule* traci = getModuleByPath(par("traciModule"));
@@ -52,7 +51,6 @@ void VehicleIndex::initialize()
     mVisualizer = inet::findModuleFromPar<Visualizer>(par("visualizerModule"), this, false);
     mVehicleMargin = std::abs(par("vehicleMargin").doubleValue());
 }
-
 
 void VehicleIndex::receiveSignal(cComponent* source, simsignal_t signal, unsigned long, cObject* obj)
 {

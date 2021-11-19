@@ -31,6 +31,10 @@
 #include <random>
 #include <stdexcept>
 
+//************
+#include "artery/plugins/SimSocket.h"
+//************
+
 namespace artery
 {
 
@@ -129,16 +133,8 @@ void VehicleDataProvider::update(const VehicleKinematics& dynamics)
 	using namespace vanetza::units::si;
 	using boost::units::isnan;
 
-    //std::cout << "**************************************" << "\n";
-    //std::cout << "Speed: " << dynamics.speed.value() << "\n";
-    //std::cout << "Yaw Rate: " << dynamics.yaw_rate.value() << "\n";
-    //std::cout << "Acc: " << dynamics.acceleration.value() << "\n";
-    //std::cout << "Heading: " << dynamics.heading.value() << "\n";
-    //std::cout << "Latitude: " << dynamics.geo_position.latitude.value() << "\n";
-    //std::cout << "Longitude: " << dynamics.geo_position.longitude.value() << "\n";
-    //std::cout << "PosX: " << dynamics.position.x.value() << "\n";
-    //std::cout << "PosY: " << dynamics.position.y.value() << "\n";
-    //std::cout << "**************************************" << "\n";
+    //get data for dut
+    SimSocket::getVehicleDynamics(dynamics);
 
 	const vanetza::units::Duration delta {
 		(simTime() - mLastUpdate).inUnit(SIMTIME_MS) * boost::units::si::milli * seconds

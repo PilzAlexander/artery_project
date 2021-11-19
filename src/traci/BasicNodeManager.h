@@ -111,4 +111,3 @@ private:
 } // namespace traci
 
 #endif /* BASICNODEMANAGER_H_XL6ISC2V */
-

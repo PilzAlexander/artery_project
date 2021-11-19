@@ -22,11 +22,30 @@
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/variant.hpp>
 
+#include "artery/application/VehicleDataProvider.h"
+#include "artery/traci/VehicleController.h"
+#include "artery/application/VehicleKinematics.h"
+
 #include <iostream>
 #include <utility>
 #include <zmq.hpp>
 #include <algorithm>
 #include <array>
+
+
+//***********************
+#include "artery/networking/GeoNetIndication.h"
+#include "artery/networking/GeoNetPacket.h"
+#include "artery/nic/RadioDriverBase.h"
+#include "artery/plugins/OtaInterfaceLayer.h"
+#include "artery/plugins/OtaInterface.h"
+#include "artery/plugins/DutRadio.h"
+#include "artery/traci/ControllableVehicle.h"
+#include "artery/traci/VehicleController.h"
+#include <inet/common/ModuleAccess.h>
+#include <vanetza/net/packet_variant.hpp>
+#include <inet/physicallayer/contract/packetlevel/IRadio.h>
+//****************
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
@@ -123,16 +142,20 @@ void SimSocket::unbind(const PortName &portName) {
 // publish data
 void SimSocket::publish() {
 
+    std::cout << "Speed Data: " << vehicleDataMap["Speed"] << endl;
+    std::cout << "Speed Data: " << vehicleDynamicsMap["Speed Dynamics"] << endl;
+
     //serialize map
     std::ostringstream ss;
     boost::archive::text_oarchive archive(ss);
     archive << vehicleDataMap;
+    archive << vehicleDynamicsMap;
     std::string outbound_data = ss.str();
     // create buffer size for message
     zmq::message_t msgToSend(outbound_data);
 
     try {
-        std::cout << "Message: " << msgToSend << endl;
+        //std::cout << "Message: " << msgToSend << endl;
         publisherSocket_.send(msgToSend, zmq::send_flags::none);
 
     } catch (zmq::error_t cantSend) {
@@ -190,6 +213,7 @@ void SimSocket::subscribe() {
 void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
 
     DataMap map;
+    //VehicleKinematics dynamics = getKinematics(mVehicleController(traci));
 
     SimTime sendingTime = simTime();
     std::string sendingTime_str = sendingTime.str();
@@ -217,6 +241,22 @@ void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope tra
 
     vehicleDataMap = map;
 }
+
+void SimSocket::getVehicleDynamics(VehicleKinematics dynamics){
+    DataMap map;
+
+    map.insert(std::pair<std::string, double>("Speed Dynamics", dynamics.speed.value()));
+    map.insert(std::pair<std::string, double>("Yaw Rate Dynamics", dynamics.yaw_rate.value()));
+    map.insert(std::pair<std::string, double>("Acceleration Dynamics", dynamics.acceleration.value()));
+    map.insert(std::pair<std::string, double>("Heading Dynamics", dynamics.heading.value()));
+    map.insert(std::pair<std::string, double>("Latitude Dynamics", dynamics.geo_position.latitude.value()));
+    map.insert(std::pair<std::string, double>("Longitude Dynamics", dynamics.geo_position.longitude.value()));
+    map.insert(std::pair<std::string, double>("PosX Dynamics", dynamics.position.x.value()));
+    map.insert(std::pair<std::string, double>("PoY Dynamics", dynamics.position.y.value()));
+
+    vehicleDynamicsMap = map;
+}
+
 /*
 void SimSocket::setVehicleData(TraCIAPI::VehicleScope traci, DataMap map) {
 

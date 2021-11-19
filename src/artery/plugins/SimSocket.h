@@ -41,6 +41,7 @@
 #include <boost/geometry/index/rtree.hpp>
 #include <omnetpp/clistener.h>
 #include <omnetpp/csimplemodule.h>
+#include "artery/application/VehicleKinematics.h"
 
 #include <iostream>
 #include <functional>
@@ -58,7 +59,7 @@
  * Class declaration
  ********************************************************************************/
 // forward declaration
-namespace traci { class API; }
+namespace traci { class API;}
 
 //class API;
 class VehicleCache;
@@ -66,6 +67,7 @@ class VehicleCache;
 namespace artery {
 
     inline std::map <std::string, boost::variant<int, double, std::string>> vehicleDataMap;
+    inline std::map <std::string, boost::variant<int, double, std::string>> vehicleDynamicsMap;
     inline std::map <std::string, boost::variant<int, double, std::string>> tmpVehicleDataMap;
     inline std::map <std::string, boost::variant<int, double, std::string>> inputDataMap;
 
@@ -93,6 +95,7 @@ namespace artery {
         void subscribe();
         // get the vehicle data for the map to send
         static void getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci);
+        static void getVehicleDynamics(VehicleKinematics dynamics);
 
         //static void setVehicleData(TraCIAPI::VehicleScope traci, DataMap map);
 
