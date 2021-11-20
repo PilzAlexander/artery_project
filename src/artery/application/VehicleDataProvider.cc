@@ -104,8 +104,6 @@ void VehicleDataProvider::calculateCurvature()
 			}
 		}
 	}
-
-    //std::cout << "Curvature: " << mCurvature.value() << "\n";
 }
 
 void VehicleDataProvider::calculateCurvatureConfidence()
@@ -129,12 +127,9 @@ void VehicleDataProvider::calculateCurvatureConfidence()
 
 void VehicleDataProvider::update(const VehicleKinematics& dynamics)
 {
-	using namespace omnetpp;
+  	using namespace omnetpp;
 	using namespace vanetza::units::si;
 	using boost::units::isnan;
-
-    //get data for dut
-    SimSocket::getVehicleDynamics(dynamics);
 
 	const vanetza::units::Duration delta {
 		(simTime() - mLastUpdate).inUnit(SIMTIME_MS) * boost::units::si::milli * seconds
@@ -157,7 +152,6 @@ void VehicleDataProvider::update(const VehicleKinematics& dynamics)
 				diff_heading += 2.0 * pi * radians;
 			}
 			 mVehicleKinematics.yaw_rate = diff_heading / delta;
-            //std::cout << "YAW RATE: " << mVehicleKinematics.yaw_rate.value() << std::endl;
 		}
 	} else if (delta < 0.0 * seconds) {
 		// initialization
@@ -169,17 +163,16 @@ void VehicleDataProvider::update(const VehicleKinematics& dynamics)
 		if (isnan(mVehicleKinematics.yaw_rate)) {
 			mVehicleKinematics.yaw_rate = vanetza::units::AngularVelocity::from_value(0.0);
 		}
-        //std::cout << "YAW RATE: " << mVehicleKinematics.yaw_rate.value() << std::endl;
 	} else {
 		// update has been called for this time step already before
 		return;
 	}
-
-    //std::cout << "YAW RATE: " << mVehicleKinematics.yaw_rate.value() << std::endl;
-
 	mLastUpdate = simTime();
 	calculateCurvature();
 	calculateCurvatureConfidence();
+
+    //get data for dut
+    SimSocket::getVehicleDynamics(mVehicleKinematics);
 }
 
 double VehicleDataProvider::mapOntoConfidence(AngularAcceleration x) const

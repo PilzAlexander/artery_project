@@ -11,16 +11,16 @@
 /********************************************************************************
  * Includes
  *********************************************************************************/
-
 #ifndef ARTERY_DUTNODEMANAGER_H
 #define ARTERY_DUTNODEMANAGER_H
-
 /********************************************************************************
  * Class declarations
  ********************************************************************************/
 
 #include "traci/BasicNodeManager.h"
 #include <string>
+
+#include "artery/application/VehicleDataProvider.h"
 
 namespace traci
 {
@@ -29,6 +29,8 @@ namespace traci
     class PersonSink;
     class VehicleCache;
     class VehicleSink;
+
+    class Vehicle;
 
 class DutNodeManager : public BasicNodeManager
     {
@@ -42,6 +44,8 @@ class DutNodeManager : public BasicNodeManager
     private:
         std::string m_twinId;
         std::string m_twinName;
+
+        const traci::VehicleController* mVehicleController = nullptr;
     };
 
 } /* namespace traci */

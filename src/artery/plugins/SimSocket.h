@@ -68,6 +68,7 @@ namespace artery {
 
     inline std::map <std::string, boost::variant<int, double, std::string>> vehicleDataMap;
     inline std::map <std::string, boost::variant<int, double, std::string>> vehicleDynamicsMap;
+    inline std::map <std::string, boost::variant<int, double, std::string>> EventMap;
     inline std::map <std::string, boost::variant<int, double, std::string>> tmpVehicleDataMap;
     inline std::map <std::string, boost::variant<int, double, std::string>> inputDataMap;
 
@@ -124,6 +125,8 @@ namespace artery {
         zmq::message_t nullMessage_;
         std::vector<PortName> connections_;
         std::vector<PortName> bindings_;
+
+        const traci::VehicleController* mVehicleController;
 
     void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *);
     };

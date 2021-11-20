@@ -13,6 +13,10 @@ VehicleKinematics::VehicleKinematics() :
 
 VehicleKinematics getKinematics(const traci::VehicleController& controller)
 {
+    std::cout << "ID: " << controller.getVehicleId() << std::endl;
+    //std::cout << "Speed: " << controller.getSpeed().value() << std::endl;
+    //std::cout << "***********************************" << std::endl;
+
     artery::VehicleKinematics kinematics;
     kinematics.position = controller.getPosition();
     kinematics.geo_position = controller.getGeoPosition();

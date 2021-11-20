@@ -16,10 +16,8 @@
 #include "omnetpp.h"
 #include "iostream"
 #include "traci/Angle.h"
-#include "traci/Listener.h"
 #include "traci/Position.h"
 #include "traci/SubscriptionManager.h"
-#include <omnetpp/csimplemodule.h>
 #include <memory>
 #include <string>
 #include "traci/ModuleMapper.h"
@@ -28,10 +26,16 @@
 #include "traci/VehicleSink.h"
 #include <ostream>
 
+
+#include "artery/traci/VehicleController.h"
+#include "artery/application/StationType.h"
+#include "artery/storyboard/Vehicle.h"
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
 using namespace omnetpp;
+using namespace vanetza;
+
 
 namespace traci {
 
@@ -70,16 +74,15 @@ void DutNodeManager::initialize()
 {
     m_twinId = par("twinId").stringValue();
     m_twinName = par("twinName").stringValue();
-
     std::cout << "m_twinId: " << m_twinId << std::endl;
     std::cout << "m_twinName: " << m_twinName << std::endl;
+
     BasicNodeManager::initialize();
 }
 
 cModule *DutNodeManager::createModule(const std::string &id, omnetpp::cModuleType *type)
 {
     if (id == m_twinId) {
-
         return type->create(m_twinName.c_str(), getSystemModule());
 
     } else {
@@ -97,6 +100,11 @@ void DutNodeManager::updateVehicle(const std::string & id, VehicleSink * sink)
     // get vehicle data to send
     artery::SimSocket::getVehicleData("flowNorthSouth.0", traci);
 
+    /*
+    if(simTime() > 1){
+        artery::SimSocket::getVehicleData("flowNorthSouth.1", traci);
+    }*/
+
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);
     if (sink) {
@@ -107,7 +115,6 @@ void DutNodeManager::updateVehicle(const std::string & id, VehicleSink * sink)
 }
 
 }// namespace traci
-
 /********************************************************************************
  * EOF
  ********************************************************************************/
