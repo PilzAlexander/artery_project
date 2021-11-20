@@ -265,22 +265,36 @@ void SimSocket::getVehicleDynamics(VehicleKinematics dynamics){
 
     //TODO NaN-Werte nicht senden
 
-    map.insert(std::pair<std::string, double>("SpeedDynamics", dynamics.speed.value()));
-    map.insert(std::pair<std::string, double>("YawRateDynamics", dynamics.yaw_rate.value()));
-    map.insert(std::pair<std::string, double>("AccelerationDynamics", dynamics.acceleration.value()));
-    map.insert(std::pair<std::string, double>("HeadingDynamics", dynamics.heading.value()));
-    map.insert(std::pair<std::string, double>("LatitudeDynamics", dynamics.geo_position.latitude.value()));
-    map.insert(std::pair<std::string, double>("LongitudeDynamics", dynamics.geo_position.longitude.value()));
-    map.insert(std::pair<std::string, double>("PosXDynamics", dynamics.position.x.value()));
-    map.insert(std::pair<std::string, double>("PoYDynamics", dynamics.position.y.value()));
+    if(!isnan(dynamics.speed.value())){
+        map.insert(std::pair<std::string, double>("SpeedDynamics", dynamics.speed.value()));
+    }
+    if(!isnan(dynamics.yaw_rate.value())){
+        map.insert(std::pair<std::string, double>("YawRateDynamics", dynamics.yaw_rate.value()));
+    }
+    if(!isnan(dynamics.acceleration.value())){
+        map.insert(std::pair<std::string, double>("AccelerationDynamics", dynamics.acceleration.value()));
+    }
+    if(!isnan(dynamics.heading.value())){
+        map.insert(std::pair<std::string, double>("HeadingDynamics", dynamics.heading.value()));
+    }
+    if(!isnan(dynamics.geo_position.latitude.value())){
+        map.insert(std::pair<std::string, double>("LatitudeDynamics", dynamics.geo_position.latitude.value()));
+    }
+    if(!isnan(dynamics.geo_position.longitude.value())){
+        map.insert(std::pair<std::string, double>("LongitudeDynamics", dynamics.geo_position.longitude.value()));
+    }
+    if(!isnan(dynamics.position.x.value())){
+        map.insert(std::pair<std::string, double>("PosXDynamics", dynamics.position.x.value()));
+    }
+    if(!isnan(dynamics.position.y.value())){
+        map.insert(std::pair<std::string, double>("PoYDynamics", dynamics.position.y.value()));
+    }
 
-/*
     for(const auto& elem : map)
     {
         std::cout << elem.first << " " << elem.second << " " << "\n";
     }
     std::cout << "*****************************************************" << endl;
-*/
 
     vehicleDynamicsMap = map;
 }
