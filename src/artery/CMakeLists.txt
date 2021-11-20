@@ -1,4 +1,4 @@
-add_library(artery INTERFACE plugins/DutKinematics.cpp plugins/DutKinematics.h)
+add_library(artery INTERFACE)
 add_library(core SHARED
     StaticNodeManager.cc
     application/CaObject.cc
@@ -73,9 +73,6 @@ add_library(core SHARED
 target_link_libraries(artery INTERFACE core)
 add_library(Artery::Core ALIAS core)
 
-
-
-
 generate_opp_message(utility/AsioData.msg TARGET core)
 
 set_target_properties(core PROPERTIES
@@ -89,11 +86,7 @@ target_link_libraries(core PUBLIC OmnetPP::envir)
 target_link_libraries(core PUBLIC traci)
 target_link_libraries(core PUBLIC Vanetza::vanetza)
 target_link_libraries(core PUBLIC zmq)
-
 target_link_libraries(core PUBLIC boost_serialization)
-#target_link_libraries(core PUBLIC boost_variant)
-#target_link_libraries(core PUBLIC boost_archive)
-
 
 if(TARGET veins)
     message(STATUS "Enable Veins integration")

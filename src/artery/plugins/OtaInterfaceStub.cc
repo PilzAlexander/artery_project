@@ -3,6 +3,8 @@
 #include "artery/plugins/DutScheduler.h"
 #include "SimSocket.h"
 
+#include <zmq.hpp>
+
 namespace artery
 {
 
@@ -30,7 +32,16 @@ void OtaInterfaceStub::unregisterModule()
 
 void OtaInterfaceStub::sendMessage(const vanetza::MacAddress&, const vanetza::MacAddress&, const vanetza::byte_view_range&)
 {
-    //publishSimMsg();
+    /*
+    try {
+        //std::cout << "Message: " << msgToSend << endl;
+        publisherSocket_.send(vanetza::byte_view_range, zmq::send_flags::none);
+
+    } catch (zmq::error_t cantSend) {
+        cerr << "Socket can't send: " << cantSend.what() << endl;
+        unbind("tcp://*:7777");
+    }
+     */
 }
 
 void OtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket>)

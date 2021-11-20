@@ -24,16 +24,14 @@
 #include "artery/application/VehicleDataProvider.h"
 #include "artery/traci/VehicleController.h"
 #include "artery/application/VehicleKinematics.h"
+#include "artery/application/Middleware.h"
+#include "artery/application/StationType.h"
 
 #include <iostream>
 #include <utility>
 #include <zmq.hpp>
 #include <algorithm>
 #include <array>
-
-//***********************
-#include "artery/application/Middleware.h"
-#include "artery/application/StationType.h"
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
@@ -205,10 +203,6 @@ void SimSocket::subscribe() {
 // call in basic node manager to get data and write to a global map
 void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
     DataMap map;
-
-    //mVehicleController(traci);
-
-        //DutKinematics test = getDutKinematics(traci);
 
     SimTime sendingTime = simTime();
     std::string sendingTime_str = sendingTime.str();

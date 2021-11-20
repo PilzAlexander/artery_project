@@ -19,7 +19,7 @@ namespace artery
  * It implements all necessary methods, mos of them doing nothing.
  * It can be used to compile the testbed without any external library available (like the S.E.A. API required by the OtaInterfaceUsrp).
  */
-class OtaInterfaceStub : public OtaInterface, public omnetpp::cSimpleModule
+class OtaInterfaceStub : public OtaInterface, public omnetpp::cSimpleModule //, public SimSocket
 {
 public:
     void initialize() override;
