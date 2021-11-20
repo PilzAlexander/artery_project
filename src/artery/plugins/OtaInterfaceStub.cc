@@ -1,6 +1,7 @@
 #include "artery/plugins/OtaInterfaceStub.h"
 #include "artery/plugins/OtaIndicationQueue.h"
 #include "artery/plugins/DutScheduler.h"
+#include "SimSocket.h"
 
 namespace artery
 {
@@ -29,7 +30,7 @@ void OtaInterfaceStub::unregisterModule()
 
 void OtaInterfaceStub::sendMessage(const vanetza::MacAddress&, const vanetza::MacAddress&, const vanetza::byte_view_range&)
 {
-    //nothing to do here, as no hardware is connected
+    //publishSimMsg();
 }
 
 void OtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket>)

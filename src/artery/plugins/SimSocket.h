@@ -93,11 +93,13 @@ namespace artery {
 
         // send and receive functions
         void publish();
+        void publishSimMsg();
         void subscribe();
+
         // get the vehicle data for the map to send
         static void getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci);
         static void getVehicleDynamics(VehicleKinematics dynamics);
-        static void getEvent(omnetpp::cEvent* event);
+        //static void getEvent(omnetpp::cEvent* event);
 
         //static void setVehicleData(TraCIAPI::VehicleScope traci, DataMap map);
 

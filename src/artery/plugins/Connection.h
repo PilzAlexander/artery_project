@@ -1,13 +1,13 @@
 /********************************************************************************
   \project  INFM_HIL_Interface
-  \file     V2XConnection.h
+  \file     Connection.h
   \brief    Provides the class for collecting the live data from the node
   \author   Johannes Winter
   \version  1.0.0
   \date     18.10.2021
  ********************************************************************************/
-#ifndef ARTERY_V2XCONNECTION_H
-#define ARTERY_V2XCONNECTION_H
+#ifndef ARTERY_CONNECTION_H
+#define ARTERY_CONNECTION_H
 /********************************************************************************
  * Includes
  *********************************************************************************/
@@ -19,13 +19,13 @@
 /********************************************************************************
  * Class declaration
  ********************************************************************************/
-class V2XConnection {
+class Connection {
 public:
-    ~V2XConnection();
-    V2XConnection();
-    V2XConnection(double speed, double acc, double angle, double distance, double height, double length,
-                  double width, double lanePos, double signals, double posX, double posY, double posZ, double decel,
-                  double roadID, double roadIndex, double laneID, double laneIndex/*, double pos3DX, double pos3DY, double pos3DZ*/, std::string end) :
+    ~Connection();
+    Connection();
+    Connection(double speed, double acc, double angle, double distance, double height, double length,
+               double width, double lanePos, double signals, double posX, double posY, double posZ, double decel,
+               double roadID, double roadIndex, double laneID, double laneIndex/*, double pos3DX, double pos3DY, double pos3DZ*/, std::string end) :
                   speed_{speed}, acc_{acc}, angle_{angle}, distance_{distance}, height_{height}, length_{length},
                   width_{width}, lanePos_{lanePos}, signals_{signals}, posX_{posX}, posY_{posY}, posZ_{posZ}, decel_{decel},
                   roadID_{roadID}, roadIndex_{roadIndex}, laneID_{laneID}, laneIndex_{laneIndex}
@@ -68,7 +68,7 @@ private:
     friend class boost::serialization::access;
 
     template <typename Archive>
-    friend void serialize(Archive &ar, V2XConnection &a, const unsigned int version);
+    friend void serialize(Archive &ar, Connection &a, const unsigned int version);
 
     double speed_;
     double acc_;
@@ -93,6 +93,6 @@ private:
     double pos3DZ_;*/
 };
 
-#endif /* ARTERY_V2XCONNECTION_H */
+#endif /* ARTERY_CONNECTION_H */
 
 //EOF

@@ -13,7 +13,7 @@ VehicleKinematics::VehicleKinematics() :
 
 VehicleKinematics getKinematics(const traci::VehicleController& controller)
 {
-    std::cout << "ID: " << controller.getVehicleId() << std::endl;
+    //std::cout << "ID: " << controller.getVehicleId() << std::endl;
     //std::cout << "Speed: " << controller.getSpeed().value() << std::endl;
     //std::cout << "***********************************" << std::endl;
 

@@ -15,7 +15,7 @@
 #include <memory>
 
 #include "traci/BasicNodeManager.h"
-#include "artery/plugins/V2XConnection.h"
+#include "artery/plugins/Connection.h"
 #include <string>
 
 namespace artery

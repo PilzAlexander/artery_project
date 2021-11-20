@@ -51,8 +51,15 @@ void OtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
             using namespace vanetza;
             auto range = create_byte_view(packet->getPayload(), OsiLayer::Network, OsiLayer::Application);
             mOtaModule->sendMessage(info->source, info->destination, range);
+            //std::cout << "SOURCE " << info->source << std::endl;
+            //std::cout << "DEST " << info->destination << std::endl;
+            //std::cout << "DATA " << range.data() << std::endl;
         }
     }
+
+    std::cout << "MESSAGE ARRIVAL TIME: " << message->getArrivalTime() << std::endl;
+    std::cout << "******************************************" << std::endl;
+
     delete message;
 }
 

@@ -21,7 +21,6 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/variant.hpp>
-
 #include "artery/application/VehicleDataProvider.h"
 #include "artery/traci/VehicleController.h"
 #include "artery/application/VehicleKinematics.h"
@@ -33,28 +32,13 @@
 #include <array>
 
 //***********************
-#include "artery/nic/RadioDriverBase.h"
 #include "artery/application/Middleware.h"
 #include "artery/application/StationType.h"
-
-#include "artery/plugins/OtaInterfaceLayer.h"
-
-#include "artery/traci/VehicleController.h"
-#include <vanetza/btp/data_request.hpp>
-#include <vanetza/dcc/profile.hpp>
-#include <vanetza/geonet/interface.hpp>
-
-#include "DutKinematics.h"
-#include "artery/application/VehicleDataProvider.h"
-#include "artery/envmod/GlobalEnvironmentModel.h"
-//****************
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
 using namespace std;
 using namespace omnetpp;
-
-using namespace vanetza;
 
 namespace artery {
 
@@ -68,13 +52,9 @@ void SimSocket::initialize() {
     //Subscribe signal to actual Traci
     if (traci) {
         traci->subscribe(traci::BasicNodeManager::updateNodeSignal, this);
-        //auto mobility = inet::getModuleFromPar<ControllableVehicle>(par("mobilityModule"), this);
-        //mVehicleController = mobility->getVehicleController();
     } else {
         throw cRuntimeError("No TraCI module found for signal subscription");
     }
-
-    //mVehicleController = &getFacilities().get_const<traci::VehicleController>();
 
     // set up zmq socket and stuff
     context_ = zmq::context_t(1);
@@ -172,6 +152,10 @@ void SimSocket::publish() {
         unbind(portName_);
     }
 }
+
+void SimSocket::publishSimMsg(){
+
+    }
 
 // subscribe to incoming data
 void SimSocket::subscribe() {
@@ -290,15 +274,17 @@ void SimSocket::getVehicleDynamics(VehicleKinematics dynamics){
         map.insert(std::pair<std::string, double>("PoYDynamics", dynamics.position.y.value()));
     }
 
+    /*
     for(const auto& elem : map)
     {
         std::cout << elem.first << " " << elem.second << " " << "\n";
     }
     std::cout << "*****************************************************" << endl;
-
+*/
     vehicleDynamicsMap = map;
 }
 
+/*
 void SimSocket::getEvent(omnetpp::cEvent* event){
     DataMap map;
 
@@ -313,12 +299,13 @@ void SimSocket::getEvent(omnetpp::cEvent* event){
 
     EventMap = map;
 
+    /*
     for(const auto& elem : map)
     {
         std::cout << elem.first << " " << elem.second << " " << "\n";
     }
     std::cout << "*****************************************************" << endl;
-
+*/
 
     /*
     std::cout << "*****************************" << std::endl;
@@ -329,7 +316,7 @@ void SimSocket::getEvent(omnetpp::cEvent* event){
     std::cout << "Descriptor:    " << event->getDescriptor() << std::endl;
     std::cout << "*****************************" << std::endl;
 */
-}
+//}
 
 /*
 void SimSocket::setVehicleData(TraCIAPI::VehicleScope traci, DataMap map) {

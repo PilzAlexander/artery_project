@@ -2,7 +2,7 @@
  * Includes
  *********************************************************************************/
 #include "artery/traci/Cast.h"
-#include "V2XConnection.h"
+#include "Connection.h"
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
@@ -31,14 +31,14 @@ const std::string filename = "emp.dat";
  * Program Code
  ********************************************************************************/
 // Constructor without args
-V2XConnection::V2XConnection(){
+Connection::Connection(){
 };
 
 // Deconstructor
-V2XConnection::~V2XConnection() = default;
+Connection::~Connection() = default;
 
 template<typename Archive>
-void serialize(Archive &ar, V2XConnection &a, const unsigned int version) {
+void serialize(Archive &ar, Connection &a, const unsigned int version) {
     ar & a.speed_;
     ar & a.acc_;
     ar & a.angle_;
@@ -74,10 +74,10 @@ void save(std::map<std::string, double> data) {
     boost::archive::text_oarchive oa_txt{dataStream_txt};
     boost::archive::binary_oarchive oa_bin{dataStream_bin};
 
-    V2XConnection a{data["Speed"],data["Acceleration"],data["Angle"],data["Distance"],data["Height"],data["Length"],data["Width"],
-                    data["LanePosition"],data["Signals"],data["Position_X-Coordinate"],data["Position_Y-Coordinate"],
-                    data["Position_Z-Coordinate"],data["Decel"],data["RoadID"],data["RouteIndex"],data["LaneID"],data["LaneIndex"],
-                    "\n"};
+    Connection a{data["Speed"], data["Acceleration"], data["Angle"], data["Distance"], data["Height"], data["Length"], data["Width"],
+                 data["LanePosition"], data["Signals"], data["Position_X-Coordinate"], data["Position_Y-Coordinate"],
+                 data["Position_Z-Coordinate"], data["Decel"], data["RoadID"], data["RouteIndex"], data["LaneID"], data["LaneIndex"],
+                 "\n"};
 
     oa_txt << a;
     oa_bin << a;
@@ -91,7 +91,7 @@ void load() {
     boost::archive::text_iarchive ia_txt(in_dataStream_txt);
     boost::archive::binary_iarchive ia_bin(in_dataStream_bin);
 
-    V2XConnection a;
+    Connection a;
     //ia_txt >> a;
     ia_bin >> a;
 
@@ -124,14 +124,14 @@ void load() {
 }
 
 //Close txt File
-void V2XConnection::closeFile(const std::string path) {
+void Connection::closeFile(const std::string path) {
     //std::cout << "Close Path \n";
     //std::cout << path << "\n";
     myfile.close();
 }
 
 //Create txt File and initialize map
-void V2XConnection::openFile(const std::string path) {
+void Connection::openFile(const std::string path) {
     //open txt file
     myfile.open(path);
 
@@ -162,7 +162,7 @@ void V2XConnection::openFile(const std::string path) {
     tmp_data["3DPos Z-Coordiante"] = 0;*/
 }
 
-void V2XConnection::initializeMap(){
+void Connection::initializeMap(){
     //Initialize Map
     data["Speed"] = 0;
     data["Acceleration"] =  0;
@@ -189,7 +189,7 @@ void V2XConnection::initializeMap(){
     data["3DPos_Z-Coordiante"] = 0;
 }
 
-void V2XConnection::ConvertToJSONFile(nlohmann::json JSON){
+void Connection::ConvertToJSONFile(nlohmann::json JSON){
 
     //open new JSON file
     std::ofstream o("/home/vagrant/Desktop/fork_repo/NodeData.json");
@@ -206,7 +206,7 @@ void V2XConnection::ConvertToJSONFile(nlohmann::json JSON){
 }
 
 //extract data and write into json object
-void V2XConnection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleScope traci) {
+void Connection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleScope traci) {
 
     // create an empty structure (null)
     json jsonNode;
@@ -240,7 +240,7 @@ void V2XConnection::writeToJSON(std::string vehicleID, TraCIAPI::VehicleScope tr
     ConvertToJSONFile(jsonNode);
 }
 
-void V2XConnection::writeToMap(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci) {
+void Connection::writeToMap(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci) {
     //Check if file is already open
     //if not -> open the file
     if (!myfile.is_open()){

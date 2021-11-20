@@ -9,6 +9,7 @@
 
 #include "artery/testbed/OtaInterface.h"
 #include <omnetpp/csimplemodule.h>
+#include "SimSocket.h"
 
 namespace artery
 {
