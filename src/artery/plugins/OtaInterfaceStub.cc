@@ -1,15 +1,14 @@
 #include "artery/plugins/OtaInterfaceStub.h"
 #include "artery/plugins/OtaIndicationQueue.h"
-#include "OtaInterfaceLayer.h"
 #include "artery/plugins/DutScheduler.h"
 #include "SimSocket.h"
+
+#include <zmq.hpp>
 
 namespace artery
 {
 
 Define_Module(OtaInterfaceStub)
-
-//const simsignal_t OtaInterfaceStub::ReceiveMessage = cComponent::registerSignal("traci.ota.msg");
 
 void OtaInterfaceStub::initialize()
 {
@@ -31,8 +30,13 @@ void OtaInterfaceStub::unregisterModule()
     mRegisteredModule = nullptr;
 }
 
-void OtaInterfaceStub::sendMessage(const vanetza::MacAddress& MacSource, const vanetza::MacAddress& MacDest, const vanetza::byte_view_range& byteViewRange)
+void OtaInterfaceStub::sendMessage(const vanetza::MacAddress&, const vanetza::MacAddress&, const vanetza::byte_view_range&)
 {
+    // create module pointer to SimSocket with ID = 6
+    cModule *mod = getSimulation()->getModule(6);
+    auto *m_target = check_and_cast<artery::SimSocket *>(mod);
+    m_target->publish();
+
     SimSocket::getOtaInterfaceStub(const_cast<vanetza::MacAddress &>(MacSource),
                                    const_cast<vanetza::MacAddress &>(MacDest),
                                    const_cast<vanetza::byte_view_range &>(byteViewRange));

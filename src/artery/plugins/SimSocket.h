@@ -42,8 +42,6 @@
 #include <omnetpp/clistener.h>
 #include <omnetpp/csimplemodule.h>
 #include "artery/application/VehicleKinematics.h"
-#include "artery/plugins/OtaInterfaceStub.h"
-#include "artery/plugins/OtaIndicationQueue.h"
 
 #include <iostream>
 #include <functional>
@@ -68,13 +66,13 @@ class VehicleCache;
 
 namespace artery {
 
-    inline std::map <std::string, boost::variant<int, double, std::string>> vehicleDataMap;
+    //inline std::map <std::string, boost::variant<int, double, std::string>> vehicleDataMap;
     inline std::map <std::string, boost::variant<int, double, std::string>> vehicleDynamicsMap;
-    inline std::map <std::string, boost::variant<int, double, std::string>> EventMap;
     inline std::map <std::string, boost::variant<int, double, std::string>> tmpVehicleDataMap;
     inline std::map <std::string, boost::variant<int, double, std::string>> inputDataMap;
 
-    class SimSocket : public omnetpp::cSimpleModule, omnetpp::cListener{
+    class SimSocket : public traci::Listener, public omnetpp::cSimpleModule
+    {
     public:
 
         using PortName = std::string; // port address
@@ -95,11 +93,11 @@ namespace artery {
 
         // send and receive functions
         void publish();
-        void publishSimMsg();
+        void publishSimMsg(zmq::socket_t socket, const std::string & port);
         void subscribe();
 
         // get the vehicle data for the map to send
-        static void getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci);
+        void getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci);
         static void getVehicleDynamics(VehicleKinematics dynamics);
         //static void getEvent(omnetpp::cEvent* event);
         static void getOtaInterfaceStub(vanetza::MacAddress& MacSource, vanetza::MacAddress& MacDest, vanetza::byte_view_range& byteViewRange);
@@ -108,12 +106,13 @@ namespace artery {
 
         // getter
         const PortName &getPortName() const;
-        const zmq::socket_t &getSocketSim() const;
         const zmq::message_t &getNullMessage() const;
         const std::vector<SimSocket::PortName> &getConnections() const;
         const std::vector<SimSocket::PortName> &getBindings() const;
         const zmq::context_t &getContext() const;
         traci::SubscriptionManager *getSubscriptions() { return subscriptions_; }
+        const std::unique_ptr<zmq::socket_t> &getPublisherSocket() const;
+        const DataMap &getVehicleDataMap() const;
 
     protected:
         void initialize() override;
@@ -130,8 +129,10 @@ namespace artery {
         zmq::message_t nullMessage_;
         std::vector<PortName> connections_;
         std::vector<PortName> bindings_;
+        DataMap vehicleDataMap_;
+        const traci::VehicleController* mVehicleController;
 
-    void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *);
+    void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) override;
     };
 
 }//namespace artery

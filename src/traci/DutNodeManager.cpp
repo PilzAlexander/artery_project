@@ -26,7 +26,6 @@
 #include "traci/VehicleSink.h"
 #include <ostream>
 
-
 #include "artery/traci/VehicleController.h"
 #include "artery/application/StationType.h"
 #include "artery/storyboard/Vehicle.h"
@@ -35,7 +34,6 @@
  ********************************************************************************/
 using namespace omnetpp;
 using namespace vanetza;
-
 
 namespace traci {
 
@@ -98,12 +96,12 @@ void DutNodeManager::updateVehicle(const std::string & id, VehicleSink * sink)
     auto& traci = m_api->vehicle;
 
     // get vehicle data to send
-    artery::SimSocket::getVehicleData("flowNorthSouth.0", traci);
-
-    /*
-    if(simTime() > 1){
-        artery::SimSocket::getVehicleData("flowNorthSouth.1", traci);
-    }*/
+    if(id == "flowNorthSouth.0") {
+        // create module pointer to SimSocket with ID = 6
+        cModule *mod = getSimulation()->getModule(6);
+        auto *m_target = check_and_cast<artery::SimSocket *>(mod);
+        m_target->getVehicleData(id, traci);
+    }
 
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);

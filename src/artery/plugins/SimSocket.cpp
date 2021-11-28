@@ -62,6 +62,7 @@ void SimSocket::initialize() {
     //subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
     subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
     bind(portName_);
+
 }
 
 void SimSocket::finish() {
@@ -127,12 +128,47 @@ void SimSocket::unbind(const PortName &portName) {
 
 // publish data
 void SimSocket::publish() {
+  //Enter_Method("publish()");
+
+    //std::cout << "Speed Data: " << vehicleDataMap["Speed_DUT"] << endl;
+    //std::cout << "Speed Dynamics: " << vehicleDynamicsMap["Speed Dynamics"] << endl;
+
     //serialize map
     std::ostringstream ss;
     boost::archive::text_oarchive archive(ss);
-    archive << vehicleDataMap;
+
+    archive << vehicleDataMap_;
+
+    for(const auto& elem : vehicleDataMap_)
+    {
+        std::cout << elem.first << " " << elem.second << " " << "\n";
+    }
+
+    std::cout << "*******************^^vehicleDataMap^^**********************************" << endl;
+
+    //archive << vehicleDynamicsMap;
+
+    std::string outbound_data = ss.str();
+    // create buffer size for message
+    zmq::message_t msgToSend(outbound_data);
+
+    try {
+        std::cout << "Message: " << msgToSend << endl;
+        publisherSocket_.send(msgToSend, zmq::send_flags::none);
+
+    } catch (zmq::error_t cantSend) {
+        cerr << "Socket can't send: " << cantSend.what() << endl;
+        unbind(portName_);
+    }
+}
+
+void SimSocket::publishSimMsg(zmq::socket_t socket, const std::string & port){
+
+    //serialize map
+    std::ostringstream ss;
+    boost::archive::text_oarchive archive(ss);
+    archive << vehicleDataMap_;
     archive << vehicleDynamicsMap;
-    archive << EventMap;
     std::string outbound_data = ss.str();
     // create buffer size for message
     zmq::message_t msgToSend(outbound_data);
@@ -194,40 +230,38 @@ void SimSocket::subscribe() {
 
 // call in basic node manager to get data and write to a global map
 void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
-    DataMap map;
+    //Enter_Method("getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci)");
 
     SimTime sendingTime = simTime();
     std::string sendingTime_str = sendingTime.str();
 
-    map.insert(std::pair<std::string, std::string>("origin", "Origin"));
-    map.insert(std::pair<std::string, std::string>("current", sendingTime_str));
-    map.insert(std::pair<std::string, std::string>("vehicleID_DUT", vehicleID));
-    map.insert(std::pair<std::string, double>("Speed_DUT", traci.getSpeed(vehicleID)));
-    map.insert(std::pair<std::string, double>("Acceleration_DUT", traci.getAcceleration(vehicleID)));
-    map.insert(std::pair<std::string, double>("Angle_DUT", traci.getAngle(vehicleID)));
-    map.insert(std::pair<std::string, double>("Distance_DUT", traci.getDistance(vehicleID)));
-    map.insert(std::pair<std::string, double>("Height_DUT", traci.getHeight(vehicleID)));
-    map.insert(std::pair<std::string, double>("Length_DUT", traci.getLength(vehicleID)));
-    map.insert(std::pair<std::string, double>("Width_DUT", traci.getWidth(vehicleID)));
-    map.insert(std::pair<std::string, double>("LanePosition_DUT", traci.getLanePosition(vehicleID)));
-    map.insert(std::pair<std::string, int>("Signals_DUT", traci.getSignals(vehicleID)));
-    map.insert(std::pair<std::string, double>("Position_X-Coordinate_DUT", traci.getPosition(vehicleID).x));
-    map.insert(std::pair<std::string, double>("Position_Y-Coordinate_DUT", traci.getPosition(vehicleID).y));
-    map.insert(std::pair<std::string, double>("Position_Z-Coordinate_DUT", traci.getPosition(vehicleID).z));
-    map.insert(std::pair<std::string, double>("Decel_DUT", traci.getDecel(vehicleID)));
-    map.insert(std::pair<std::string, std::string>("RoadID_DUT", traci.getRoadID(vehicleID)));
-    map.insert(std::pair<std::string, double>("RouteIndex_DUT", traci.getRouteIndex(vehicleID)));
-    map.insert(std::pair<std::string, std::string>("LaneID_DUT", traci.getLaneID(vehicleID)));
-    map.insert(std::pair<std::string, double>("LaneIndex_DUT", traci.getLaneIndex(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, std::string>("origin", "Origin"));
+    vehicleDataMap_.insert(std::pair<std::string, std::string>("current", sendingTime_str));
+    vehicleDataMap_.insert(std::pair<std::string, std::string>("vehicleID_DUT", vehicleID));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Speed_DUT", traci.getSpeed(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Acceleration_DUT", traci.getAcceleration(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Angle_DUT", traci.getAngle(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Distance_DUT", traci.getDistance(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Height_DUT", traci.getHeight(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Length_DUT", traci.getLength(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Width_DUT", traci.getWidth(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, double>("LanePosition_DUT", traci.getLanePosition(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, int>("Signals_DUT", traci.getSignals(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Position_X-Coordinate_DUT", traci.getPosition(vehicleID).x));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Position_Y-Coordinate_DUT", traci.getPosition(vehicleID).y));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Position_Z-Coordinate_DUT", traci.getPosition(vehicleID).z));
+    vehicleDataMap_.insert(std::pair<std::string, double>("Decel_DUT", traci.getDecel(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, std::string>("RoadID_DUT", traci.getRoadID(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, double>("RouteIndex_DUT", traci.getRouteIndex(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, std::string>("LaneID_DUT", traci.getLaneID(vehicleID)));
+    vehicleDataMap_.insert(std::pair<std::string, double>("LaneIndex_DUT", traci.getLaneIndex(vehicleID)));
 
-/*
-    for(const auto& elem : map)
+    for(const auto& elem : vehicleDataMap_)
     {
         std::cout << elem.first << " " << elem.second << " " << "\n";
     }
-    std::cout << "*****************************************************" << endl;
-*/
-    vehicleDataMap = map;
+    std::cout << "*************************INDERGETDATAMETHODE****************************" << endl;
+
 }
 
 void SimSocket::getVehicleDynamics(VehicleKinematics dynamics){
@@ -337,6 +371,7 @@ void SimSocket::receiveSignal(cComponent*, simsignal_t signal, unsigned long, cO
 {
     if (signal == traci::BasicNodeManager::updateNodeSignal) {
         publish();
+        //publishSimMsg(publisherSocket_,portName_);
         subscribe();
     }
 }
@@ -345,10 +380,6 @@ void SimSocket::receiveSignal(cComponent*, simsignal_t signal, unsigned long, cO
  ********************************************************************************/
 const SimSocket::PortName &SimSocket::getPortName() const {
     return portName_;
-}
-
-const zmq::socket_t &SimSocket::getSocketSim() const {
-    return publisherSocket_;
 }
 
 const zmq::message_t &SimSocket::getNullMessage() const {
@@ -366,6 +397,11 @@ const vector<SimSocket::PortName> &SimSocket::getBindings() const {
 const zmq::context_t &SimSocket::getContext() const {
     return context_;
 }
+
+    const SimSocket::DataMap &SimSocket::getVehicleDataMap() const {
+        return vehicleDataMap_;
+    }
+
 
 }// namespace artery
 /********************************************************************************

@@ -1,6 +1,6 @@
 package artery.plugins;
 
-import artery.testbed.OtaInterface;
+import artery.plugins.OtaInterface;
 
 simple OtaInterfaceStub like OtaInterface
 {

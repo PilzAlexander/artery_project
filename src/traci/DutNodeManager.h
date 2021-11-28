@@ -17,6 +17,7 @@
  * Class declarations
  ********************************************************************************/
 
+#include "artery/plugins/SimSocket.h"
 #include "traci/BasicNodeManager.h"
 #include <string>
 
@@ -29,7 +30,6 @@ namespace traci
     class PersonSink;
     class VehicleCache;
     class VehicleSink;
-
     class Vehicle;
 
 class DutNodeManager : public BasicNodeManager

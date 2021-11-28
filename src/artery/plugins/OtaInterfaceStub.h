@@ -13,9 +13,6 @@
 
 namespace artery
 {
-
-
-
 /**
  * The OtaInterfaceStub provides a implementation of the OtaInterface which acts as an stub to work without any hardware connected.
  * It implements all necessary methods, mos of them doing nothing.
@@ -24,16 +21,12 @@ namespace artery
 class OtaInterfaceStub : public OtaInterface, public omnetpp::cSimpleModule
 {
 public:
-
-    //static const omnetpp::simsignal_t ReceiveMessage;
-
     void initialize() override;
     void registerModule(OtaInterfaceLayer*) override;
     void unregisterModule() override;
     void sendMessage(const vanetza::MacAddress&, const vanetza::MacAddress&, const vanetza::byte_view_range&) override;
     void receiveMessage(std::unique_ptr<GeoNetPacket>) override;
     bool hasRegisteredModule() override { return mRegisteredModule != nullptr; }
-
 private:
     OtaInterfaceLayer* mRegisteredModule = nullptr;
 };
