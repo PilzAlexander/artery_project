@@ -24,7 +24,10 @@ set(SOURCES
     ../artery/plugins/SimSocket.cpp
     ../artery/plugins/MessageContext.cpp
         DutNodeManager.cpp
-        DutModuleMapper.cpp)
+        DutModuleMapper.cpp
+        #../artery/plugins/OtaInterfaceStub.cc
+        ../artery/plugins/OtaInterfaceLayer.cc
+        )
 
 add_library(traci SHARED ${SOURCES})
 target_include_directories(traci PUBLIC

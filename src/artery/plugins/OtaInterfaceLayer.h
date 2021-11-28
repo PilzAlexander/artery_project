@@ -11,6 +11,7 @@
 #include "artery/utility/Geometry.h"
 #include <omnetpp/csimplemodule.h>
 #include <vanetza/units/velocity.hpp>
+#include "artery/application/VehicleDataProvider.h"
 
 namespace traci { class VehicleController; }
 
@@ -19,7 +20,7 @@ namespace artery
 
 class OtaInterface;
 
-class OtaInterfaceLayer : public omnetpp::cSimpleModule
+class OtaInterfaceLayer : public omnetpp::cSimpleModule, public omnetpp::cListener
 {
 public:
     /**
@@ -59,11 +60,15 @@ public:
      */
     Angle getCurrentHeading();
 
+protected:
+    void receiveSignal(omnetpp::cComponent*, omnetpp::simsignal_t, omnetpp::cObject*, omnetpp::cObject*);
+
 private:
     OtaInterface* mOtaModule;
     omnetpp::cGate* mRadioDriverIn;
     omnetpp::cGate* mRadioDriverOut;
     traci::VehicleController* mVehicleController;
+    VehicleKinematics dynamicsDut;
 };
 
 } // namespace artery

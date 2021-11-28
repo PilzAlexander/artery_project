@@ -3,7 +3,6 @@ package artery.plugins;
 module SimSocket
 {
     parameters:
-                @class(SimSocket);
-                string traciModule = default("^.traci");
-
+        @class(SimSocket);
+        string traciModule = default("^.traci");
 }

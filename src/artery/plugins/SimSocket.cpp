@@ -40,12 +40,11 @@ using namespace omnetpp;
 
 namespace artery {
 
-    Define_Module(SimSocket)
+Define_Module(SimSocket)
 
 void SimSocket::initialize() {
-
     //get traci from ModulePath
-    cModule* traci = getModuleByPath(par("traciModule"));
+    cModule *traci = getModuleByPath(par("traciModule"));
 
     //Subscribe signal to actual Traci
     if (traci) {
@@ -128,9 +127,6 @@ void SimSocket::unbind(const PortName &portName) {
 
 // publish data
 void SimSocket::publish() {
-    //std::cout << "Speed Data: " << vehicleDataMap["Speed_DUT"] << endl;
-    //std::cout << "Speed Dynamics: " << vehicleDynamicsMap["Speed Dynamics"] << endl;
-
     //serialize map
     std::ostringstream ss;
     boost::archive::text_oarchive archive(ss);
@@ -150,10 +146,6 @@ void SimSocket::publish() {
         unbind(portName_);
     }
 }
-
-void SimSocket::publishSimMsg(){
-
-    }
 
 // subscribe to incoming data
 void SimSocket::subscribe() {
@@ -241,34 +233,32 @@ void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope tra
 void SimSocket::getVehicleDynamics(VehicleKinematics dynamics){
     DataMap map;
 
-    //TODO NaN-Werte nicht senden
-
     if(!isnan(dynamics.speed.value())){
-        map.insert(std::pair<std::string, double>("SpeedDynamics", dynamics.speed.value()));
+        map.insert(std::pair<std::string, double>("Speed_Dynamics", dynamics.speed.value()));
     }
     if(!isnan(dynamics.yaw_rate.value())){
-        map.insert(std::pair<std::string, double>("YawRateDynamics", dynamics.yaw_rate.value()));
+        map.insert(std::pair<std::string, double>("YawRate_Dynamics", dynamics.yaw_rate.value()));
     }
     if(!isnan(dynamics.acceleration.value())){
-        map.insert(std::pair<std::string, double>("AccelerationDynamics", dynamics.acceleration.value()));
+        map.insert(std::pair<std::string, double>("Acceleration_Dynamics", dynamics.acceleration.value()));
     }
     if(!isnan(dynamics.heading.value())){
-        map.insert(std::pair<std::string, double>("HeadingDynamics", dynamics.heading.value()));
+        map.insert(std::pair<std::string, double>("Heading_Dynamics", dynamics.heading.value()));
     }
     if(!isnan(dynamics.geo_position.latitude.value())){
-        map.insert(std::pair<std::string, double>("LatitudeDynamics", dynamics.geo_position.latitude.value()));
+        map.insert(std::pair<std::string, double>("Latitude_Dynamics", dynamics.geo_position.latitude.value()));
     }
     if(!isnan(dynamics.geo_position.longitude.value())){
-        map.insert(std::pair<std::string, double>("LongitudeDynamics", dynamics.geo_position.longitude.value()));
+        map.insert(std::pair<std::string, double>("Longitude_Dynamics", dynamics.geo_position.longitude.value()));
     }
     if(!isnan(dynamics.position.x.value())){
-        map.insert(std::pair<std::string, double>("PosXDynamics", dynamics.position.x.value()));
+        map.insert(std::pair<std::string, double>("PosX_Dynamics", dynamics.position.x.value()));
     }
     if(!isnan(dynamics.position.y.value())){
-        map.insert(std::pair<std::string, double>("PoYDynamics", dynamics.position.y.value()));
+        map.insert(std::pair<std::string, double>("PosY_Dynamics", dynamics.position.y.value()));
     }
 
-    /*
+/*
     for(const auto& elem : map)
     {
         std::cout << elem.first << " " << elem.second << " " << "\n";
@@ -276,6 +266,10 @@ void SimSocket::getVehicleDynamics(VehicleKinematics dynamics){
     std::cout << "*****************************************************" << endl;
 */
     vehicleDynamicsMap = map;
+}
+
+void SimSocket::getOtaInterfaceStub(vanetza::MacAddress& MacSource, vanetza::MacAddress& MacDest, vanetza::byte_view_range& byteViewRange) {
+    //std::cout << "SOURCE: " << MacSource << endl;
 }
 
 /*

@@ -3,15 +3,13 @@
 #include "artery/nic/RadioDriverBase.h"
 #include "artery/plugins/OtaInterfaceLayer.h"
 #include "artery/plugins/OtaInterface.h"
-#include "artery/plugins/DutRadio.h"
 #include "artery/traci/ControllableVehicle.h"
-#include "artery/traci/VehicleController.h"
 #include <inet/common/ModuleAccess.h>
 #include <vanetza/net/packet_variant.hpp>
 #include <inet/physicallayer/contract/packetlevel/IRadio.h>
-
+#include <artery/traci/MobilityBase.h>
 #include "artery/application/VehicleKinematics.h"
-#include "artery/application/VehicleDataProvider.cc"
+#include "SimSocket.h"
 
 namespace artery
 {
@@ -20,6 +18,17 @@ Define_Module(OtaInterfaceLayer)
 
 void OtaInterfaceLayer::initialize(int stage)
 {
+    if(stage == 0){
+        auto& mobilityPar = par("mobilityModule");
+        auto* mobilityModule = getModuleByPath(mobilityPar);
+        if (mobilityModule) {
+            std::cout << "##################################" << std::endl;
+            mobilityModule->subscribe(MobilityBase::stateChangedSignal, this);
+        } else {
+            error("Module on path '%s' is not a VehicleMobility", mobilityModule->getFullPath().c_str());
+        }
+    }
+
     if (stage == 1) {
         std::string otaInterfaceModule = par("otaInterfaceModule");
         mOtaModule = dynamic_cast<OtaInterface*>(getModuleByPath(otaInterfaceModule.c_str()));
@@ -51,15 +60,8 @@ void OtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
             using namespace vanetza;
             auto range = create_byte_view(packet->getPayload(), OsiLayer::Network, OsiLayer::Application);
             mOtaModule->sendMessage(info->source, info->destination, range);
-            //std::cout << "SOURCE " << info->source << std::endl;
-            //std::cout << "DEST " << info->destination << std::endl;
-            //std::cout << "DATA " << range.data() << std::endl;
         }
     }
-
-    std::cout << "MESSAGE ARRIVAL TIME: " << message->getArrivalTime() << std::endl;
-    std::cout << "******************************************" << std::endl;
-
     delete message;
 }
 
@@ -69,6 +71,14 @@ void OtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
     GeoNetPacket* ptr = packet.release();
     take(ptr);
     send(ptr, mRadioDriverOut);
+}
+
+void OtaInterfaceLayer::receiveSignal(cComponent* component, simsignal_t signal, cObject* obj, cObject* details)
+{
+    if (signal == MobilityBase::stateChangedSignal && mVehicleController) {
+        dynamicsDut = getKinematics(*mVehicleController);
+        SimSocket::getVehicleDynamics(dynamicsDut);
+    }
 }
 
 GeoPosition OtaInterfaceLayer::getCurrentPosition()

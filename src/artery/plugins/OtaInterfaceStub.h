@@ -14,14 +14,19 @@
 namespace artery
 {
 
+
+
 /**
  * The OtaInterfaceStub provides a implementation of the OtaInterface which acts as an stub to work without any hardware connected.
  * It implements all necessary methods, mos of them doing nothing.
  * It can be used to compile the testbed without any external library available (like the S.E.A. API required by the OtaInterfaceUsrp).
  */
-class OtaInterfaceStub : public OtaInterface, public omnetpp::cSimpleModule //, public SimSocket
+class OtaInterfaceStub : public OtaInterface, public omnetpp::cSimpleModule
 {
 public:
+
+    //static const omnetpp::simsignal_t ReceiveMessage;
+
     void initialize() override;
     void registerModule(OtaInterfaceLayer*) override;
     void unregisterModule() override;

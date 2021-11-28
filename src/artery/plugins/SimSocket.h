@@ -42,6 +42,8 @@
 #include <omnetpp/clistener.h>
 #include <omnetpp/csimplemodule.h>
 #include "artery/application/VehicleKinematics.h"
+#include "artery/plugins/OtaInterfaceStub.h"
+#include "artery/plugins/OtaIndicationQueue.h"
 
 #include <iostream>
 #include <functional>
@@ -72,7 +74,7 @@ namespace artery {
     inline std::map <std::string, boost::variant<int, double, std::string>> tmpVehicleDataMap;
     inline std::map <std::string, boost::variant<int, double, std::string>> inputDataMap;
 
-    class SimSocket : public traci::Listener, public omnetpp::cSimpleModule{
+    class SimSocket : public omnetpp::cSimpleModule, omnetpp::cListener{
     public:
 
         using PortName = std::string; // port address
@@ -100,6 +102,7 @@ namespace artery {
         static void getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci);
         static void getVehicleDynamics(VehicleKinematics dynamics);
         //static void getEvent(omnetpp::cEvent* event);
+        static void getOtaInterfaceStub(vanetza::MacAddress& MacSource, vanetza::MacAddress& MacDest, vanetza::byte_view_range& byteViewRange);
 
         //static void setVehicleData(TraCIAPI::VehicleScope traci, DataMap map);
 
@@ -127,8 +130,6 @@ namespace artery {
         zmq::message_t nullMessage_;
         std::vector<PortName> connections_;
         std::vector<PortName> bindings_;
-
-        const traci::VehicleController* mVehicleController;
 
     void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *);
     };
