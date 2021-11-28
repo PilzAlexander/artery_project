@@ -30,7 +30,7 @@ void OtaInterfaceStub::unregisterModule()
     mRegisteredModule = nullptr;
 }
 
-void OtaInterfaceStub::sendMessage(const vanetza::MacAddress&, const vanetza::MacAddress&, const vanetza::byte_view_range&)
+void OtaInterfaceStub::sendMessage(const vanetza::MacAddress& MacSource, const vanetza::MacAddress& MacDest, const vanetza::byte_view_range& byteViewRange)
 {
     // create module pointer to SimSocket with ID = 6
     cModule *mod = getSimulation()->getModule(6);
@@ -40,6 +40,7 @@ void OtaInterfaceStub::sendMessage(const vanetza::MacAddress&, const vanetza::Ma
     SimSocket::getOtaInterfaceStub(const_cast<vanetza::MacAddress &>(MacSource),
                                    const_cast<vanetza::MacAddress &>(MacDest),
                                    const_cast<vanetza::byte_view_range &>(byteViewRange));
+
 }
 
 void OtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket>)
