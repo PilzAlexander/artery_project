@@ -21,7 +21,6 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/variant.hpp>
-#include "artery/application/VehicleDataProvider.h"
 #include "artery/traci/VehicleController.h"
 #include "artery/application/VehicleKinematics.h"
 #include "artery/application/Middleware.h"
@@ -115,15 +114,13 @@ void SimSocket::bind(const PortName &portName) {
 
 // unbind the socket from a port
 void SimSocket::unbind(const PortName &portName) {
-
     auto bindingIterator = std::find(bindings_.begin(), bindings_.end(), portName);
     if (bindingIterator == bindings_.end()) {
         cerr << "SimSocket::" << portName << "failed to unbind from SimSocket::" << portName << endl;
         return;
     }
-
-    connections_.erase(bindingIterator);
     publisherSocket_.unbind(portName_);
+    connections_.erase(bindingIterator);
 }
 
 // publish data

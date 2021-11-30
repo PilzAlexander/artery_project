@@ -15,13 +15,13 @@
 namespace artery
 {
 
-class DUTOtaInterfaceLayer;
+class OtaInterfaceLayer;
 
 /**
  * Interface module for all DUTOtaInterface classes.
  * The DUTOtaInterface is a global OMNeT++ Module which maintains the data exchange between a certain DUT and the interface hardware
  */
-class DUTOtaInterface
+class OtaInterface
 {
 public:
     /**
@@ -29,7 +29,7 @@ public:
      *
      * \param OtaInterfaceLayer to register
      */
-    virtual void registerModule(DUTOtaInterfaceLayer*) = 0;
+    virtual void registerModule(OtaInterfaceLayer*) = 0;
 
     /**
      * Unregisters an allready registered DUTOtaInterfaceLayer
@@ -59,7 +59,7 @@ public:
      */
     virtual bool hasRegisteredModule() = 0;
 
-    virtual ~DUTOtaInterface() = default;
+    virtual ~OtaInterface() = default;
 };
 
 } // namespace artery

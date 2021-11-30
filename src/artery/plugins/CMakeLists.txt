@@ -1,5 +1,5 @@
 add_artery_feature(plugins
-        GpsdServer.cc
+        DUTGpsdServer.cc
         DUTOtaIndicationQueue.cc
         DUTOtaInterfaceLayer.cc
         DUTOtaInterfaceStub.cc

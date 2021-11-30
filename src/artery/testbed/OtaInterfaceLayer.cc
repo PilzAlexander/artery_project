@@ -13,13 +13,13 @@
 namespace artery
 {
 
-Define_Module(DUTOtaInterfaceLayer)
+Define_Module(OtaInterfaceLayer)
 
-void DUTOtaInterfaceLayer::initialize(int stage)
+void OtaInterfaceLayer::initialize(int stage)
 {
     if (stage == 1) {
         std::string otaInterfaceModule = par("otaInterfaceModule");
-        mOtaModule = dynamic_cast<DUTOtaInterface*>(getModuleByPath(otaInterfaceModule.c_str()));
+        mOtaModule = dynamic_cast<OtaInterface*>(getModuleByPath(otaInterfaceModule.c_str()));
         if (!mOtaModule) {
             throw omnetpp::cRuntimeError(this, "Specified OTA module %s not found! "
                     "Check if withTestbed was set to true", otaInterfaceModule.c_str());
@@ -34,12 +34,12 @@ void DUTOtaInterfaceLayer::initialize(int stage)
     }
 }
 
-void DUTOtaInterfaceLayer::finish()
+void OtaInterfaceLayer::finish()
 {
     mOtaModule->unregisterModule();
 }
 
-void DUTOtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
+void OtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
 {
     if (message->getArrivalGate() == mRadioDriverIn) {
         auto packet = check_and_cast<GeoNetPacket*>(message);
@@ -54,7 +54,7 @@ void DUTOtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
     delete message;
 }
 
-void DUTOtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
+void OtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
 {
     Enter_Method("request");
     GeoNetPacket* ptr = packet.release();
@@ -62,17 +62,17 @@ void DUTOtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
     send(ptr, mRadioDriverOut);
 }
 
-GeoPosition DUTOtaInterfaceLayer::getCurrentPosition()
+GeoPosition OtaInterfaceLayer::getCurrentPosition()
 {
     return mVehicleController->getGeoPosition();
 }
 
-vanetza::units::Velocity DUTOtaInterfaceLayer::getCurrentSpeed()
+vanetza::units::Velocity OtaInterfaceLayer::getCurrentSpeed()
 {
     return mVehicleController->getSpeed();
 }
 
-Angle DUTOtaInterfaceLayer::getCurrentHeading()
+Angle OtaInterfaceLayer::getCurrentHeading()
 {
     return mVehicleController->getHeading();
 }

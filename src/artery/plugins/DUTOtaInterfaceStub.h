@@ -7,7 +7,7 @@
 #ifndef ARTERY_OTA_INTERFACE_STUB_H
 #define ARTERY_OTA_INTERFACE_STUB_H
 
-#include "artery/testbed/OtaInterface.h"
+#include "artery/plugins/DUTOtaInterface.h"
 #include <omnetpp/csimplemodule.h>
 #include "SimSocket.h"
 

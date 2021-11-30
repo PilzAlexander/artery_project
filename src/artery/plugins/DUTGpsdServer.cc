@@ -1,5 +1,5 @@
-#include "artery/testbed/GpsdServer.h"
-#include "artery/testbed/OtaInterfaceLayer.h"
+#include "artery/plugins/DUTGpsdServer.h"
+#include "artery/plugins/DUTOtaInterfaceLayer.h"
 #include "artery/traci/Cast.h"
 #include <vanetza/gnss/nmea.hpp>
 #include <vanetza/gnss/wgs84point.hpp>
@@ -7,19 +7,19 @@
 namespace artery
 {
 
-GpsdServer::GpsdServer(const std::string& timebase, unsigned short port) :
+DUTGpsdServer::DUTGpsdServer(const std::string& timebase, unsigned short port) :
     mSocket(mIoService)
 {
     mTimer.setTimebase(timebase);
     waitForListener(port);
 }
 
-GpsdServer::~GpsdServer()
+DUTGpsdServer::~DUTGpsdServer()
 {
     mSocket.close();
 }
 
-void GpsdServer::sendPositionFix(DUTOtaInterfaceLayer& ota)
+void DUTGpsdServer::sendPositionFix(DUTOtaInterfaceLayer& ota)
 {
     auto pos = ota.getCurrentPosition();
     vanetza::Wgs84Point point(pos.latitude, pos.longitude);
@@ -38,7 +38,7 @@ void GpsdServer::sendPositionFix(DUTOtaInterfaceLayer& ota)
     write(gpgaaSentence);
 }
 
-void GpsdServer::write(const std::string& sentence)
+void DUTGpsdServer::write(const std::string& sentence)
 {
     boost::system::error_code ec;
     boost::asio::write(mSocket, boost::asio::buffer(sentence), boost::asio::transfer_all(), ec);
@@ -47,7 +47,7 @@ void GpsdServer::write(const std::string& sentence)
     }
 }
 
-void GpsdServer::waitForListener(unsigned short port)
+void DUTGpsdServer::waitForListener(unsigned short port)
 {
     using boost::asio::ip::tcp;
     tcp::acceptor acceptor(mIoService, tcp::endpoint(tcp::v4(), port));

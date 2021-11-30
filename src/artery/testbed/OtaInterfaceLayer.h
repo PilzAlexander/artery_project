@@ -17,9 +17,9 @@ namespace traci { class VehicleController; }
 namespace artery
 {
 
-class DUTOtaInterface;
+class OtaInterface;
 
-class DUTOtaInterfaceLayer : public omnetpp::cSimpleModule
+class OtaInterfaceLayer : public omnetpp::cSimpleModule
 {
 public:
     /**
@@ -60,7 +60,7 @@ public:
     Angle getCurrentHeading();
 
 private:
-    DUTOtaInterface* mOtaModule;
+    OtaInterface* mOtaModule;
     omnetpp::cGate* mRadioDriverIn;
     omnetpp::cGate* mRadioDriverOut;
     traci::VehicleController* mVehicleController;

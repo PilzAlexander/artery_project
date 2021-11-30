@@ -10,7 +10,7 @@ namespace artery
 
 class DUTOtaInterfaceLayer;
 
-class GpsdServer
+class DUTGpsdServer
 {
 public:
     /**
@@ -18,8 +18,8 @@ public:
      * \param timebase for simulation time (YYYY-MM-DD HH:mm:ss)
      * \param port TCP port where server accepts connection
      */
-    GpsdServer(const std::string& timebase, unsigned short port);
-    ~GpsdServer();
+    DUTGpsdServer(const std::string& timebase, unsigned short port);
+    ~DUTGpsdServer();
     void sendPositionFix(DUTOtaInterfaceLayer&);
 
 private:

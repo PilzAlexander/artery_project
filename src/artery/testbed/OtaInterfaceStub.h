@@ -18,18 +18,18 @@ namespace artery
  * It implements all necessary methods, mos of them doing nothing.
  * It can be used to compile the testbed without any external library available (like the S.E.A. API required by the OtaInterfaceUsrp).
  */
-class DUTOtaInterfaceStub : public DUTOtaInterface, public omnetpp::cSimpleModule
+class OtaInterfaceStub : public OtaInterface, public omnetpp::cSimpleModule
 {
 public:
     void initialize() override;
-    void registerModule(DUTOtaInterfaceLayer*) override;
+    void registerModule(OtaInterfaceLayer*) override;
     void unregisterModule() override;
     void sendMessage(const vanetza::MacAddress&, const vanetza::MacAddress&, const vanetza::byte_view_range&) override;
     void receiveMessage(std::unique_ptr<GeoNetPacket>) override;
     bool hasRegisteredModule() override { return mRegisteredModule != nullptr; }
 
 private:
-    DUTOtaInterfaceLayer* mRegisteredModule = nullptr;
+    OtaInterfaceLayer* mRegisteredModule = nullptr;
 };
 
 } // namespace artery

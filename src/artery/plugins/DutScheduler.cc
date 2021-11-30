@@ -1,4 +1,4 @@
-#include "artery/testbed/OtaIndicationQueue.h"
+#include "artery/plugins/DUTOtaIndicationQueue.h"
 #include "artery/plugins/DutScheduler.h"
 #include <omnetpp/cconfigoption.h>
 #include <omnetpp/cconfiguration.h>

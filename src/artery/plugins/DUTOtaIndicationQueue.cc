@@ -1,5 +1,5 @@
-#include "artery/testbed/OtaIndicationQueue.h"
-#include "artery/testbed/OtaInterface.h"
+#include "artery/plugins/DUTOtaIndicationQueue.h"
+#include "artery/plugins/DUTOtaInterface.h"
 
 namespace artery
 {
