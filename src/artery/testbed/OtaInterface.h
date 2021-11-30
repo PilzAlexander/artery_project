@@ -15,31 +15,31 @@
 namespace artery
 {
 
-class OtaInterfaceLayer;
+class DUTOtaInterfaceLayer;
 
 /**
- * Interface module for all OtaInterface classes.
- * The OtaInterface is a global OMNeT++ Module which maintains the data exchange between a certain DUT and the interface hardware
+ * Interface module for all DUTOtaInterface classes.
+ * The DUTOtaInterface is a global OMNeT++ Module which maintains the data exchange between a certain DUT and the interface hardware
  */
-class OtaInterface
+class DUTOtaInterface
 {
 public:
     /**
-     * Registers a OtaInterfaceLayer at the OtaInterface
+     * Registers a DUTOtaInterfaceLayer at the DUTOtaInterface
      *
      * \param OtaInterfaceLayer to register
      */
-    virtual void registerModule(OtaInterfaceLayer*) = 0;
+    virtual void registerModule(DUTOtaInterfaceLayer*) = 0;
 
     /**
-     * Unregisters an allready registered OtaInterfaceLayer
+     * Unregisters an allready registered DUTOtaInterfaceLayer
      */
     virtual void unregisterModule() = 0;
 
     /**
      * Transmits a simulated packet to the DUT
      *
-     * \param cModule which is the sender (usually an OtaInterfaceLayer)
+     * \param cModule which is the sender (usually an DUTOtaInterfaceLayer)
      * \param MacAddress source MAC address (usually the MAC of a simulated vehicle)
      * \param MacAddress destination MAC address
      * \param byte_view_range containing the message data
@@ -48,18 +48,18 @@ public:
 
     /**
      * Receives a GeonetPacket which was scheduled by the used scheduler
-     * The packet should be transmitted using a OMNeT++ module (eg. the registered OtaInterfaceLayer)
+     * The packet should be transmitted using a OMNeT++ module (eg. the registered DUTOtaInterfaceLayer)
      *
      * \param GeonetPacket which should be sent to the simulation
      */
     virtual void receiveMessage(std::unique_ptr<GeoNetPacket>) = 0;
 
     /**
-     * Should check if a module was registered at the OtaInterface
+     * Should check if a module was registered at the DUTOtaInterface
      */
     virtual bool hasRegisteredModule() = 0;
 
-    virtual ~OtaInterface() = default;
+    virtual ~DUTOtaInterface() = default;
 };
 
 } // namespace artery

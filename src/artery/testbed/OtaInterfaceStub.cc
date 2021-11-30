@@ -5,34 +5,34 @@
 namespace artery
 {
 
-Define_Module(OtaInterfaceStub)
+Define_Module(DUTOtaInterfaceStub)
 
-void OtaInterfaceStub::initialize()
+void DUTOtaInterfaceStub::initialize()
 {
     auto scheduler = dynamic_cast<TestbedScheduler*>(omnetpp::getSimulation()->getScheduler());
     if (scheduler) {
-        scheduler->setOtaIndicationQueue(std::make_shared<OtaIndicationQueue>(this));
+        scheduler->setOtaIndicationQueue(std::make_shared<DUTOtaIndicationQueue>(this));
     } else {
-        EV_INFO << "No OtaIndicationQueue passed to scheduler";
+        EV_INFO << "No DUTOtaIndicationQueue passed to scheduler";
     }
 }
 
-void OtaInterfaceStub::registerModule(OtaInterfaceLayer* layer)
+void DUTOtaInterfaceStub::registerModule(DUTOtaInterfaceLayer* layer)
 {
     mRegisteredModule = layer;
 }
 
-void OtaInterfaceStub::unregisterModule()
+void DUTOtaInterfaceStub::unregisterModule()
 {
     mRegisteredModule = nullptr;
 }
 
-void OtaInterfaceStub::sendMessage(const vanetza::MacAddress&, const vanetza::MacAddress&, const vanetza::byte_view_range&)
+void DUTOtaInterfaceStub::sendMessage(const vanetza::MacAddress&, const vanetza::MacAddress&, const vanetza::byte_view_range&)
 {
     //nothing to do here, as no hardware is connected
 }
 
-void OtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket>)
+void DUTOtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket>)
 {
 }
 

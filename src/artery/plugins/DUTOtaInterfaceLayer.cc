@@ -1,8 +1,8 @@
 #include "artery/networking/GeoNetIndication.h"
 #include "artery/networking/GeoNetPacket.h"
 #include "artery/nic/RadioDriverBase.h"
-#include "artery/plugins/OtaInterfaceLayer.h"
-#include "artery/plugins/OtaInterface.h"
+#include "artery/plugins/DUTOtaInterfaceLayer.h"
+#include "artery/plugins/DUTOtaInterface.h"
 #include "artery/traci/ControllableVehicle.h"
 #include <inet/common/ModuleAccess.h>
 #include <vanetza/net/packet_variant.hpp>
@@ -14,15 +14,14 @@
 namespace artery
 {
 
-Define_Module(OtaInterfaceLayer)
+Define_Module(DUTOtaInterfaceLayer)
 
-void OtaInterfaceLayer::initialize(int stage)
+void DUTOtaInterfaceLayer::initialize(int stage)
 {
     if(stage == 0){
         auto& mobilityPar = par("mobilityModule");
         auto* mobilityModule = getModuleByPath(mobilityPar);
         if (mobilityModule) {
-            std::cout << "##################################" << std::endl;
             mobilityModule->subscribe(MobilityBase::stateChangedSignal, this);
         } else {
             error("Module on path '%s' is not a VehicleMobility", mobilityModule->getFullPath().c_str());
@@ -31,7 +30,7 @@ void OtaInterfaceLayer::initialize(int stage)
 
     if (stage == 1) {
         std::string otaInterfaceModule = par("otaInterfaceModule");
-        mOtaModule = dynamic_cast<OtaInterface*>(getModuleByPath(otaInterfaceModule.c_str()));
+        mOtaModule = dynamic_cast<DUTOtaInterface*>(getModuleByPath(otaInterfaceModule.c_str()));
         if (!mOtaModule) {
             throw omnetpp::cRuntimeError(this, "Specified OTA module %s not found! "
                     "Check if withPlugins was set to true", otaInterfaceModule.c_str());
@@ -46,12 +45,12 @@ void OtaInterfaceLayer::initialize(int stage)
     }
 }
 
-void OtaInterfaceLayer::finish()
+void DUTOtaInterfaceLayer::finish()
 {
     mOtaModule->unregisterModule();
 }
 
-void OtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
+void DUTOtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
 {
     if (message->getArrivalGate() == mRadioDriverIn) {
         auto packet = check_and_cast<GeoNetPacket*>(message);
@@ -65,7 +64,7 @@ void OtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
     delete message;
 }
 
-void OtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
+void DUTOtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
 {
     Enter_Method("request");
     GeoNetPacket* ptr = packet.release();
@@ -73,7 +72,7 @@ void OtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
     send(ptr, mRadioDriverOut);
 }
 
-void OtaInterfaceLayer::receiveSignal(cComponent* component, simsignal_t signal, cObject* obj, cObject* details)
+void DUTOtaInterfaceLayer::receiveSignal(cComponent* component, simsignal_t signal, cObject* obj, cObject* details)
 {
     if (signal == MobilityBase::stateChangedSignal && mVehicleController) {
         dynamicsDut = getKinematics(*mVehicleController);
@@ -81,17 +80,17 @@ void OtaInterfaceLayer::receiveSignal(cComponent* component, simsignal_t signal,
     }
 }
 
-GeoPosition OtaInterfaceLayer::getCurrentPosition()
+GeoPosition DUTOtaInterfaceLayer::getCurrentPosition()
 {
     return mVehicleController->getGeoPosition();
 }
 
-vanetza::units::Velocity OtaInterfaceLayer::getCurrentSpeed()
+vanetza::units::Velocity DUTOtaInterfaceLayer::getCurrentSpeed()
 {
     return mVehicleController->getSpeed();
 }
 
-Angle OtaInterfaceLayer::getCurrentHeading()
+Angle DUTOtaInterfaceLayer::getCurrentHeading()
 {
     return mVehicleController->getHeading();
 }

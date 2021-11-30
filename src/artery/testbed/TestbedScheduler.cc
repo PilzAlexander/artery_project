@@ -105,7 +105,7 @@ omnetpp::cEvent* TestbedScheduler::peekFirstNonStaleEvent()
     return event;
 }
 
-void TestbedScheduler::setOtaIndicationQueue(std::shared_ptr<OtaIndicationQueue> queue)
+void TestbedScheduler::setOtaIndicationQueue(std::shared_ptr<DUTOtaIndicationQueue> queue)
 {
     mOtaIndicationQueue = queue;
 }

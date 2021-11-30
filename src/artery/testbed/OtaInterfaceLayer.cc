@@ -13,13 +13,13 @@
 namespace artery
 {
 
-Define_Module(OtaInterfaceLayer)
+Define_Module(DUTOtaInterfaceLayer)
 
-void OtaInterfaceLayer::initialize(int stage)
+void DUTOtaInterfaceLayer::initialize(int stage)
 {
     if (stage == 1) {
         std::string otaInterfaceModule = par("otaInterfaceModule");
-        mOtaModule = dynamic_cast<OtaInterface*>(getModuleByPath(otaInterfaceModule.c_str()));
+        mOtaModule = dynamic_cast<DUTOtaInterface*>(getModuleByPath(otaInterfaceModule.c_str()));
         if (!mOtaModule) {
             throw omnetpp::cRuntimeError(this, "Specified OTA module %s not found! "
                     "Check if withTestbed was set to true", otaInterfaceModule.c_str());
@@ -34,12 +34,12 @@ void OtaInterfaceLayer::initialize(int stage)
     }
 }
 
-void OtaInterfaceLayer::finish()
+void DUTOtaInterfaceLayer::finish()
 {
     mOtaModule->unregisterModule();
 }
 
-void OtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
+void DUTOtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
 {
     if (message->getArrivalGate() == mRadioDriverIn) {
         auto packet = check_and_cast<GeoNetPacket*>(message);
@@ -54,7 +54,7 @@ void OtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
     delete message;
 }
 
-void OtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
+void DUTOtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
 {
     Enter_Method("request");
     GeoNetPacket* ptr = packet.release();
@@ -62,17 +62,17 @@ void OtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
     send(ptr, mRadioDriverOut);
 }
 
-GeoPosition OtaInterfaceLayer::getCurrentPosition()
+GeoPosition DUTOtaInterfaceLayer::getCurrentPosition()
 {
     return mVehicleController->getGeoPosition();
 }
 
-vanetza::units::Velocity OtaInterfaceLayer::getCurrentSpeed()
+vanetza::units::Velocity DUTOtaInterfaceLayer::getCurrentSpeed()
 {
     return mVehicleController->getSpeed();
 }
 
-Angle OtaInterfaceLayer::getCurrentHeading()
+Angle DUTOtaInterfaceLayer::getCurrentHeading()
 {
     return mVehicleController->getHeading();
 }

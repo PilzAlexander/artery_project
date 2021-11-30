@@ -47,7 +47,7 @@ module Dut like INetworkNode
                 radioModule = ".wlan[" + string(index) + "].radio";
         }
 
-        otaInterfaceLayer: OtaInterfaceLayer {
+        otaInterfaceLayer: DUTOtaInterfaceLayer {
             parameters:
                 @display("p=250,200");
                 radioDriverModule = ".radioDriver[0]";

@@ -16,15 +16,15 @@
 namespace artery
 {
 
-class OtaInterface;
+class DUTOtaInterface;
 
 /**
- * The OtaIndicationQueue can be used to dispatch messages between an OtaInterface and an OMNeT++ scheduler
+ * The DUTOtaIndicationQueue can be used to dispatch messages between an DUTOtaInterface and an OMNeT++ scheduler
  */
-class OtaIndicationQueue
+class DUTOtaIndicationQueue
 {
 public:
-    OtaIndicationQueue(OtaInterface* interface);
+    DUTOtaIndicationQueue(DUTOtaInterface* interface);
 
     /**
      * Called by the scheduler to wait for the next event
@@ -32,7 +32,7 @@ public:
     virtual void waitFor(std::chrono::microseconds);
 
     /**
-     * Called by the OtaInterface when a new GeoNetPacket must be scheduled by OMNeT++
+     * Called by the DUTOtaInterface when a new GeoNetPacket must be scheduled by OMNeT++
      * \param GeoNetPacket to send
      */
     virtual void trigger(std::unique_ptr<GeoNetPacket>);
@@ -46,7 +46,7 @@ private:
     std::condition_variable mCondVar;
     std::vector<std::unique_ptr<GeoNetPacket>> mIndicationList;
     std::mutex mMutex;
-    OtaInterface* mOtaInterface;
+    DUTOtaInterface* mOtaInterface;
     bool mNotified;
 };
 

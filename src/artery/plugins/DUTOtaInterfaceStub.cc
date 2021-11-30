@@ -1,5 +1,5 @@
-#include "artery/plugins/OtaInterfaceStub.h"
-#include "artery/plugins/OtaIndicationQueue.h"
+#include "artery/plugins/DUTOtaInterfaceStub.h"
+#include "artery/plugins/DUTOtaIndicationQueue.h"
 #include "artery/plugins/DutScheduler.h"
 #include "SimSocket.h"
 
@@ -8,29 +8,29 @@
 namespace artery
 {
 
-Define_Module(OtaInterfaceStub)
+Define_Module(DUTOtaInterfaceStub)
 
-void OtaInterfaceStub::initialize()
+void DUTOtaInterfaceStub::initialize()
 {
     auto scheduler = dynamic_cast<DutScheduler*>(omnetpp::getSimulation()->getScheduler());
     if (scheduler) {
-        scheduler->setOtaIndicationQueue(std::make_shared<OtaIndicationQueue>(this));
+        scheduler->setOtaIndicationQueue(std::make_shared<DUTOtaIndicationQueue>(this));
     } else {
-        EV_INFO << "No OtaIndicationQueue passed to scheduler";
+        EV_INFO << "No DUTOtaIndicationQueue passed to scheduler";
     }
 }
 
-void OtaInterfaceStub::registerModule(OtaInterfaceLayer* layer)
+void DUTOtaInterfaceStub::registerModule(DUTOtaInterfaceLayer* layer)
 {
     mRegisteredModule = layer;
 }
 
-void OtaInterfaceStub::unregisterModule()
+void DUTOtaInterfaceStub::unregisterModule()
 {
     mRegisteredModule = nullptr;
 }
 
-void OtaInterfaceStub::sendMessage(const vanetza::MacAddress& MacSource, const vanetza::MacAddress& MacDest, const vanetza::byte_view_range& byteViewRange)
+void DUTOtaInterfaceStub::sendMessage(const vanetza::MacAddress& MacSource, const vanetza::MacAddress& MacDest, const vanetza::byte_view_range& byteViewRange)
 {
     // create module pointer to SimSocket with ID = 6
     cModule *mod = getSimulation()->getModule(6);
@@ -43,8 +43,9 @@ void OtaInterfaceStub::sendMessage(const vanetza::MacAddress& MacSource, const v
 
 }
 
-void OtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket>)
+void DUTOtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket>)
 {
+    //
 }
 
 } // namespace artery

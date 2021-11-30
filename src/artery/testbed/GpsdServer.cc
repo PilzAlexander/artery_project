@@ -19,7 +19,7 @@ GpsdServer::~GpsdServer()
     mSocket.close();
 }
 
-void GpsdServer::sendPositionFix(OtaInterfaceLayer& ota)
+void GpsdServer::sendPositionFix(DUTOtaInterfaceLayer& ota)
 {
     auto pos = ota.getCurrentPosition();
     vanetza::Wgs84Point point(pos.latitude, pos.longitude);

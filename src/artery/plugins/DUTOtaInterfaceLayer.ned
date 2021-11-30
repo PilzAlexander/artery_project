@@ -1,9 +1,9 @@
 package artery.plugins;
 
-simple OtaInterfaceLayer
+simple DUTOtaInterfaceLayer
 {
 	parameters:
-		@class(OtaInterfaceLayer);
+		@class(DUTOtaInterfaceLayer);
 		string otaInterfaceModule = default("otaInterface");
 		string radioDriverModule;
 		string mobilityModule = default(".^.mobility");

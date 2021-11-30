@@ -129,23 +129,20 @@ void SimSocket::unbind(const PortName &portName) {
 // publish data
 void SimSocket::publish() {
   //Enter_Method("publish()");
-
-    //std::cout << "Speed Data: " << vehicleDataMap["Speed_DUT"] << endl;
-    //std::cout << "Speed Dynamics: " << vehicleDynamicsMap["Speed Dynamics"] << endl;
-
     //serialize map
     std::ostringstream ss;
     boost::archive::text_oarchive archive(ss);
 
     archive << vehicleDataMap_;
 
+    /*
     for(const auto& elem : vehicleDataMap_)
     {
         std::cout << elem.first << " " << elem.second << " " << "\n";
     }
 
     std::cout << "*******************^^vehicleDataMap^^**********************************" << endl;
-
+*/
     //archive << vehicleDynamicsMap;
 
     std::string outbound_data = ss.str();
@@ -153,7 +150,7 @@ void SimSocket::publish() {
     zmq::message_t msgToSend(outbound_data);
 
     try {
-        std::cout << "Message: " << msgToSend << endl;
+        //std::cout << "Message: " << msgToSend << endl;
         publisherSocket_.send(msgToSend, zmq::send_flags::none);
 
     } catch (zmq::error_t cantSend) {
@@ -256,12 +253,13 @@ void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope tra
     vehicleDataMap_.insert(std::pair<std::string, std::string>("LaneID_DUT", traci.getLaneID(vehicleID)));
     vehicleDataMap_.insert(std::pair<std::string, double>("LaneIndex_DUT", traci.getLaneIndex(vehicleID)));
 
+    /*
     for(const auto& elem : vehicleDataMap_)
     {
         std::cout << elem.first << " " << elem.second << " " << "\n";
     }
     std::cout << "*************************INDERGETDATAMETHODE****************************" << endl;
-
+*/
 }
 
 void SimSocket::getVehicleDynamics(VehicleKinematics dynamics){
@@ -304,6 +302,7 @@ void SimSocket::getVehicleDynamics(VehicleKinematics dynamics){
 
 void SimSocket::getOtaInterfaceStub(vanetza::MacAddress& MacSource, vanetza::MacAddress& MacDest, vanetza::byte_view_range& byteViewRange) {
     //std::cout << "SOURCE: " << MacSource << endl;
+    //std::cout << "byte_view_range " << byteViewRange << endl;
 }
 
 /*

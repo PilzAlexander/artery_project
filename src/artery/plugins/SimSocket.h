@@ -42,7 +42,7 @@
 #include <omnetpp/clistener.h>
 #include <omnetpp/csimplemodule.h>
 #include "artery/application/VehicleKinematics.h"
-#include "OtaInterfaceStub.h"
+#include "DUTOtaInterfaceStub.h"
 
 #include <iostream>
 #include <functional>

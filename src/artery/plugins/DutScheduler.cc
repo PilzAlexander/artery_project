@@ -104,7 +104,7 @@ omnetpp::cEvent* DutScheduler::peekFirstNonStaleEvent()
     return event;
 }
 
-void DutScheduler::setOtaIndicationQueue(std::shared_ptr<OtaIndicationQueue> queue)
+void DutScheduler::setOtaIndicationQueue(std::shared_ptr<DUTOtaIndicationQueue> queue)
 {
     mOtaIndicationQueue = queue;
 }

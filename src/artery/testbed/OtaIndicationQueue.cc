@@ -4,12 +4,12 @@
 namespace artery
 {
 
-OtaIndicationQueue::OtaIndicationQueue(OtaInterface* interface) :
+DUTOtaIndicationQueue::DUTOtaIndicationQueue(DUTOtaInterface* interface) :
     mOtaInterface(interface), mNotified(false)
 {
 }
 
-void OtaIndicationQueue::waitFor(std::chrono::microseconds waitFor)
+void DUTOtaIndicationQueue::waitFor(std::chrono::microseconds waitFor)
 {
     std::unique_lock<std::mutex> lock(mMutex);
     if (mCondVar.wait_for(lock, waitFor, [this]{ return mNotified; })) {
@@ -24,7 +24,7 @@ void OtaIndicationQueue::waitFor(std::chrono::microseconds waitFor)
     }
 }
 
-void OtaIndicationQueue::trigger(std::unique_ptr<GeoNetPacket> ind)
+void DUTOtaIndicationQueue::trigger(std::unique_ptr<GeoNetPacket> ind)
 {
     std::lock_guard<std::mutex> lock(mMutex);
     mIndicationList.emplace_back(std::move(ind));
@@ -32,7 +32,7 @@ void OtaIndicationQueue::trigger(std::unique_ptr<GeoNetPacket> ind)
     mCondVar.notify_one();
 }
 
-void OtaIndicationQueue::flushQueue()
+void DUTOtaIndicationQueue::flushQueue()
 {
     std::lock_guard<std::mutex> lock(mMutex);
     if (mOtaInterface->hasRegisteredModule()) {

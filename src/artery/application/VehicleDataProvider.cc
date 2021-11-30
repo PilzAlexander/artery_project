@@ -170,9 +170,6 @@ void VehicleDataProvider::update(const VehicleKinematics& dynamics)
 	mLastUpdate = simTime();
 	calculateCurvature();
 	calculateCurvatureConfidence();
-
-    //get data for dut
-    SimSocket::getVehicleDynamics(mVehicleKinematics);
 }
 
 double VehicleDataProvider::mapOntoConfidence(AngularAcceleration x) const

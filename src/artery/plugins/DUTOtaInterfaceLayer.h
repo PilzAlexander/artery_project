@@ -4,8 +4,8 @@
  * Licensed under GPLv2, see COPYING file for detailed license and warranty terms.
  */
 
-#ifndef ARTERY_OTAINTERFACELAYER_H
-#define ARTERY_OTAINTERFACELAYER_H
+#ifndef ARTERY_DUTOTAINTERFACELAYER_H
+#define ARTERY_DUTOTAINTERFACELAYER_H
 
 #include "artery/networking/GeoNetPacket.h"
 #include "artery/utility/Geometry.h"
@@ -18,21 +18,21 @@ namespace traci { class VehicleController; }
 namespace artery
 {
 
-class OtaInterface;
+class DUTOtaInterface;
 
-class OtaInterfaceLayer : public omnetpp::cSimpleModule, public omnetpp::cListener
+class DUTOtaInterfaceLayer : public omnetpp::cSimpleModule, public omnetpp::cListener
 {
 public:
     /**
-     * Initializes the module and registers at the OtaInterface
+     * Initializes the module and registers at the DUTOtaInterface
      */
     void initialize(int) override;
     int numInitStages() const override { return 2; }
     void finish() override;
 
     /**
-     * Receives messages from lower layers and handles it to the OtaInterface
-     * \param msg Message to be transmitted to OtaInterface
+     * Receives messages from lower layers and handles it to the DUTOtaInterface
+     * \param msg Message to be transmitted to DUTOtaInterface
      */
     void handleMessage(omnetpp::cMessage* msg) override;
 
@@ -64,13 +64,13 @@ protected:
     void receiveSignal(omnetpp::cComponent*, omnetpp::simsignal_t, omnetpp::cObject*, omnetpp::cObject*);
 
 private:
-    OtaInterface* mOtaModule;
+    DUTOtaInterface* mOtaModule;
     omnetpp::cGate* mRadioDriverIn;
     omnetpp::cGate* mRadioDriverOut;
-    traci::VehicleController* mVehicleController;
+    traci::VehicleController* mVehicleController = nullptr;
     VehicleKinematics dynamicsDut;
 };
 
 } // namespace artery
 
-#endif /* ARTERY_OTAINTERFACELAYER_H */
+#endif /* ARTERY_DUTOTAINTERFACELAYER_H */

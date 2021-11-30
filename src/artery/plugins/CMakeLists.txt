@@ -1,8 +1,8 @@
 add_artery_feature(plugins
         GpsdServer.cc
-        OtaIndicationQueue.cc
-        OtaInterfaceLayer.cc
-        OtaInterfaceStub.cc
+        DUTOtaIndicationQueue.cc
+        DUTOtaInterfaceLayer.cc
+        DUTOtaInterfaceStub.cc
         DutContention.cc
         DutRadio.cc
         SimSocket.cpp

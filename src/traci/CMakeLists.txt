@@ -25,8 +25,8 @@ set(SOURCES
     ../artery/plugins/MessageContext.cpp
         DutNodeManager.cpp
         DutModuleMapper.cpp
-        #../artery/plugins/OtaInterfaceStub.cc
-        ../artery/plugins/OtaInterfaceLayer.cc
+        #../artery/plugins/DUTOtaInterfaceStub.cc
+        ../artery/plugins/DUTOtaInterfaceLayer.cc
         )
 
 add_library(traci SHARED ${SOURCES})

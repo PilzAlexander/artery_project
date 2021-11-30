@@ -14,21 +14,21 @@
 namespace artery
 {
 /**
- * The OtaInterfaceStub provides a implementation of the OtaInterface which acts as an stub to work without any hardware connected.
+ * The DUTOtaInterfaceStub provides a implementation of the DUTOtaInterface which acts as an stub to work without any hardware connected.
  * It implements all necessary methods, mos of them doing nothing.
  * It can be used to compile the testbed without any external library available (like the S.E.A. API required by the OtaInterfaceUsrp).
  */
-class OtaInterfaceStub : public OtaInterface, public omnetpp::cSimpleModule
+class DUTOtaInterfaceStub : public DUTOtaInterface, public omnetpp::cSimpleModule
 {
 public:
     void initialize() override;
-    void registerModule(OtaInterfaceLayer*) override;
+    void registerModule(DUTOtaInterfaceLayer*) override;
     void unregisterModule() override;
     void sendMessage(const vanetza::MacAddress&, const vanetza::MacAddress&, const vanetza::byte_view_range&) override;
     void receiveMessage(std::unique_ptr<GeoNetPacket>) override;
     bool hasRegisteredModule() override { return mRegisteredModule != nullptr; }
 private:
-    OtaInterfaceLayer* mRegisteredModule = nullptr;
+    DUTOtaInterfaceLayer* mRegisteredModule = nullptr;
 };
 
 } // namespace artery

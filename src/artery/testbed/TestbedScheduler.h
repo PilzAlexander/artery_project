@@ -21,7 +21,7 @@
 namespace artery
 {
 
-class OtaIndicationQueue;
+class DUTOtaIndicationQueue;
 
 class TestbedScheduler : public omnetpp::cScheduler
 {
@@ -32,14 +32,14 @@ public:
     omnetpp::cEvent* guessNextEvent() override;
     void putBackEvent(omnetpp::cEvent*) override;
 
-    virtual void setOtaIndicationQueue(std::shared_ptr<OtaIndicationQueue>);
+    virtual void setOtaIndicationQueue(std::shared_ptr<DUTOtaIndicationQueue>);
 
 protected:
     virtual void doTiming(omnetpp::cEvent*);
     omnetpp::cEvent* peekFirstNonStaleEvent();
 
 private:
-    std::shared_ptr<OtaIndicationQueue> mOtaIndicationQueue = nullptr;
+    std::shared_ptr<DUTOtaIndicationQueue> mOtaIndicationQueue = nullptr;
     std::chrono::system_clock::time_point mBaseTime;
     std::chrono::system_clock::duration mThresholdTooSlow;
     omnetpp::simtime_t mStartupTime;

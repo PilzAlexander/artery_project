@@ -4,7 +4,7 @@
  * Licensed under GPLv2, see COPYING file for detailed license and warranty terms.
  */
 
-#ifndef ARTERY_OTAINTERFACELAYER_H
+#ifndef ARTERY_DUTOTAINTERFACELAYER_H
 #define ARTERY_OTAINTERFACELAYER_H
 
 #include "artery/networking/GeoNetPacket.h"
@@ -17,21 +17,21 @@ namespace traci { class VehicleController; }
 namespace artery
 {
 
-class OtaInterface;
+class DUTOtaInterface;
 
-class OtaInterfaceLayer : public omnetpp::cSimpleModule
+class DUTOtaInterfaceLayer : public omnetpp::cSimpleModule
 {
 public:
     /**
-     * Initializes the module and registers at the OtaInterface
+     * Initializes the module and registers at the DUTOtaInterface
      */
     void initialize(int) override;
     int numInitStages() const override { return 2; }
     void finish() override;
 
     /**
-     * Receives messages from lower layers and handles it to the OtaInterface
-     * \param msg Message to be transmitted to OtaInterface
+     * Receives messages from lower layers and handles it to the DUTOtaInterface
+     * \param msg Message to be transmitted to DUTOtaInterface
      */
     void handleMessage(omnetpp::cMessage* msg) override;
 
@@ -60,7 +60,7 @@ public:
     Angle getCurrentHeading();
 
 private:
-    OtaInterface* mOtaModule;
+    DUTOtaInterface* mOtaModule;
     omnetpp::cGate* mRadioDriverIn;
     omnetpp::cGate* mRadioDriverOut;
     traci::VehicleController* mVehicleController;
@@ -68,4 +68,4 @@ private:
 
 } // namespace artery
 
-#endif /* ARTERY_OTAINTERFACELAYER_H */
+#endif /* ARTERY_DUTOTAINTERFACELAYER_H */

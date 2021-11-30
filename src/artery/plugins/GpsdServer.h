@@ -8,7 +8,7 @@
 namespace artery
 {
 
-class OtaInterfaceLayer;
+class DUTOtaInterfaceLayer;
 
 class GpsdServer
 {
@@ -20,7 +20,7 @@ public:
      */
     GpsdServer(const std::string& timebase, unsigned short port);
     ~GpsdServer();
-    void sendPositionFix(OtaInterfaceLayer&);
+    void sendPositionFix(DUTOtaInterfaceLayer&);
 
 private:
     void write(const std::string& sentence);
