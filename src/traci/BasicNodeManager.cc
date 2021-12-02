@@ -7,14 +7,11 @@
 #include "traci/VariableCache.h"
 #include "traci/VehicleSink.h"
 #include <inet/common/ModuleAccess.h>
-#include <string>
-#include <ostream>
 
 using namespace omnetpp;
 
 namespace traci
 {
-
 namespace
 {
 static const std::set<int> sPersonVariables {
@@ -195,7 +192,6 @@ void BasicNodeManager::removeVehicle(const std::string& id)
 void BasicNodeManager::updateVehicle(const std::string& id, VehicleSink* sink)
 {
     auto vehicle = m_subscriptions->getVehicleCache(id);
-
     VehicleObjectImpl update(vehicle);
     emit(updateVehicleSignal, id.c_str(), &update);
     if (sink) {

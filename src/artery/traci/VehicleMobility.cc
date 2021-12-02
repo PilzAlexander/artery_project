@@ -2,14 +2,6 @@
 #include "artery/traci/VehicleMobility.h"
 #include <omnetpp/cwatch.h>
 
-#include <iostream>
-#include <fstream>
-#include <zmq.h>
-#include <string.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <assert.h>
-
 using namespace traci;
 
 namespace artery
@@ -24,8 +16,6 @@ void VehicleMobility::initializeSink(std::shared_ptr<API> api, std::shared_ptr<V
     mNetBoundary = boundary;
     mController.reset(new VehicleController(api, cache));
 }
-
-
 
 void VehicleMobility::initializeVehicle(const TraCIPosition& traci_pos, TraCIAngle traci_heading, double traci_speed)
 {
@@ -43,8 +33,8 @@ void VehicleMobility::updateVehicle(const TraCIPosition& traci_pos, TraCIAngle t
 
 VehicleController* VehicleMobility::getVehicleController()
 {
-ASSERT(mController);
-return mController.get();
+    ASSERT(mController);
+    return mController.get();
 }
 
 } // namespace artery

@@ -74,6 +74,7 @@ SimSocket::SimSocket() {}
 
 // destructor
 SimSocket::~SimSocket() {
+    //unbind(portName_);
     close();
 }
 
@@ -130,7 +131,7 @@ void SimSocket::publish() {
     std::ostringstream ss;
     boost::archive::text_oarchive archive(ss);
 
-    archive << vehicleDataMap_;
+   // archive << vehicleDataMap_;
 
     /*
     for(const auto& elem : vehicleDataMap_)
@@ -141,6 +142,7 @@ void SimSocket::publish() {
     std::cout << "*******************^^vehicleDataMap^^**********************************" << endl;
 */
     //archive << vehicleDynamicsMap;
+
 
     std::string outbound_data = ss.str();
     // create buffer size for message
@@ -156,13 +158,14 @@ void SimSocket::publish() {
     }
 }
 
-void SimSocket::publishSimMsg(zmq::socket_t socket, const std::string & port){
+void SimSocket::publishSimMsg(const vanetza::byte_view_range& byteViewRange){
 
-    //serialize map
+   /* //serialize map
     std::ostringstream ss;
     boost::archive::text_oarchive archive(ss);
-    archive << vehicleDataMap_;
-    archive << vehicleDynamicsMap;
+
+    archive << byteViewRange;
+
     std::string outbound_data = ss.str();
     // create buffer size for message
     zmq::message_t msgToSend(outbound_data);
@@ -174,7 +177,7 @@ void SimSocket::publishSimMsg(zmq::socket_t socket, const std::string & port){
     } catch (zmq::error_t cantSend) {
         cerr << "Socket can't send: " << cantSend.what() << endl;
         unbind(portName_);
-    }
+    }*/
 }
 
 // subscribe to incoming data
@@ -199,27 +202,13 @@ void SimSocket::subscribe() {
 
         try
         {
-            archive >> inputDataMap;
+            //archive >> inputDataMap_;
         } catch (boost::archive::archive_exception& ex) {
             std::cout << "Archive Exception during deserializing:" << std::endl;
             std::cout << ex.what() << std::endl;
         } catch (int e) {
             std::cout << "EXCEPTION " << e << std::endl;
         }
-
-        /*
-        std::vector<std::string> keyVektor;
-        std::vector<boost::variant<int, double, std::string>> valueVektor;
-        for (auto const& element: inputDataMap) {
-            keyVektor.push_back(element.first);
-            valueVektor.push_back(element.second);
-            std::string keyAsString = element.first;
-            auto valueAsAny =   element.second;
-            std::stringstream stringStreamValue ;
-            stringStreamValue <<  valueAsAny;
-            std::cout << "Key: " << element.first << std::endl;
-            std::cout << "value: " << stringStreamValue.str() << std::endl;
-        }*/
 }
 
 // call in basic node manager to get data and write to a global map
@@ -260,81 +249,39 @@ void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope tra
 }
 
 void SimSocket::getVehicleDynamics(VehicleKinematics dynamics){
-    DataMap map;
 
     if(!isnan(dynamics.speed.value())){
-        map.insert(std::pair<std::string, double>("Speed_Dynamics", dynamics.speed.value()));
+        vehicleDataMap_.insert(std::pair<std::string, double>("Speed_Dynamics", dynamics.speed.value()));
     }
     if(!isnan(dynamics.yaw_rate.value())){
-        map.insert(std::pair<std::string, double>("YawRate_Dynamics", dynamics.yaw_rate.value()));
+        vehicleDataMap_.insert(std::pair<std::string, double>("YawRate_Dynamics", dynamics.yaw_rate.value()));
     }
     if(!isnan(dynamics.acceleration.value())){
-        map.insert(std::pair<std::string, double>("Acceleration_Dynamics", dynamics.acceleration.value()));
+        vehicleDataMap_.insert(std::pair<std::string, double>("Acceleration_Dynamics", dynamics.acceleration.value()));
     }
     if(!isnan(dynamics.heading.value())){
-        map.insert(std::pair<std::string, double>("Heading_Dynamics", dynamics.heading.value()));
+        vehicleDataMap_.insert(std::pair<std::string, double>("Heading_Dynamics", dynamics.heading.value()));
     }
     if(!isnan(dynamics.geo_position.latitude.value())){
-        map.insert(std::pair<std::string, double>("Latitude_Dynamics", dynamics.geo_position.latitude.value()));
+        vehicleDataMap_.insert(std::pair<std::string, double>("Latitude_Dynamics", dynamics.geo_position.latitude.value()));
     }
     if(!isnan(dynamics.geo_position.longitude.value())){
-        map.insert(std::pair<std::string, double>("Longitude_Dynamics", dynamics.geo_position.longitude.value()));
+        vehicleDataMap_.insert(std::pair<std::string, double>("Longitude_Dynamics", dynamics.geo_position.longitude.value()));
     }
     if(!isnan(dynamics.position.x.value())){
-        map.insert(std::pair<std::string, double>("PosX_Dynamics", dynamics.position.x.value()));
+        vehicleDataMap_.insert(std::pair<std::string, double>("PosX_Dynamics", dynamics.position.x.value()));
     }
     if(!isnan(dynamics.position.y.value())){
-        map.insert(std::pair<std::string, double>("PosY_Dynamics", dynamics.position.y.value()));
+        vehicleDataMap_.insert(std::pair<std::string, double>("PosY_Dynamics", dynamics.position.y.value()));
     }
-
 /*
-    for(const auto& elem : map)
+    for(const auto& elem : vehicleDataMap_)
     {
         std::cout << elem.first << " " << elem.second << " " << "\n";
     }
     std::cout << "*****************************************************" << endl;
 */
-    vehicleDynamicsMap = map;
 }
-
-void SimSocket::getOtaInterfaceStub(vanetza::MacAddress& MacSource, vanetza::MacAddress& MacDest, vanetza::byte_view_range& byteViewRange) {
-    //std::cout << "SOURCE: " << MacSource << endl;
-    //std::cout << "byte_view_range " << byteViewRange << endl;
-}
-
-/*
-void SimSocket::getEvent(omnetpp::cEvent* event){
-    DataMap map;
-
-    map.insert(std::pair<std::string, string>("Event: ",  event->str()));
-    map.insert(std::pair<std::string, string>("Name: ",  event->getName()));
-    map.insert(std::pair<std::string, string>("TargetObject: ",  event->getTargetObject()->str()));
-    map.insert(std::pair<std::string, string>("Owner: ",  event->getOwner()->str()));
-    map.insert(std::pair<std::string, string>("Descriptor: ",  event->getDescriptor()->str()));
-    map.insert(std::pair<std::string, string>("ArrivalTime: ",  event->getArrivalTime().str()));
-    map.insert(std::pair<std::string, int>("PreviousEventNumber: ",  event->getPreviousEventNumber()));
-    map.insert(std::pair<std::string, int>("NamePooling: ",  event->getNamePooling()));
-
-    EventMap = map;
-
-    /*
-    for(const auto& elem : map)
-    {
-        std::cout << elem.first << " " << elem.second << " " << "\n";
-    }
-    std::cout << "*****************************************************" << endl;
-*/
-
-    /*
-    std::cout << "*****************************" << std::endl;
-    std::cout << "String:    " << event->str() << std::endl;
-    std::cout << "Name:    " << event->getName() << std::endl;
-    std::cout << "Target:    " << event->getTargetObject() << std::endl;
-    std::cout << "Owner:    " << event->getOwner() << std::endl;
-    std::cout << "Descriptor:    " << event->getDescriptor() << std::endl;
-    std::cout << "*****************************" << std::endl;
-*/
-//}
 
 /*
 void SimSocket::setVehicleData(TraCIAPI::VehicleScope traci, DataMap map) {
@@ -367,38 +314,9 @@ void SimSocket::receiveSignal(cComponent*, simsignal_t signal, unsigned long, cO
 {
     if (signal == traci::BasicNodeManager::updateNodeSignal) {
         publish();
-        //publishSimMsg(publisherSocket_,portName_);
         subscribe();
     }
 }
-/********************************************************************************
- * Getter and Setter
- ********************************************************************************/
-const SimSocket::PortName &SimSocket::getPortName() const {
-    return portName_;
-}
-
-const zmq::message_t &SimSocket::getNullMessage() const {
-    return nullMessage_;
-}
-
-const vector<SimSocket::PortName> &SimSocket::getConnections() const {
-    return connections_;
-}
-
-const vector<SimSocket::PortName> &SimSocket::getBindings() const {
-    return bindings_;
-}
-
-const zmq::context_t &SimSocket::getContext() const {
-    return context_;
-}
-
-    const SimSocket::DataMap &SimSocket::getVehicleDataMap() const {
-        return vehicleDataMap_;
-    }
-
-
 }// namespace artery
 /********************************************************************************
  * EOF

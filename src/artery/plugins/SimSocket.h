@@ -67,11 +67,9 @@ class VehicleCache;
 
 namespace artery {
 
-    //inline std::map <std::string, boost::variant<int, double, std::string>> vehicleDataMap;
-    inline std::map <std::string, boost::variant<int, double, std::string>> vehicleDynamicsMap;
-    inline std::map <std::string, boost::variant<int, double, std::string>> tmpVehicleDataMap;
-    inline std::map <std::string, boost::variant<int, double, std::string>> inputDataMap;
-
+    /**
+     * Module for collecting data from the simulation and sending it to the interface hardware
+     */
     class SimSocket : public traci::Listener, public omnetpp::cSimpleModule
     {
     public:
@@ -81,8 +79,13 @@ namespace artery {
         using DataMap = std::map <std::string, boost::variant<int, double, std::string>>;
         static const omnetpp::simsignal_t dataStateChanged;
 
-        // constructor and deconstructor
+        /**
+         * Constructor of SimSocket
+         */
         SimSocket();
+        /**
+         * Deconstructor of SimSocket
+         */
         ~SimSocket();
 
         // socket functions
@@ -93,32 +96,40 @@ namespace artery {
         void unbind(const PortName &portName);
 
         // send and receive functions
+        /**
+         * Method for publishing vehicle data, such as speed, dynamics, ...
+         */
         void publish();
-        void publishSimMsg(zmq::socket_t socket, const std::string & port);
+        /**
+         * Method for publishing simulated messages addressed to the dut
+         * @param byteViewRange
+         */
+        void publishSimMsg(const vanetza::byte_view_range& byteViewRange);
+        /**
+         * Method for subscribing to the interface hardware and receiving vehicle data
+         */
         void subscribe();
 
-        // get the vehicle data for the map to send
+        void subscribeDutMsg(std::unique_ptr<GeoNetPacket> packet);
+        /**
+         * Method for collecting simulated vehicle data from the DutNodeManager
+         * @param vehicleID
+         * @param traci
+         */
         void getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci);
-        static void getVehicleDynamics(VehicleKinematics dynamics);
-        //static void getEvent(omnetpp::cEvent* event);
-        static void getOtaInterfaceStub(vanetza::MacAddress& MacSource, vanetza::MacAddress& MacDest, vanetza::byte_view_range& byteViewRange);
-
+        /**
+         * Method for collecting the simulated vehicle dynamics
+         * @param dynamics
+         */
+        void getVehicleDynamics(VehicleKinematics dynamics);
         //static void setVehicleData(TraCIAPI::VehicleScope traci, DataMap map);
 
-        // getter
-        const PortName &getPortName() const;
-        const zmq::message_t &getNullMessage() const;
-        const std::vector<SimSocket::PortName> &getConnections() const;
-        const std::vector<SimSocket::PortName> &getBindings() const;
-        const zmq::context_t &getContext() const;
+        //getter
         traci::SubscriptionManager *getSubscriptions() { return subscriptions_; }
-        const std::unique_ptr<zmq::socket_t> &getPublisherSocket() const;
-        const DataMap &getVehicleDataMap() const;
 
     protected:
         void initialize() override;
         void finish() override;
-        std::shared_ptr<traci::API> api_;
         traci::SubscriptionManager *subscriptions_{};
 
     private:
@@ -127,16 +138,18 @@ namespace artery {
         zmq::socket_t publisherSocket_;
         zmq::socket_t subscriberSocket_;
         zmq::context_t context_;
-        zmq::message_t nullMessage_;
         std::vector<PortName> connections_;
         std::vector<PortName> bindings_;
         DataMap vehicleDataMap_;
-        const traci::VehicleController* mVehicleController;
+        DataMap inputDataMap_;
+        const traci::VehicleController* mVehicleController = nullptr;
 
     void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) override;
+
     };
 
-}//namespace artery
+} //namespace artery
+
 #endif //ARTERY_SIMSOCKET_H
 /********************************************************************************
  * EOF

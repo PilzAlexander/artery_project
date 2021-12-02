@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.4)
 project(Artery)
 
-
 if(POLICY CMP0076)
     cmake_policy(SET CMP0076 NEW)
 endif()
@@ -96,6 +95,7 @@ option(WITH_STORYBOARD "Build Artery with storyboard feature" ON)
 option(WITH_TRANSFUSION "Build Artery with transfusion feature" OFF)
 #TODO $Variable für WITH_TESTBED
 option(WITH_TESTBED "Build Artery with testbed feature" ON)
+#set(WITH_TESTBED OFF)
 option(WITH_PLUGINS "Build Artery with communication options to a dut" ON)
 
 option(WITH_OTS "Build Artery with support for OpenTrafficSim" OFF)

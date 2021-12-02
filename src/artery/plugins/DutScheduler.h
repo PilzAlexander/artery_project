@@ -4,8 +4,8 @@
  * Licensed under GPLv2, see COPYING file for detailed license and warranty terms.
  */
 
-#ifndef ARTERY_TESTBEDSCHEDULER_H_NJ0QMNVB
-#define ARTERY_TESTBEDSCHEDULER_H_NJ0QMNVB
+#ifndef ARTERY_DUTSCHEDULER_H_NJ0QMNVB
+#define ARTERY_DUTSCHEDULER_H_NJ0QMNVB
 
 #include <omnetpp/cscheduler.h>
 #include <omnetpp/simtime.h>
@@ -44,4 +44,4 @@ private:
 
 } // namespace artery
 
-#endif /* ARTERY_TESTBEDSCHEDULER_H_NJ0QMNVB */
+#endif /* ARTERY_DUTSCHEDULER_H_NJ0QMNVB */

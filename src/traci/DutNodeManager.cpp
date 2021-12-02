@@ -26,6 +26,7 @@
 #include "traci/VehicleSink.h"
 #include <ostream>
 
+
 #include "artery/traci/VehicleController.h"
 #include "artery/application/StationType.h"
 #include "artery/storyboard/Vehicle.h"

@@ -36,11 +36,6 @@ void DUTOtaInterfaceStub::sendMessage(const vanetza::MacAddress& MacSource, cons
     cModule *mod = getSimulation()->getModule(6);
     auto *m_target = check_and_cast<artery::SimSocket *>(mod);
     m_target->publish();
-
-    SimSocket::getOtaInterfaceStub(const_cast<vanetza::MacAddress &>(MacSource),
-                                   const_cast<vanetza::MacAddress &>(MacDest),
-                                   const_cast<vanetza::byte_view_range &>(byteViewRange));
-
 }
 
 void DUTOtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket>)

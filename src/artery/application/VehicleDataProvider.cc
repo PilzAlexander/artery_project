@@ -31,9 +31,6 @@
 #include <random>
 #include <stdexcept>
 
-//************
-#include "artery/plugins/SimSocket.h"
-//************
 
 namespace artery
 {
@@ -167,6 +164,7 @@ void VehicleDataProvider::update(const VehicleKinematics& dynamics)
 		// update has been called for this time step already before
 		return;
 	}
+
 	mLastUpdate = simTime();
 	calculateCurvature();
 	calculateCurvatureConfidence();

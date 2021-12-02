@@ -13,11 +13,10 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <iostream>
-#include <bitset>
 
 namespace traci
 {
+
 class API;
 class ModuleMapper;
 class PersonSink;
@@ -91,23 +90,25 @@ protected:
     void traciStep() override;
     void traciClose() override;
 
+    SubscriptionManager* m_subscriptions;
     std::shared_ptr<API> m_api;
-    SubscriptionManager* m_subscriptions{};
-
 private:
-    ModuleMapper* m_mapper{};
+    //std::shared_ptr<API> m_api;
+    ModuleMapper* m_mapper;
     Boundary m_boundary;
-    unsigned m_nodeIndex{};
+    //SubscriptionManager* m_subscriptions;
+    unsigned m_nodeIndex;
     std::map<std::string, omnetpp::cModule*> m_nodes;
     std::map<std::string, PersonSink*> m_persons;
     std::map<std::string, VehicleSink*> m_vehicles;
     std::string m_vehicle_sink_module;
     std::string m_person_sink_module;
-    bool m_destroy_vehicles_on_crash{};
-    bool m_ignore_persons{};
+    bool m_destroy_vehicles_on_crash;
+    bool m_ignore_persons;
     omnetpp::SimTime m_offset = omnetpp::SimTime::ZERO;
 };
 
 } // namespace traci
 
 #endif /* BASICNODEMANAGER_H_XL6ISC2V */
+

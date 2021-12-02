@@ -76,7 +76,9 @@ void DUTOtaInterfaceLayer::receiveSignal(cComponent* component, simsignal_t sign
 {
     if (signal == MobilityBase::stateChangedSignal && mVehicleController) {
         dynamicsDut = getKinematics(*mVehicleController);
-        SimSocket::getVehicleDynamics(dynamicsDut);
+        cModule *mod = getSimulation()->getModule(6);
+        auto *m_target = check_and_cast<artery::SimSocket *>(mod);
+        m_target->getVehicleDynamics(dynamicsDut);
     }
 }
 

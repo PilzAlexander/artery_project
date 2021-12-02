@@ -66,8 +66,6 @@ omnetpp::cEvent* DutScheduler::takeNextEvent()
 
 void DutScheduler::doTiming(omnetpp::cEvent* event)
 {
-    //get simulation event
-    //SimSocket::getEvent(event);
 
     using namespace std::chrono;
     auto arrival = mBaseTime + microseconds(event->getArrivalTime().inUnit(omnetpp::SIMTIME_US));

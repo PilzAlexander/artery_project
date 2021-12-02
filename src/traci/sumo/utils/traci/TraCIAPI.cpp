@@ -3146,6 +3146,7 @@ TraCIAPI::VehicleScope::addSubscriptionFilterByteList(int filterType, const std:
     myParent.processSet(libsumo::CMD_ADD_SUBSCRIPTION_FILTER);
 }
 
+
 // ---------------------------------------------------------------------------
 // TraCIAPI::PersonScope-methods
 // ---------------------------------------------------------------------------

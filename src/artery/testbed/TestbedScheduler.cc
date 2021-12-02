@@ -4,10 +4,7 @@
 #include <omnetpp/cconfiguration.h>
 #include <omnetpp/cfutureeventset.h>
 #include <omnetpp/regmacros.h>
-#include <omnetpp/ccomponent.h>
-#include <fstream>
-#include "omnetpp.h"
-#include <thread>
+
 namespace artery
 {
 
@@ -24,7 +21,6 @@ void TestbedScheduler::startRun()
     mThresholdTooSlow = std::chrono::milliseconds(config->getAsInt(CFG_SIMULATION_TOO_SLOW));
     mStartupTime = config->getAsDouble(CFG_STARTUP_TIME);
     mBaseTime = std::chrono::system_clock::now();
-
 }
 
 void TestbedScheduler::executionResumed()
@@ -52,7 +48,6 @@ omnetpp::cEvent* TestbedScheduler::takeNextEvent()
     using namespace omnetpp;
     cEvent* init = peekFirstNonStaleEvent();
     cEvent* after = init;
-    //std::cout << "takeNextEvent \n";
     do {
         init = after;
         doTiming(init);
@@ -61,10 +56,6 @@ omnetpp::cEvent* TestbedScheduler::takeNextEvent()
 
     cEvent* next = sim->getFES()->removeFirst();
     ASSERT(!next->isStale());
-
-    //std::cout << "********************************" << std::endl;
-    //std::cout << "NEXT: " << next->getTargetObject()->str() << std::endl;
-
     return next;
 }
 
@@ -92,7 +83,6 @@ omnetpp::cEvent* TestbedScheduler::peekFirstNonStaleEvent()
     omnetpp::cEvent* event = nullptr;
     do {
         event = sim->getFES()->peekFirst();
-
         if (!event) {
             throw omnetpp::cTerminationException("No more events");
         } else if (event->isStale()) {
