@@ -13,7 +13,6 @@
 /********************************************************************************
  * Includes
  *********************************************************************************/
-#include "json.hpp"
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/variant/variant.hpp>
@@ -76,7 +75,8 @@ namespace artery {
 
         using PortName = std::string; // port address
         using PortContext = zmq::context_t; // context
-        using DataMap = std::map <std::string, boost::variant<int, double, std::string>>;
+        using DataMap = std::map <std::string, boost::variant<int, double, std::string, vanetza::MacAddress, vanetza::byte_view_range>>;
+        using MsgMap = std::map <std::string, boost::variant<std::string, vanetza::MacAddress, vanetza::byte_view_range>>;
         static const omnetpp::simsignal_t dataStateChanged;
 
         /**
@@ -104,7 +104,7 @@ namespace artery {
          * Method for publishing simulated messages addressed to the dut
          * @param byteViewRange
          */
-        void publishSimMsg(const vanetza::byte_view_range& byteViewRange);
+        void publishSimMsg(const vanetza::MacAddress& MacSource, const vanetza::MacAddress& MacDest, const vanetza::byte_view_range& byteViewRange);
         /**
          * Method for subscribing to the interface hardware and receiving vehicle data
          */
@@ -141,6 +141,7 @@ namespace artery {
         std::vector<PortName> connections_;
         std::vector<PortName> bindings_;
         DataMap vehicleDataMap_;
+        MsgMap simMsgMap_;
         DataMap inputDataMap_;
         const traci::VehicleController* mVehicleController = nullptr;
 

@@ -35,7 +35,7 @@ void DUTOtaInterfaceStub::sendMessage(const vanetza::MacAddress& MacSource, cons
     // create module pointer to SimSocket with ID = 6
     cModule *mod = getSimulation()->getModule(6);
     auto *m_target = check_and_cast<artery::SimSocket *>(mod);
-    m_target->publish();
+    m_target->publishSimMsg(MacSource, MacDest, byteViewRange);
 }
 
 void DUTOtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket>)

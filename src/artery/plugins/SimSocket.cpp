@@ -25,6 +25,12 @@
 #include "artery/application/VehicleKinematics.h"
 #include "artery/application/Middleware.h"
 #include "artery/application/StationType.h"
+#include <vanetza/geonet/serialization.hpp>
+#include <vanetza/net/mac_address.hpp>
+#include <vanetza/common/byte_view.hpp>
+#include <vanetza/common/archives.hpp>
+#include <vanetza/asn1/packet_visitor.hpp>
+#include <vanetza/common/serialization_buffer.hpp>
 
 #include <iostream>
 #include <utility>
@@ -149,7 +155,6 @@ void SimSocket::publish() {
     zmq::message_t msgToSend(outbound_data);
 
     try {
-        //std::cout << "Message: " << msgToSend << endl;
         publisherSocket_.send(msgToSend, zmq::send_flags::none);
 
     } catch (zmq::error_t cantSend) {
@@ -158,26 +163,36 @@ void SimSocket::publish() {
     }
 }
 
-void SimSocket::publishSimMsg(const vanetza::byte_view_range& byteViewRange){
+void SimSocket::publishSimMsg(const vanetza::MacAddress& MacSource, const vanetza::MacAddress& MacDest, const vanetza::byte_view_range& byteViewRange){
 
-   /* //serialize map
+    SimTime sendingTime = simTime();
+    std::string sendingTime_str = sendingTime.str();
+
+    //serialize map
     std::ostringstream ss;
-    boost::archive::text_oarchive archive(ss);
+    vanetza::OutputArchive archive(ss);
+    vanetza::serialize(archive, MacSource);
+    vanetza::serialize(archive, MacDest);
+    archive << byteViewRange.size();
 
-    archive << byteViewRange;
+    for(int i = 0; i < byteViewRange.size(); i++) {
+        archive << byteViewRange.operator[](i);
+        std::cout << "Byte at place:[" << i << "]" << byteViewRange.operator[](i) << std::endl;
+    }
+    std::cout << "#############################" << std::endl;
 
     std::string outbound_data = ss.str();
     // create buffer size for message
     zmq::message_t msgToSend(outbound_data);
 
     try {
-        //std::cout << "Message: " << msgToSend << endl;
+        std::cout << "Message: " << msgToSend << endl;
         publisherSocket_.send(msgToSend, zmq::send_flags::none);
-
+        //std::cout << "SimMsgToSend:" << msgToSend.data() << std::endl;
     } catch (zmq::error_t cantSend) {
         cerr << "Socket can't send: " << cantSend.what() << endl;
         unbind(portName_);
-    }*/
+    }
 }
 
 // subscribe to incoming data
