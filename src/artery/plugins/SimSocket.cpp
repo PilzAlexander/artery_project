@@ -31,7 +31,6 @@
 #include <vanetza/common/archives.hpp>
 
 
-
 #include <iostream>
 #include <utility>
 #include <zmq.hpp>
@@ -150,7 +149,14 @@ namespace artery {
     string SimSocket::serializeVehicleData() const {
         ostringstream vehicleDataStream;
         boost::archive::text_oarchive archive(vehicleDataStream);
-        archive << vehicleDataMap_;
+
+        for(const auto& elem : diffVehicleDataMap_)
+        {
+            std::cout << elem.first << " " << elem.second << "\n";
+        }
+        std::cout << "\n";
+
+        archive << diffVehicleDataMap_;
         string outboundVehicleData = vehicleDataStream.str();
         return outboundVehicleData;
     }
@@ -199,9 +205,9 @@ namespace artery {
         zmq::message_t messageToReceive;
 
         try {
-                std::cout << "Receiving..." << std::endl;
-                subscriberSocket_.recv(&messageToReceive, ZMQ_NOBLOCK);
-                std::cout << "messageToReceive" << messageToReceive << std::endl;
+            std::cout << "Receiving..." << std::endl;
+            subscriberSocket_.recv(&messageToReceive, ZMQ_NOBLOCK);
+            std::cout << "messageToReceive" << messageToReceive << std::endl;
         } catch (zmq::error_t cantReceive) {
             cerr << "Socket can't receive: " << cantReceive.what() << endl;
             // TODO unbind
@@ -216,7 +222,7 @@ namespace artery {
 
             try {
                 archive >> inputDataMap_;
-                for(const auto &elem : inputDataMap_) {
+                for (const auto &elem: inputDataMap_) {
                     std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
                 }
 
@@ -230,7 +236,7 @@ namespace artery {
     }
 
 // call in basic node manager to get data and write to a global map
-    void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
+     void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
         //Enter_Method("getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci)");
 
         SimTime sendingTime = simTime();
@@ -643,38 +649,68 @@ namespace artery {
 //vehicleDataMap_.insert(std::pair<std::string, std::pair<string,double>>("Follower_DUT", traci.getFollower(vehicleID, traci.getDistance(vehicleID))));
 //vehicleDataMap_.insert(std::pair<std::string, std::pair<string,double>>("LaneChangeMode_DUT", traci.getLeader(vehicleID, traci.getDistance(vehicleID))));
 
-        for (const auto &elem: diffVehicleDataMap_) {
-            std::cout << elem.first << " " << elem.second << "\n";
-        }
-        std::cout << "\n";
     }
 
     void SimSocket::getVehicleDynamics(VehicleKinematics dynamics) {
-/*
-    if(!isnan(dynamics.speed.value())){
-        vehicleDataMap_.insert(std::pair<std::string, double>("Speed_Dynamics", dynamics.speed.value()));
-    }
-    if(!isnan(dynamics.yaw_rate.value())){
-        vehicleDataMap_.insert(std::pair<std::string, double>("YawRate_Dynamics", dynamics.yaw_rate.value()));
-    }
-    if(!isnan(dynamics.acceleration.value())){
-        vehicleDataMap_.insert(std::pair<std::string, double>("Acceleration_Dynamics", dynamics.acceleration.value()));
-    }
-    if(!isnan(dynamics.heading.value())){
-        vehicleDataMap_.insert(std::pair<std::string, double>("Heading_Dynamics", dynamics.heading.value()));
-    }
-    if(!isnan(dynamics.geo_position.latitude.value())){
-        vehicleDataMap_.insert(std::pair<std::string, double>("Latitude_Dynamics", dynamics.geo_position.latitude.value()));
-    }
-    if(!isnan(dynamics.geo_position.longitude.value())){
-        vehicleDataMap_.insert(std::pair<std::string, double>("Longitude_Dynamics", dynamics.geo_position.longitude.value()));
-    }
-    if(!isnan(dynamics.position.x.value())){
-        vehicleDataMap_.insert(std::pair<std::string, double>("PosX_Dynamics", dynamics.position.x.value()));
-    }
-    if(!isnan(dynamics.position.y.value())){
-        vehicleDataMap_.insert(std::pair<std::string, double>("PosY_Dynamics", dynamics.position.y.value()));
-    }*/
+
+        if (!isnan(dynamics.speed.value())) {
+            vehicleDataMap_.insert_or_assign("Speed_Dynamics", dynamics.speed.value());
+            diffVehicleDataMap_.insert_or_assign("Speed_Dynamics", dynamics.speed.value());
+        } else {
+            diffVehicleDataMap_.erase("Speed_Dynamics");
+        }
+
+        if (!isnan(dynamics.yaw_rate.value())) {
+            vehicleDataMap_.insert_or_assign("YawRate_Dynamics", dynamics.yaw_rate.value());
+            diffVehicleDataMap_.insert_or_assign("YawRate_Dynamics", dynamics.yaw_rate.value());
+        } else {
+            diffVehicleDataMap_.erase("YawRate_Dynamics");
+        }
+
+        if (!isnan(dynamics.acceleration.value())) {
+            vehicleDataMap_.insert_or_assign(
+                    "Acceleration_Dynamics", dynamics.acceleration.value());
+            diffVehicleDataMap_.insert_or_assign("Acceleration_Dynamics", dynamics.acceleration.value());
+        } else {
+            diffVehicleDataMap_.erase("Acceleration_Dynamics");
+        }
+
+        if (!isnan(dynamics.heading.value())) {
+            vehicleDataMap_.insert_or_assign("Heading_Dynamics", dynamics.heading.value());
+            diffVehicleDataMap_.insert_or_assign("Heading_Dynamics", dynamics.heading.value());
+        } else {
+            diffVehicleDataMap_.erase("Heading_Dynamics");
+        }
+
+        if (!isnan(dynamics.geo_position.latitude.value())) {
+            vehicleDataMap_.insert_or_assign(
+                    "Latitude_Dynamics", dynamics.geo_position.latitude.value());
+            diffVehicleDataMap_.insert_or_assign("Latitude_Dynamics", dynamics.geo_position.latitude.value());
+        } else {
+            diffVehicleDataMap_.erase("Latitude_Dynamics");
+        }
+
+        if (!isnan(dynamics.geo_position.longitude.value())) {
+            vehicleDataMap_.insert_or_assign(
+                    "Longitude_Dynamics", dynamics.geo_position.longitude.value());
+            diffVehicleDataMap_.insert_or_assign("Longitude_Dynamics", dynamics.geo_position.longitude.value());
+        } else {
+            diffVehicleDataMap_.erase("Longitude_Dynamics");
+        }
+
+        if (!isnan(dynamics.position.x.value())) {
+            vehicleDataMap_.insert_or_assign("PosX_Dynamics", dynamics.position.x.value());
+            diffVehicleDataMap_.insert_or_assign("PosX_Dynamics", dynamics.position.x.value());
+        } else {
+            diffVehicleDataMap_.erase("PosX_Dynamics");
+        }
+
+        if (!isnan(dynamics.position.y.value())) {
+            vehicleDataMap_.insert_or_assign("PosY_Dynamics", dynamics.position.y.value());
+            diffVehicleDataMap_.insert_or_assign("PosY_Dynamics", dynamics.position.y.value());
+        } else {
+            diffVehicleDataMap_.erase("PosY_Dynamics");
+        }
     }
 
 /*
