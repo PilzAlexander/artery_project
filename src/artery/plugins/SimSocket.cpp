@@ -29,8 +29,8 @@
 #include <vanetza/net/mac_address.hpp>
 #include <vanetza/common/byte_view.hpp>
 #include <vanetza/common/archives.hpp>
-#include <vanetza/asn1/packet_visitor.hpp>
-#include <vanetza/common/serialization_buffer.hpp>
+
+
 
 #include <iostream>
 #include <utility>
@@ -64,9 +64,10 @@ namespace artery {
         subPortName_ = "tcp://localhost:7778";
         publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
         subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
-        //subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+        subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
         subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
         bind(portName_);
+
     }
 
     void SimSocket::finish() {
@@ -94,7 +95,7 @@ namespace artery {
             connections_.push_back(portName);
             // DEBUG
             cout << "Connected to Socket: " << portName << endl;
-        } catch (zmq::error_t cantConnect) {
+        } catch (zmq::error_t &cantConnect) {
             cerr << "Socket can't connect to port: " << cantConnect.what() << endl;
             close();
             return;
@@ -132,53 +133,65 @@ namespace artery {
 // publish data
     void SimSocket::publish() {
         //Enter_Method("publish()");
-        //serialize map
-        std::ostringstream ss;
-        boost::archive::text_oarchive archive(ss);
+        string outboundVehicleData = serializeVehicleData();
 
-        std::string outbound_data = ss.str();
         // create buffer size for message
-        zmq::message_t msgToSend(outbound_data);
+        zmq::message_t msgToSend(outboundVehicleData);
 
         try {
             publisherSocket_.send(msgToSend, zmq::send_flags::none);
 
-        } catch (zmq::error_t cantSend) {
+        } catch (zmq::error_t &cantSend) {
             cerr << "Socket can't send: " << cantSend.what() << endl;
             unbind(portName_);
         }
     }
 
-    void SimSocket::publishSimMsg(const vanetza::MacAddress &MacSource, const vanetza::MacAddress &MacDest,
+    string SimSocket::serializeVehicleData() const {
+        ostringstream vehicleDataStream;
+        boost::archive::text_oarchive archive(vehicleDataStream);
+        archive << vehicleDataMap_;
+        string outboundVehicleData = vehicleDataStream.str();
+        return outboundVehicleData;
+    }
+
+    void SimSocket::publishSimMsg(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
                                   const vanetza::byte_view_range &byteViewRange) {
 
-        SimTime sendingTime = simTime();
-        std::string sendingTime_str = sendingTime.str();
+        string outboundData = serializeSimMsg(macSource, macDest, byteViewRange);
 
-        //serialize map
-        std::ostringstream ss;
-        vanetza::OutputArchive archive(ss);
-        vanetza::serialize(archive, MacSource);
-        vanetza::serialize(archive, MacDest);
+        // create buffer size for message
+        zmq::message_t msgToSend(outboundData);
+
+        try {
+            std::cout << "Message: " << msgToSend << endl;
+            publisherSocket_.send(msgToSend, zmq::send_flags::none);
+        } catch (zmq::error_t &cantSend) {
+            cerr << "Socket can't send: " << cantSend.what() << endl;
+            unbind(portName_);
+        }
+    }
+
+    string SimSocket::serializeSimMsg(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
+                                      const vanetza::byte_view_range &byteViewRange) const {
+
+        SimTime sendingTime = simTime();
+        std::string sendingTimeStr = sendingTime.str();
+
+        ostringstream ss;
+        boost::archive::text_oarchive archive(ss);
+        archive << "origin: Simulation";
+        archive << sendingTimeStr;
+        vanetza::operator<<(ss, macSource);
+        vanetza::operator<<(ss, macDest);
         archive << byteViewRange.size();
 
         for (int i = 0; i < byteViewRange.size(); i++) {
             archive << byteViewRange.operator[](i);
-            //std::cout << "Byte at place:[" << i << "]" << byteViewRange.operator[](i) << std::endl;
         }
 
-        std::string outbound_data = ss.str();
-        // create buffer size for message
-        zmq::message_t msgToSend(outbound_data);
-
-        try {
-            //std::cout << "Message: " << msgToSend << endl;
-            publisherSocket_.send(msgToSend, zmq::send_flags::none);
-            //std::cout << "SimMsgToSend:" << msgToSend.data() << std::endl;
-        } catch (zmq::error_t cantSend) {
-            cerr << "Socket can't send: " << cantSend.what() << endl;
-            unbind(portName_);
-        }
+        string outboundData = ss.str();
+        return outboundData;
     }
 
 // subscribe to incoming data
@@ -186,33 +199,39 @@ namespace artery {
         zmq::message_t messageToReceive;
 
         try {
-            if (messageToReceive.empty()) {
-                //std::cout << "No message to receive..." << endl;
-                return;
-            } else {
+                std::cout << "Receiving..." << std::endl;
                 subscriberSocket_.recv(&messageToReceive, ZMQ_NOBLOCK);
-            }
+                std::cout << "messageToReceive" << messageToReceive << std::endl;
         } catch (zmq::error_t cantReceive) {
             cerr << "Socket can't receive: " << cantReceive.what() << endl;
             // TODO unbind
         }
-        const char *buf = static_cast<const char *>(messageToReceive.data());
-        std::string input_data_(buf, messageToReceive.size());
-        std::istringstream archive_stream(input_data_);
-        boost::archive::text_iarchive archive(archive_stream);
 
-        try {
-            //archive >> inputDataMap_;
-        } catch (boost::archive::archive_exception &ex) {
-            std::cout << "Archive Exception during deserializing:" << std::endl;
-            std::cout << ex.what() << std::endl;
-        } catch (int e) {
-            std::cout << "EXCEPTION " << e << std::endl;
+        if (!messageToReceive.empty()) {
+            const char *buf = static_cast<const char *>(messageToReceive.data());
+            std::string inputData(buf, messageToReceive.size());
+
+            std::istringstream archiveStream(inputData);
+            boost::archive::text_iarchive archive(archiveStream);
+
+            try {
+                archive >> inputDataMap_;
+                for(const auto &elem : inputDataMap_) {
+                    std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
+                }
+
+            } catch (boost::archive::archive_exception &ex) {
+                std::cout << "Archive Exception during deserializing:" << std::endl;
+                std::cout << ex.what() << std::endl;
+            } catch (int e) {
+                std::cout << "EXCEPTION " << e << std::endl;
+            }
         }
     }
 
 // call in basic node manager to get data and write to a global map
     void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
+        //Enter_Method("getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci)");
 
         SimTime sendingTime = simTime();
         std::string sendingTime_str = sendingTime.str();

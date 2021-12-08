@@ -30,12 +30,12 @@ void DUTOtaInterfaceStub::unregisterModule()
     mRegisteredModule = nullptr;
 }
 
-void DUTOtaInterfaceStub::sendMessage(const vanetza::MacAddress& MacSource, const vanetza::MacAddress& MacDest, const vanetza::byte_view_range& byteViewRange)
+void DUTOtaInterfaceStub::sendMessage(const vanetza::MacAddress& macSource, const vanetza::MacAddress& macDest, const vanetza::byte_view_range& byteViewRange)
 {
     // create module pointer to SimSocket with ID = 6
     cModule *mod = getSimulation()->getModule(6);
-    auto *m_target = check_and_cast<artery::SimSocket *>(mod);
-    m_target->publishSimMsg(MacSource, MacDest, byteViewRange);
+    auto *mTarget = check_and_cast<artery::SimSocket *>(mod);
+    mTarget->publishSimMsg(macSource, macDest, byteViewRange);
 }
 
 void DUTOtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket> DUTGeoNetPacket)
