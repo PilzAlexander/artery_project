@@ -38,8 +38,9 @@ void DUTOtaInterfaceStub::sendMessage(const vanetza::MacAddress& MacSource, cons
     m_target->publishSimMsg(MacSource, MacDest, byteViewRange);
 }
 
-void DUTOtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket>)
+void DUTOtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket> DUTGeoNetPacket)
 {
+    //DUTGeoNetPacket->getPayload();
     //
 }
 

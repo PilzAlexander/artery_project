@@ -75,8 +75,7 @@ namespace artery {
 
         using PortName = std::string; // port address
         using PortContext = zmq::context_t; // context
-        using DataMap = std::map <std::string, boost::variant<int, double, std::string, vanetza::MacAddress, vanetza::byte_view_range>>;
-        using MsgMap = std::map <std::string, boost::variant<std::string, vanetza::MacAddress, vanetza::byte_view_range>>;
+        using DataMap = std::map <std::string, boost::variant<int, double, std::string>>;
         static const omnetpp::simsignal_t dataStateChanged;
 
         /**
@@ -141,7 +140,8 @@ namespace artery {
         std::vector<PortName> connections_;
         std::vector<PortName> bindings_;
         DataMap vehicleDataMap_;
-        MsgMap simMsgMap_;
+        DataMap tmpVehicleDataMap_;
+        DataMap diffVehicleDataMap_;
         DataMap inputDataMap_;
         const traci::VehicleController* mVehicleController = nullptr;
 
