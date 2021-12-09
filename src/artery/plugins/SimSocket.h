@@ -169,11 +169,14 @@ namespace artery {
         DataMap tmpVehicleDataMap_;
         DataMap diffVehicleDataMap_;
         DataMap inputDataMap_;
+        std::array<unsigned char, 6> macSource_= {0x0a, 0xaa, 0x00, 0x00, 0x00, 0x01};
+        std::array<unsigned char, 6> macDest_{};//= {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
         std::vector<unsigned char> payload_;
         const traci::VehicleController *mVehicleController = nullptr;
 
         void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) override;
 
+        void convertStringToByteArray(std::string &mac, std::array<unsigned char, 6> &bytes);
     };
 
 } //namespace artery

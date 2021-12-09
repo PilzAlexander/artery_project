@@ -37,6 +37,7 @@
 #include <zmq.hpp>
 #include <algorithm>
 #include <array>
+#include <type_traits>
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
@@ -150,15 +151,6 @@ namespace artery {
         ostringstream vehicleDataStream;
         boost::archive::text_oarchive archive(vehicleDataStream);
 
-        /*
-        std::cout << "*************************************************************" << endl;
-        for (const auto &elem: diffVehicleDataMap_) {
-            std::cout << elem.first << " " << elem.second << "\n";
-        }
-        std::cout << "*************************************************************" << endl;
-        std::cout << "\n";
-         */
-
         archive << diffVehicleDataMap_;
         string outboundVehicleData = vehicleDataStream.str();
         return outboundVehicleData;
@@ -205,12 +197,12 @@ namespace artery {
         cModule *mod = getSimulation()->getModule(5);
         auto *mTarget = check_and_cast<artery::DUTOtaInterfaceStub *>(mod);
 
-        unsigned char vch[65];
+        /*unsigned char vch[65];
         std::vector<unsigned char> TEST(vch, vch + size());
         std::array<unsigned char, 6> dest = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
         std::array<unsigned char, 6> source = {0x0a, 0xaa, 0x00, 0x00, 0x00, 0x01};
         mTarget->placeGeoNetPacketInQueue(source, dest, TEST);
-
+*/
         try {
             std::cout << "Receiving..." << std::endl;
             subscriberSocket_.recv(&messageToReceive, ZMQ_NOBLOCK);
@@ -237,20 +229,29 @@ namespace artery {
 
                     int payloadLength;
                     unsigned char byte;
+                    std::string macDest;
+                    std::string macSource;
+
                     std::istringstream archiveStream(
                             boost::apply_visitor(SimEventFromInterfaceVisitor(), inputDataMap_["Value"]));
                     boost::archive::text_iarchive archive(archiveStream);
+
+                    archive >> macSource;
+                    std::cout << "macSource" << macSource << std::endl;
+                    archive >> macDest;
+                    std::cout << "macDest" << macDest << std::endl;
+
+                    convertStringToByteArray(macDest, macDest_);
 
                     archive >> payloadLength;
                     for (int i = 0; i < payloadLength; i++) {
                         archive >> byte;
                         payload_.push_back(byte);
-                        std::cout << "PAYLOAD[" << i << "]: " << payload_[i] << std::endl;
                     }
 
                     cModule *mod = getSimulation()->getModule(5);
                     auto *mTarget = check_and_cast<artery::DUTOtaInterfaceStub *>(mod);
-                    //mTarget->placeGeoNetPacketInQueue(payload_);
+                    mTarget->placeGeoNetPacketInQueue(macSource_, macDest_, payload_);
                 }
 
             } catch (boost::archive::archive_exception &ex) {
@@ -260,6 +261,19 @@ namespace artery {
                 std::cout << "EXCEPTION " << e << std::endl;
             }
         }
+    }
+
+    void SimSocket::convertStringToByteArray(string &mac, array<unsigned char, 6> &bytes) {
+        replace(mac.begin(), mac.end(), ':', ' ');
+        istringstream hexStream(mac);
+
+        std::vector<unsigned char> byteVector{};
+        unsigned int c;
+        while (hexStream >> hex >> c)
+        {
+            byteVector.push_back(c);
+        }
+        std::copy_n(byteVector.begin(), 6, bytes.begin());
     }
 
 // call in basic node manager to get data and write to a global map
