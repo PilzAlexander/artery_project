@@ -30,7 +30,7 @@
 #include <vanetza/common/byte_view.hpp>
 #include <vanetza/common/archives.hpp>
 
-
+#include "artery/plugins/SimEventFromInterfaceVisitor.h"
 #include <iostream>
 #include <utility>
 #include <zmq.hpp>
@@ -150,12 +150,12 @@ namespace artery {
         ostringstream vehicleDataStream;
         boost::archive::text_oarchive archive(vehicleDataStream);
 
-        for(const auto& elem : diffVehicleDataMap_)
+        /*for(const auto& elem : diffVehicleDataMap_)
         {
             std::cout << elem.first << " " << elem.second << "\n";
         }
         std::cout << "\n";
-
+*/
         archive << diffVehicleDataMap_;
         string outboundVehicleData = vehicleDataStream.str();
         return outboundVehicleData;
@@ -181,22 +181,17 @@ namespace artery {
     string SimSocket::serializeSimMsg(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
                                       const vanetza::byte_view_range &byteViewRange) const {
 
-        SimTime sendingTime = simTime();
-        std::string sendingTimeStr = sendingTime.str();
-
-        ostringstream ss;
-        boost::archive::text_oarchive archive(ss);
-        archive << "origin: Simulation";
-        archive << sendingTimeStr;
-        vanetza::operator<<(ss, macSource);
-        vanetza::operator<<(ss, macDest);
+        ostringstream stringsstream;
+        boost::archive::text_oarchive archive(stringsstream);
+        vanetza::operator<<(stringsstream, macSource);
+        vanetza::operator<<(stringsstream, macDest);
         archive << byteViewRange.size();
 
         for (int i = 0; i < byteViewRange.size(); i++) {
             archive << byteViewRange.operator[](i);
         }
 
-        string outboundData = ss.str();
+        string outboundData = stringsstream.str();
         return outboundData;
     }
 
@@ -224,6 +219,22 @@ namespace artery {
                 archive >> inputDataMap_;
                 for (const auto &elem: inputDataMap_) {
                     std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
+                }
+
+                if("V2X" == boost::apply_visitor(SimEventFromInterfaceVisitor(), inputDataMap_["Operation"])) {
+
+                    int payloadLength;
+                    unsigned char byte;
+                    std::istringstream archiveStream(boost::apply_visitor(SimEventFromInterfaceVisitor(), inputDataMap_["Value"]));
+                    boost::archive::text_iarchive archive(archiveStream);
+
+                    archive >> payloadLength;
+                    for (int i = 0; i < payloadLength; i++) {
+                        archive >> byte;
+                        payload_.push_back(byte);
+                        std::cout << "PAYLOAD["<< i << "]: " << payload_[i] << std::endl;
+                    }
+
                 }
 
             } catch (boost::archive::archive_exception &ex) {
@@ -713,31 +724,24 @@ namespace artery {
         }
     }
 
-/*
-void SimSocket::setVehicleData(TraCIAPI::VehicleScope traci, DataMap map) {
 
-    // TODO set incoming vehicle data
-    auto vehicle = subscriptions_->getVehicleCache("12");
+void SimSocket::setVehicleData(TraCIAPI::VehicleScope traci, DataMap inputDataMap_) {
 
-    //TraCIAPI::VehicleScope::setSpeed("flow",1.0);
-    map.insert(std::pair<std::string, double>("Speed", traci.getSpeed(vehicleID)));
-    map.insert(std::pair<std::string, double>("Acceleration", traci.getAcceleration(vehicleID)));
-    map.insert(std::pair<std::string, double>("Angle", traci.getAngle(vehicleID)));
-    map.insert(std::pair<std::string, double>("Distance", traci.getDistance(vehicleID)));
-    map.insert(std::pair<std::string, double>("Height", traci.getHeight(vehicleID)));
-    map.insert(std::pair<std::string, double>("Length", traci.getLength(vehicleID)));
-    map.insert(std::pair<std::string, double>("Width", traci.getWidth(vehicleID)));
-    map.insert(std::pair<std::string, double>("LanePosition", traci.getLanePosition(vehicleID)));
-    map.insert(std::pair<std::string, int>("Signals", traci.getSignals(vehicleID)));
-    map.insert(std::pair<std::string, double>("Position_X-Coordinate", traci.getPosition(vehicleID).x));
-    map.insert(std::pair<std::string, double>("Position_Y-Coordinate", traci.getPosition(vehicleID).y));
-    map.insert(std::pair<std::string, double>("Position_Z-Coordinate", traci.getPosition(vehicleID).z));
-    map.insert(std::pair<std::string, double>("Decel", traci.getDecel(vehicleID)));
-    map.insert(std::pair<std::string, std::string>("RoadID", traci.getRoadID(vehicleID)));
-    map.insert(std::pair<std::string, double>("RouteIndex", traci.getRouteIndex(vehicleID)));
-    map.insert(std::pair<std::string, std::string>("LaneID", traci.getLaneID(vehicleID)));
-    map.insert(std::pair<std::string, double>("LaneIndex", traci.getLaneIndex(vehicleID)));
-}*/
+    // TODO set incoming vehicle data // id:18
+    auto vehicle = subscriptions_->getVehicleCache("flowNorthSouth.0");
+    std::string vehicleID = vehicle->getVehicleId();
+
+    if(inputDataMap_["Operation"] == boost::variant<int, double, std::string>("Speed")) {
+        traci.setSpeed(vehicleID, boost::get<double>(inputDataMap_["Value"]) );
+        std::cout << "SPEEEEEEEED DER GESETZT WURDE: " << traci.getSpeed(vehicleID) << std::endl;
+    }
+
+    /*
+    for (const auto &elem: inputDataMap_) {
+        std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
+    }*/
+
+}
 
 //receive NodeUpdate Signal from BasicNodeManager
     void SimSocket::receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) {

@@ -129,7 +129,7 @@ namespace artery {
          * @param dynamics
          */
         void getVehicleDynamics(VehicleKinematics dynamics);
-        //static void setVehicleData(TraCIAPI::VehicleScope traci, DataMap map);
+        void setVehicleData(TraCIAPI::VehicleScope traci, DataMap map);
 
         //getter
         traci::SubscriptionManager *getSubscriptions() { return subscriptions_; }
@@ -169,10 +169,10 @@ namespace artery {
         DataMap tmpVehicleDataMap_;
         DataMap diffVehicleDataMap_;
         DataMap inputDataMap_;
+        std::vector<unsigned char> payload_;
         const traci::VehicleController *mVehicleController = nullptr;
 
         void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) override;
-
 
     };
 

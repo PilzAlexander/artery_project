@@ -1,4 +1,4 @@
-add_library(artery INTERFACE)
+add_library(artery INTERFACE plugins/SimEventFromInterfaceVisitor.h)
 add_library(core SHARED
     StaticNodeManager.cc
     application/CaObject.cc
