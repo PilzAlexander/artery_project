@@ -8,28 +8,77 @@
 #define ARTERY_OTA_INTERFACE_STUB_H
 
 #include "artery/plugins/DUTOtaInterface.h"
+#include "artery/plugins/DUTOtaIndicationQueue.h"
 #include <omnetpp/csimplemodule.h>
 #include "SimSocket.h"
 
-namespace artery
-{
+namespace artery {
 /**
  * The DUTOtaInterfaceStub provides a implementation of the DUTOtaInterface which acts as an stub to work without any hardware connected.
  * It implements all necessary methods, mos of them doing nothing.
  * It can be used to compile the testbed without any external library available (like the S.E.A. API required by the OtaInterfaceUsrp).
  */
-class DUTOtaInterfaceStub : public DUTOtaInterface, public omnetpp::cSimpleModule
-{
-public:
-    void initialize() override;
-    void registerModule(DUTOtaInterfaceLayer*) override;
-    void unregisterModule() override;
-    void sendMessage(const vanetza::MacAddress&, const vanetza::MacAddress&, const vanetza::byte_view_range&) override;
-    void receiveMessage(std::unique_ptr<GeoNetPacket>) override;
-    bool hasRegisteredModule() override { return mRegisteredModule != nullptr; }
-private:
-    DUTOtaInterfaceLayer* mRegisteredModule = nullptr;
-};
+    class DUTOtaInterfaceStub : public DUTOtaInterface, public omnetpp::cSimpleModule {
+    public:
+        /**
+         * Register Physical Twin module at the Ota OtaInterface
+         * Throws cRuntimeError if a second modules tries to register
+         * Must be called from the OtaInterfaceLayer when joining simulation (eg. in the intialize() method)
+         */
+        void registerModule(DUTOtaInterfaceLayer *) override;
+
+        /**
+         * Unregisters the registeredModule and closes the the GPSD socket if it was opened
+         * Must be called from the OtaInterfaceLayer when leaving the simulation (eg. in the finish() method)
+         */
+        void unregisterModule() override;
+
+        /**
+         * Sends message from Physical Twin module to the USRP Device
+         * Throws cRuntimeError if message is from a not registered module
+         *
+         * \param source MAC address of the sending node
+         * \param destination MAC address of the receiving module, usually the MAC address of the device under test
+         * \param data Byte range which should be transmitted over the air
+         */
+        void sendMessage(const vanetza::MacAddress &, const vanetza::MacAddress &,
+                         const vanetza::byte_view_range &) override;
+
+        /**
+         * Receives a GeonetPacket which was scheduled by the ThreadSafeScheduler
+         *
+         * \param GeonetPacket which should be sent to the simulation
+         */
+        void receiveMessage(std::unique_ptr<GeoNetPacket>) override;
+
+        /**
+         * Tests if the physical twin is registered at the OtaInterface
+         *
+         * \return true if physical twin is registered
+         */
+        bool hasRegisteredModule() override { return mRegisteredModule != nullptr; }
+
+        /**
+         * puts  receives bytes into geoNetPacket
+         *
+         * @param buffer receives bytes as std::vector<unsigned char>
+         */
+        void placeGeoNetPacketInQueue(const std::array<unsigned char, 6> macSource,
+                                      const std::array<unsigned char, 6> macDest,
+                                      std::vector<unsigned char> buffer);
+
+    protected:
+        void initialize() override;
+
+        void finish() override;
+
+    private:
+        DUTOtaInterfaceLayer *mRegisteredModule = nullptr;
+        std::shared_ptr<DUTOtaIndicationQueue> mOtaIndicationQueue;
+
+        int mMessagesToDut = 0;
+        int mMessagesFromDut = 0;
+    };
 
 } // namespace artery
 

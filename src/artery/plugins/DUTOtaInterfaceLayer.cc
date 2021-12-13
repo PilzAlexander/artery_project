@@ -67,6 +67,9 @@ void DUTOtaInterfaceLayer::handleMessage(omnetpp::cMessage* message)
 void DUTOtaInterfaceLayer::request(std::unique_ptr<GeoNetPacket> packet)
 {
     Enter_Method("request");
+    //std::cout << "REQUEST: " << packet->getName() << std::endl;
+    //std::cout << "REQUEST: " << packet->getBitLength() << std::endl;
+    //std::cout << "REQUEST: " << packet->hasPayload() << std::endl;
     GeoNetPacket* ptr = packet.release();
     take(ptr);
     send(ptr, mRadioDriverOut);

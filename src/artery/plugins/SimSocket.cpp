@@ -29,6 +29,7 @@
 #include <vanetza/net/mac_address.hpp>
 #include <vanetza/common/byte_view.hpp>
 #include <vanetza/common/archives.hpp>
+#include "artery/plugins/DUTOtaInterfaceStub.h"
 
 #include "artery/plugins/SimEventFromInterfaceVisitor.h"
 #include <iostream>
@@ -66,7 +67,6 @@ namespace artery {
         subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
         subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
         bind(portName_);
-
     }
 
     void SimSocket::finish() {
@@ -150,12 +150,15 @@ namespace artery {
         ostringstream vehicleDataStream;
         boost::archive::text_oarchive archive(vehicleDataStream);
 
-        /*for(const auto& elem : diffVehicleDataMap_)
-        {
+        /*
+        std::cout << "*************************************************************" << endl;
+        for (const auto &elem: diffVehicleDataMap_) {
             std::cout << elem.first << " " << elem.second << "\n";
         }
+        std::cout << "*************************************************************" << endl;
         std::cout << "\n";
-*/
+         */
+
         archive << diffVehicleDataMap_;
         string outboundVehicleData = vehicleDataStream.str();
         return outboundVehicleData;
@@ -199,6 +202,15 @@ namespace artery {
     void SimSocket::subscribe() {
         zmq::message_t messageToReceive;
 
+        cModule *mod = getSimulation()->getModule(5);
+        auto *mTarget = check_and_cast<artery::DUTOtaInterfaceStub *>(mod);
+
+        unsigned char vch[65];
+        std::vector<unsigned char> TEST(vch, vch + size());
+        std::array<unsigned char, 6> dest = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+        std::array<unsigned char, 6> source = {0x0a, 0xaa, 0x00, 0x00, 0x00, 0x01};
+        mTarget->placeGeoNetPacketInQueue(source, dest, TEST);
+
         try {
             std::cout << "Receiving..." << std::endl;
             subscriberSocket_.recv(&messageToReceive, ZMQ_NOBLOCK);
@@ -221,20 +233,24 @@ namespace artery {
                     std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
                 }
 
-                if("V2X" == boost::apply_visitor(SimEventFromInterfaceVisitor(), inputDataMap_["Operation"])) {
+                if ("V2X" == boost::apply_visitor(SimEventFromInterfaceVisitor(), inputDataMap_["Operation"])) {
 
                     int payloadLength;
                     unsigned char byte;
-                    std::istringstream archiveStream(boost::apply_visitor(SimEventFromInterfaceVisitor(), inputDataMap_["Value"]));
+                    std::istringstream archiveStream(
+                            boost::apply_visitor(SimEventFromInterfaceVisitor(), inputDataMap_["Value"]));
                     boost::archive::text_iarchive archive(archiveStream);
 
                     archive >> payloadLength;
                     for (int i = 0; i < payloadLength; i++) {
                         archive >> byte;
                         payload_.push_back(byte);
-                        std::cout << "PAYLOAD["<< i << "]: " << payload_[i] << std::endl;
+                        std::cout << "PAYLOAD[" << i << "]: " << payload_[i] << std::endl;
                     }
 
+                    cModule *mod = getSimulation()->getModule(5);
+                    auto *mTarget = check_and_cast<artery::DUTOtaInterfaceStub *>(mod);
+                    //mTarget->placeGeoNetPacketInQueue(payload_);
                 }
 
             } catch (boost::archive::archive_exception &ex) {
@@ -247,7 +263,7 @@ namespace artery {
     }
 
 // call in basic node manager to get data and write to a global map
-     void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
+    void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
         //Enter_Method("getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci)");
 
         SimTime sendingTime = simTime();
@@ -664,21 +680,27 @@ namespace artery {
 
     void SimSocket::getVehicleDynamics(VehicleKinematics dynamics) {
 
-        if (!isnan(dynamics.speed.value())) {
+        if (!isnan(dynamics.speed.value()) &&
+            vehicleDataMap_["Speed_Dynamics"] != boost::variant<int, double, std::string>(
+            dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign("Speed_Dynamics", dynamics.speed.value());
             diffVehicleDataMap_.insert_or_assign("Speed_Dynamics", dynamics.speed.value());
         } else {
             diffVehicleDataMap_.erase("Speed_Dynamics");
         }
 
-        if (!isnan(dynamics.yaw_rate.value())) {
+        if (!isnan(dynamics.yaw_rate.value()) &&
+            vehicleDataMap_["YawRate_Dynamics"] != boost::variant<int, double, std::string>
+            (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign("YawRate_Dynamics", dynamics.yaw_rate.value());
             diffVehicleDataMap_.insert_or_assign("YawRate_Dynamics", dynamics.yaw_rate.value());
         } else {
             diffVehicleDataMap_.erase("YawRate_Dynamics");
         }
 
-        if (!isnan(dynamics.acceleration.value())) {
+        if (!isnan(dynamics.acceleration.value()) &&
+            vehicleDataMap_["Acceleration_Dynamics"] != boost::variant<int, double, std::string>
+            (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign(
                     "Acceleration_Dynamics", dynamics.acceleration.value());
             diffVehicleDataMap_.insert_or_assign("Acceleration_Dynamics", dynamics.acceleration.value());
@@ -686,14 +708,18 @@ namespace artery {
             diffVehicleDataMap_.erase("Acceleration_Dynamics");
         }
 
-        if (!isnan(dynamics.heading.value())) {
+        if (!isnan(dynamics.heading.value()) &&
+            vehicleDataMap_["Heading_Dynamics"] != boost::variant<int, double, std::string>
+            (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign("Heading_Dynamics", dynamics.heading.value());
             diffVehicleDataMap_.insert_or_assign("Heading_Dynamics", dynamics.heading.value());
         } else {
             diffVehicleDataMap_.erase("Heading_Dynamics");
         }
 
-        if (!isnan(dynamics.geo_position.latitude.value())) {
+        if (!isnan(dynamics.geo_position.latitude.value()) &&
+            vehicleDataMap_["Latitude_Dynamics"] != boost::variant<int, double, std::string>
+            (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign(
                     "Latitude_Dynamics", dynamics.geo_position.latitude.value());
             diffVehicleDataMap_.insert_or_assign("Latitude_Dynamics", dynamics.geo_position.latitude.value());
@@ -701,7 +727,9 @@ namespace artery {
             diffVehicleDataMap_.erase("Latitude_Dynamics");
         }
 
-        if (!isnan(dynamics.geo_position.longitude.value())) {
+        if (!isnan(dynamics.geo_position.longitude.value()) &&
+            vehicleDataMap_["Longitude_Dynamics"] != boost::variant<int, double, std::string>
+            (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign(
                     "Longitude_Dynamics", dynamics.geo_position.longitude.value());
             diffVehicleDataMap_.insert_or_assign("Longitude_Dynamics", dynamics.geo_position.longitude.value());
@@ -709,14 +737,18 @@ namespace artery {
             diffVehicleDataMap_.erase("Longitude_Dynamics");
         }
 
-        if (!isnan(dynamics.position.x.value())) {
+        if (!isnan(dynamics.position.x.value()) &&
+            vehicleDataMap_["PosX_Dynamics"] != boost::variant<int, double, std::string>
+            (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign("PosX_Dynamics", dynamics.position.x.value());
             diffVehicleDataMap_.insert_or_assign("PosX_Dynamics", dynamics.position.x.value());
         } else {
             diffVehicleDataMap_.erase("PosX_Dynamics");
         }
 
-        if (!isnan(dynamics.position.y.value())) {
+        if (!isnan(dynamics.position.y.value()) &&
+            vehicleDataMap_["PosY_Dynamics"] != boost::variant<int, double, std::string>
+            (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign("PosY_Dynamics", dynamics.position.y.value());
             diffVehicleDataMap_.insert_or_assign("PosY_Dynamics", dynamics.position.y.value());
         } else {
@@ -725,23 +757,23 @@ namespace artery {
     }
 
 
-void SimSocket::setVehicleData(TraCIAPI::VehicleScope traci, DataMap inputDataMap_) {
+    void SimSocket::setVehicleData(TraCIAPI::VehicleScope traci, DataMap inputDataMap_) {
 
-    // TODO set incoming vehicle data // id:18
-    auto vehicle = subscriptions_->getVehicleCache("flowNorthSouth.0");
-    std::string vehicleID = vehicle->getVehicleId();
+        // TODO set incoming vehicle data // id:18
+        auto vehicle = subscriptions_->getVehicleCache("flowNorthSouth.0");
+        std::string vehicleID = vehicle->getVehicleId();
 
-    if(inputDataMap_["Operation"] == boost::variant<int, double, std::string>("Speed")) {
-        traci.setSpeed(vehicleID, boost::get<double>(inputDataMap_["Value"]) );
-        std::cout << "SPEEEEEEEED DER GESETZT WURDE: " << traci.getSpeed(vehicleID) << std::endl;
+        if (inputDataMap_["Operation"] == boost::variant<int, double, std::string>("Speed")) {
+            traci.setSpeed(vehicleID, boost::get<double>(inputDataMap_["Value"]));
+            std::cout << "SPEEEEEEEED DER GESETZT WURDE: " << traci.getSpeed(vehicleID) << std::endl;
+        }
+
+        /*
+        for (const auto &elem: inputDataMap_) {
+            std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
+        }*/
+
     }
-
-    /*
-    for (const auto &elem: inputDataMap_) {
-        std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
-    }*/
-
-}
 
 //receive NodeUpdate Signal from BasicNodeManager
     void SimSocket::receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) {

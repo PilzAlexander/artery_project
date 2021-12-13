@@ -65,8 +65,8 @@ protected:
 
 private:
     DUTOtaInterface* mOtaModule;
-    omnetpp::cGate* mRadioDriverIn;
-    omnetpp::cGate* mRadioDriverOut;
+    omnetpp::cGate* mRadioDriverIn = nullptr;
+    omnetpp::cGate* mRadioDriverOut = nullptr;
     traci::VehicleController* mVehicleController = nullptr;
     VehicleKinematics dynamicsDut;
 };
