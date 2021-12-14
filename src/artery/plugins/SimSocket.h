@@ -4,7 +4,6 @@
   \brief    Provides the class for setting up a socket to send data from the simulation to the interface component
   \author   Alexander Pilz
   \author   Johannes Winter
-  \author   Fabian Genes
   \version  1.0.0
   \date     31.10.2021
  ********************************************************************************/
@@ -38,8 +37,8 @@ namespace artery {
     class SimSocket : public traci::Listener, public omnetpp::cSimpleModule {
     public:
 
-        using PortName = std::string; // port address
-        using PortContext = zmq::context_t; // context
+        using PortName = std::string;
+        using PortContext = zmq::context_t;
         using DataMap = std::map<std::string, boost::variant<int, double, std::string>>;
 
         /**
@@ -81,8 +80,6 @@ namespace artery {
          */
         void subscribe();
 
-        void subscribeDutMsg(std::unique_ptr<GeoNetPacket> packet);
-
         /**
          * Method for collecting simulated vehicle data from the DutNodeManager
          * @param vehicleID
@@ -95,10 +92,13 @@ namespace artery {
          * @param dynamics
          */
         void getVehicleDynamics(VehicleKinematics dynamics);
-        void setVehicleData(TraCIAPI::VehicleScope traci, DataMap map);
 
-        //getter
-        traci::SubscriptionManager *getSubscriptions() { return subscriptions_; }
+        /**
+         * Method for setting received vehicle data to the twin
+         * @param traci
+         * @param map
+         */
+        void setVehicleData(TraCIAPI::VehicleScope traci, DataMap map);
 
         /**
          * Method for serializing the Mac Addresses and the payload for sending it to the interface component
@@ -116,11 +116,12 @@ namespace artery {
          */
         std::string serializeVehicleData() const;
 
+        const DataMap &getInputDataMap() const;
+        traci::SubscriptionManager *getSubscriptions() { return subscriptions_; }
+
     protected:
-        void initialize(int stage) override;
-
+        void initialize() override;
         void finish() override;
-
         traci::SubscriptionManager *subscriptions_{};
 
     private:
@@ -135,13 +136,19 @@ namespace artery {
         DataMap tmpVehicleDataMap_;
         DataMap diffVehicleDataMap_;
         DataMap inputDataMap_;
-        std::array<unsigned char, 6> macSource_= {0x0a, 0xaa, 0x00, 0x00, 0x00, 0x01};
-        std::array<unsigned char, 6> macDest_{};//= {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+        // DUT has always the same Mac in the simulation
+        std::array<unsigned char, 6> macSource_ = {0x0a, 0xaa, 0x00, 0x00, 0x00, 0x01};
+        std::array<unsigned char, 6> macDest_{};
         std::vector<unsigned char> payload_;
         const traci::VehicleController *mVehicleController = nullptr;
 
         void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) override;
 
+        /**
+         * Method for converting a received String to a byte array
+         * @param mac
+         * @param bytes
+         */
         void convertStringToByteArray(std::string &mac, std::array<unsigned char, 6> &bytes);
     };
 

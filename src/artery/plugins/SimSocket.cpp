@@ -3,7 +3,6 @@
   \file     SimSocket.h
   \brief    Provides the functions for setting up a socket to send data from the simulation to the interface component
   \author   Alexander Pilz
-  \author   Fabian Genes
   \author   Johannes Winter
   \version  1.0.0
   \date     31.10.2021
@@ -28,8 +27,8 @@
 #include <vanetza/geonet/serialization.hpp>
 #include <vanetza/net/mac_address.hpp>
 #include <vanetza/common/byte_view.hpp>
-#include <vanetza/common/archives.hpp>
 #include "artery/plugins/DUTOtaInterfaceConnection.h"
+
 #include "artery/plugins/SimEventFromInterfaceVisitor.h"
 
 #include <iostream>
@@ -46,8 +45,8 @@ namespace artery {
 
     Define_Module(SimSocket)
 
-    void SimSocket::initialize(int stage) {
-        if(stage == 0) {
+    void SimSocket::initialize() {
+
             //get traci from ModulePath
             cModule *traci = getModuleByPath(par("traciModule"));
 
@@ -67,15 +66,6 @@ namespace artery {
             subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
             subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
             bind(portName_);
-        }
-
-        if(stage == 1){
-            EV_DEBUG << "IN STAGE 1 " << endl;
-            std::cout << "IN STAGE 1 " << endl;
-            // create buffer size for message
-            zmq::message_t msgToSend("HAllo");
-            publisherSocket_.send(msgToSend, zmq::send_flags::none);
-        }
     }
 
     void SimSocket::finish() {
@@ -140,10 +130,8 @@ namespace artery {
 
 // publish data
     void SimSocket::publish() {
-        //Enter_Method("publish()");
-        string outboundVehicleData = serializeVehicleData();
 
-        // create buffer size for message
+        string outboundVehicleData = serializeVehicleData();
         zmq::message_t msgToSend(outboundVehicleData);
 
         try {
@@ -168,12 +156,9 @@ namespace artery {
                                   const vanetza::byte_view_range &byteViewRange) {
 
         string outboundData = serializeSimMsg(macSource, macDest, byteViewRange);
-
-        // create buffer size for message
         zmq::message_t msgToSend(outboundData);
 
         try {
-            std::cout << "Message: " << msgToSend << endl;
             publisherSocket_.send(msgToSend, zmq::send_flags::none);
         } catch (zmq::error_t &cantSend) {
             cerr << "Socket can't send: " << cantSend.what() << endl;
@@ -198,14 +183,11 @@ namespace artery {
         return outboundData;
     }
 
-// subscribe to incoming data
     void SimSocket::subscribe() {
         zmq::message_t messageToReceive;
 
         try {
-            std::cout << "Receiving..." << std::endl;
             subscriberSocket_.recv(&messageToReceive, ZMQ_NOBLOCK);
-            std::cout << "messageToReceive" << messageToReceive << std::endl;
         } catch (zmq::error_t cantReceive) {
             cerr << "Socket can't receive: " << cantReceive.what() << endl;
             // TODO unbind
@@ -220,9 +202,10 @@ namespace artery {
 
             try {
                 archive >> inputDataMap_;
+                /*
                 for (const auto &elem: inputDataMap_) {
                     std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
-                }
+                }*/
 
                 if ("V2X" == boost::apply_visitor(SimEventFromInterfaceVisitor(), inputDataMap_["Operation"])) {
 
@@ -236,10 +219,7 @@ namespace artery {
                     boost::archive::text_iarchive archive(archiveStream);
 
                     archive >> macSource;
-                    std::cout << "macSource" << macSource << std::endl;
                     archive >> macDest;
-                    std::cout << "macDest" << macDest << std::endl;
-
                     convertStringToByteArray(macDest, macDest_);
 
                     archive >> payloadLength;
@@ -268,8 +248,7 @@ namespace artery {
 
         std::vector<unsigned char> byteVector{};
         unsigned int c;
-        while (hexStream >> hex >> c)
-        {
+        while (hexStream >> hex >> c) {
             byteVector.push_back(c);
         }
         std::copy_n(byteVector.begin(), 6, bytes.begin());
@@ -277,7 +256,6 @@ namespace artery {
 
 // call in basic node manager to get data and write to a global map
     void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
-        //Enter_Method("getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci)");
 
         SimTime sendingTime = simTime();
         std::string sendingTime_str = sendingTime.str();
@@ -355,7 +333,7 @@ namespace artery {
             diffVehicleDataMap_.erase("LanePosition_DUT");
         }
 
-        if (vehicleDataMap_["Position_X-Coordinate_DUT"] !=
+        if (vehicleDataMap_["Position_x-Coordinate_DUT"] !=
             boost::variant<int, double, std::string>(traci.getPosition(vehicleID).x)) {
             vehicleDataMap_.insert_or_assign("Position_X-Coordinate_DUT", traci.getPosition(vehicleID).x);
             diffVehicleDataMap_.insert_or_assign("Position_X-Coordinate_DUT", traci.getPosition(vehicleID).x);
@@ -559,14 +537,6 @@ namespace artery {
             diffVehicleDataMap_.erase("SpeedDeviation_DUT");
         }
 
-        if (vehicleDataMap_["Imperfection_DUT"] !=
-            boost::variant<int, double, std::string>(traci.getImperfection(vehicleID))) {
-            vehicleDataMap_.insert_or_assign("Imperfection_DUT", traci.getImperfection(vehicleID));
-            diffVehicleDataMap_.insert_or_assign("Imperfection_DUT", traci.getImperfection(vehicleID));
-        } else {
-            diffVehicleDataMap_.erase("Imperfection_DUT");
-        }
-
         if (vehicleDataMap_["SpeedFactor_DUT"] !=
             boost::variant<int, double, std::string>(traci.getSpeedFactor(vehicleID))) {
             vehicleDataMap_.insert_or_assign("SpeedFactor_DUT", traci.getSpeedFactor(vehicleID));
@@ -653,49 +623,13 @@ namespace artery {
         } else {
             diffVehicleDataMap_.erase("ShapeClass_DUT");
         }
-
-        /*
-    if(vehicleDataMap_["ApparentDecel_DUT"] != boost::variant<int, double, std::string>(traci.getApparentDecel(vehicleID))){
-        vehicleDataMap_.insert_or_assign("ApparentDecel_DUT", traci.getApparentDecel(vehicleID));
-        diffVehicleDataMap_.insert_or_assign("ApparentDecel_DUT", traci.getApparentDecel(vehicleID));
-    }else{
-        diffVehicleDataMap_.erase("ApparentDecel_DUT");
-    }
-
-    if (vehicleDataMap_["StopArrivalDelay_DUT"] !=
-        boost::variant<int, double, std::string>(traci.getStopArrivalDelay(vehicleID))) {
-        vehicleDataMap_.insert_or_assign("StopArrivalDelay_DUT", traci.getStopArrivalDelay(vehicleID));
-        diffVehicleDataMap_.insert_or_assign("StopArrivalDelay_DUT", traci.getStopArrivalDelay(vehicleID));
-    } else {
-        diffVehicleDataMap_.erase("StopArrivalDelay_DUT");
-    }
-
-    if (vehicleDataMap_["StopDelay_DUT"] !=
-        boost::variant<int, double, std::string>(traci.getStopDelay(vehicleID))) {
-        vehicleDataMap_.insert_or_assign("StopDelay_DUT", traci.getStopDelay(vehicleID));
-        diffVehicleDataMap_.insert_or_assign("StopDelay_DUT", traci.getStopDelay(vehicleID));
-    } else {
-        diffVehicleDataMap_.erase("StopDelay_DUT");
-    }
-    if (vehicleDataMap_["PersonCapacity_DUT"] !=
-        boost::variant<int, double, std::string>(traci.getPersonCapacity(vehicleID))) {
-        vehicleDataMap_.insert_or_assign("PersonCapacity_DUT", traci.getPersonCapacity(vehicleID));
-        diffVehicleDataMap_.insert_or_assign("PersonCapacity_DUT", traci.getPersonCapacity(vehicleID));
-    } else {
-        diffVehicleDataMap_.erase("PersonCapacity_DUT");
-    }*/
-
-//vehicleDataMap_.insert(std::pair<std::string, double>("EmergencyDecel_DUT", traci.getEmergencyDecel(vehicleID)));
-//vehicleDataMap_.insert(std::pair<std::string, std::pair<string,double>>("Follower_DUT", traci.getFollower(vehicleID, traci.getDistance(vehicleID))));
-//vehicleDataMap_.insert(std::pair<std::string, std::pair<string,double>>("LaneChangeMode_DUT", traci.getLeader(vehicleID, traci.getDistance(vehicleID))));
-
     }
 
     void SimSocket::getVehicleDynamics(VehicleKinematics dynamics) {
 
         if (!isnan(dynamics.speed.value()) &&
             vehicleDataMap_["Speed_Dynamics"] != boost::variant<int, double, std::string>(
-            dynamics.speed.value())) {
+                    dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign("Speed_Dynamics", dynamics.speed.value());
             diffVehicleDataMap_.insert_or_assign("Speed_Dynamics", dynamics.speed.value());
         } else {
@@ -704,7 +638,7 @@ namespace artery {
 
         if (!isnan(dynamics.yaw_rate.value()) &&
             vehicleDataMap_["YawRate_Dynamics"] != boost::variant<int, double, std::string>
-            (dynamics.speed.value())) {
+                    (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign("YawRate_Dynamics", dynamics.yaw_rate.value());
             diffVehicleDataMap_.insert_or_assign("YawRate_Dynamics", dynamics.yaw_rate.value());
         } else {
@@ -713,7 +647,7 @@ namespace artery {
 
         if (!isnan(dynamics.acceleration.value()) &&
             vehicleDataMap_["Acceleration_Dynamics"] != boost::variant<int, double, std::string>
-            (dynamics.speed.value())) {
+                    (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign(
                     "Acceleration_Dynamics", dynamics.acceleration.value());
             diffVehicleDataMap_.insert_or_assign("Acceleration_Dynamics", dynamics.acceleration.value());
@@ -723,7 +657,7 @@ namespace artery {
 
         if (!isnan(dynamics.heading.value()) &&
             vehicleDataMap_["Heading_Dynamics"] != boost::variant<int, double, std::string>
-            (dynamics.speed.value())) {
+                    (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign("Heading_Dynamics", dynamics.heading.value());
             diffVehicleDataMap_.insert_or_assign("Heading_Dynamics", dynamics.heading.value());
         } else {
@@ -732,7 +666,7 @@ namespace artery {
 
         if (!isnan(dynamics.geo_position.latitude.value()) &&
             vehicleDataMap_["Latitude_Dynamics"] != boost::variant<int, double, std::string>
-            (dynamics.speed.value())) {
+                    (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign(
                     "Latitude_Dynamics", dynamics.geo_position.latitude.value());
             diffVehicleDataMap_.insert_or_assign("Latitude_Dynamics", dynamics.geo_position.latitude.value());
@@ -742,7 +676,7 @@ namespace artery {
 
         if (!isnan(dynamics.geo_position.longitude.value()) &&
             vehicleDataMap_["Longitude_Dynamics"] != boost::variant<int, double, std::string>
-            (dynamics.speed.value())) {
+                    (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign(
                     "Longitude_Dynamics", dynamics.geo_position.longitude.value());
             diffVehicleDataMap_.insert_or_assign("Longitude_Dynamics", dynamics.geo_position.longitude.value());
@@ -752,7 +686,7 @@ namespace artery {
 
         if (!isnan(dynamics.position.x.value()) &&
             vehicleDataMap_["PosX_Dynamics"] != boost::variant<int, double, std::string>
-            (dynamics.speed.value())) {
+                    (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign("PosX_Dynamics", dynamics.position.x.value());
             diffVehicleDataMap_.insert_or_assign("PosX_Dynamics", dynamics.position.x.value());
         } else {
@@ -761,31 +695,12 @@ namespace artery {
 
         if (!isnan(dynamics.position.y.value()) &&
             vehicleDataMap_["PosY_Dynamics"] != boost::variant<int, double, std::string>
-            (dynamics.speed.value())) {
+                    (dynamics.speed.value())) {
             vehicleDataMap_.insert_or_assign("PosY_Dynamics", dynamics.position.y.value());
             diffVehicleDataMap_.insert_or_assign("PosY_Dynamics", dynamics.position.y.value());
         } else {
             diffVehicleDataMap_.erase("PosY_Dynamics");
         }
-    }
-
-
-    void SimSocket::setVehicleData(TraCIAPI::VehicleScope traci, DataMap inputDataMap_) {
-
-        // TODO set incoming vehicle data // id:18
-        auto vehicle = subscriptions_->getVehicleCache("flowNorthSouth.0");
-        std::string vehicleID = vehicle->getVehicleId();
-
-        if (inputDataMap_["Operation"] == boost::variant<int, double, std::string>("Speed")) {
-            traci.setSpeed(vehicleID, boost::get<double>(inputDataMap_["Value"]));
-            std::cout << "SPEEEEEEEED DER GESETZT WURDE: " << traci.getSpeed(vehicleID) << std::endl;
-        }
-
-        /*
-        for (const auto &elem: inputDataMap_) {
-            std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
-        }*/
-
     }
 
 //receive NodeUpdate Signal from BasicNodeManager
@@ -794,6 +709,10 @@ namespace artery {
             publish();
             subscribe();
         }
+    }
+
+    const SimSocket::DataMap &SimSocket::getInputDataMap() const {
+        return inputDataMap_;
     }
 }// namespace artery
 /********************************************************************************

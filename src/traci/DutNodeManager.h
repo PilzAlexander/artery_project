@@ -40,13 +40,21 @@ class DutNodeManager : public BasicNodeManager
     protected:
         virtual omnetpp::cModule* createModule(const std::string&, omnetpp::cModuleType*) override;
         virtual void updateVehicle(const std::string&, VehicleSink*) override;
+        /**
+         * Set received vehicle data to the DUT (works only with signals at the moment, as other values
+         * are overwritten by the simulation)
+         * @param id
+         * @param inputDataMap
+         */
+        void setVehicleData(const std::string &id, artery::SimSocket::DataMap inputDataMap);
 
     private:
         std::string m_twinId;
         std::string m_twinName;
 
         const traci::VehicleController* mVehicleController = nullptr;
-    };
+
+};
 
 } /* namespace traci */
 

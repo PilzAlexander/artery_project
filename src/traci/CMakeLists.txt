@@ -21,8 +21,7 @@ set(SOURCES
     sumo/foreign/tcpip/storage.cpp
     sumo/utils/traci/TraCIAPI.cpp
         ../artery/plugins/SimSocket.cpp
-    ../artery/plugins/MessageContext.cpp
-    DutNodeManager.cpp
+        DutNodeManager.cpp
     DutModuleMapper.cpp
     ../artery/plugins/DutScheduler.cc
         ../artery/plugins/DUTOtaInterfaceConnection.cc

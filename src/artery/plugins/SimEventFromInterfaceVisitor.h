@@ -15,7 +15,7 @@
  */
 
 namespace artery {
-    class SimEventFromInterfaceVisitor : public boost::static_visitor<std::string> {
+class SimEventFromInterfaceVisitor : public boost::static_visitor<std::string> {
 
     public:
         std::string operator() (int i) const {
@@ -29,7 +29,9 @@ namespace artery {
         std::string operator() (const std::string &str) const {
             return str;
         }
+
     };
+
 }
 
 #endif //ARTERY_SIMEVENTFROMINTERFACEVISITOR_H
