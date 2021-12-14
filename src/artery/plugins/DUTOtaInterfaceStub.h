@@ -75,9 +75,6 @@ namespace artery {
     private:
         DUTOtaInterfaceLayer *mRegisteredModule = nullptr;
         std::shared_ptr<DUTOtaIndicationQueue> mOtaIndicationQueue;
-
-        int mMessagesToDut = 0;
-        int mMessagesFromDut = 0;
     };
 
 } // namespace artery

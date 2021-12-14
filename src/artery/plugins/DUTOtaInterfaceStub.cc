@@ -36,25 +36,17 @@ namespace artery {
         mRegisteredModule = nullptr;
     }
 
-    void DUTOtaInterfaceStub::finish() {
-        EV_INFO << "Messages from DUT: " << mMessagesFromDut << std::endl;
-        EV_INFO << "Messages to DUT: " << mMessagesToDut << std::endl;
-        //mConnection->shutDownConnection();
-    }
-
     void DUTOtaInterfaceStub::sendMessage(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
                                           const vanetza::byte_view_range &byteViewRange) {
         // create module pointer to SimSocket with ID = 6
         cModule *mod = getSimulation()->getModule(6);
         auto *mTarget = check_and_cast<artery::SimSocket *>(mod);
-        ++mMessagesToDut;
         //mTarget->publishSimMsg(macSource, macDest, byteViewRange);
     }
 
     void DUTOtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket> DUTGeoNetPacket) {
         if (hasRegisteredModule()) {
             Enter_Method("receiveMessage");
-            ++mMessagesFromDut;
             mRegisteredModule->request(std::move(DUTGeoNetPacket));
         }
     }
@@ -79,24 +71,6 @@ namespace artery {
         gn->setPayload(std::move(payload));
         gn->setControlInfo(new GeoNetRequest(req));
         DUTOtaInterfaceStub::receiveMessage(std::move(gn));
-
-        /*
-        cModule *mod = getSimulation()->getModule(5);
-        auto *mTarget = check_and_cast<artery::DUTOtaIndicationQueue *>(mod);
-
-        mTarget->trigger(std::move(gn));
-*/
-/*
-        auto DutGeoNet = std::make_unique<GeoNetPacket>();
-        auto packet = vanetza::CohesivePacket(std::move(buffer), vanetza::OsiLayer::Session);
-
-        DutGeoNet->setPayload(std::make_unique<vanetza::CohesivePacket>(packet));
-        //DUTOtaInterfaceStub::receiveMessage(std::move(DutGeoNet));
-
-        cModule *mod = getSimulation()->getModule(5);
-        auto *mTarget = check_and_cast<artery::DUTOtaIndicationQueue *>(mod);
-
-        mTarget->trigger(std::move(DutGeoNet));*/
     }
 
 } // namespace artery

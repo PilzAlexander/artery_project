@@ -53,16 +53,50 @@ public:
                   double Pos3DY() const {return pos3DY_;}
                   double Pos3DZ() const {return pos3DZ_;}*/
 
+     /**
+      * write Map into json
+      *
+      * @param vehicleID ID of vehicle
+      * @param traci
+      */
     static void writeToJSON(const std::string vehicleID, TraCIAPI::VehicleScope traci);
-    static void writeToMap(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci);
-    static void closeFile(const std::string path);
-    static void openFile(const std::string path);
-    static void ConvertToJSONFile(nlohmann::json JSON);
-    static void initializeMap();
-    static void prepareSerializing();
 
-    //void save();
-    //void load();
+    /**
+     * write traci data into map
+     *
+     * @param path path where to save json
+     * @param vehicleID ID of vehicle
+     * @param traci
+     */
+    static void writeToMap(std::string path, std::string vehicleID, TraCIAPI::VehicleScope traci);
+
+    /**
+     *
+     * @param path path where to save json
+     */
+    static void closeFile(const std::string path);
+
+    /**
+     *
+     * @param path path where to save json
+     */
+    static void openFile(const std::string path);
+
+    /**
+     *
+     * @param JSON
+     */
+    static void ConvertToJSONFile(nlohmann::json JSON);
+
+    /**
+     * initialize map
+     */
+    static void initializeMap();
+
+    /**
+     *
+     */
+    static void prepareSerializing();
 
 private:
     friend class boost::serialization::access;

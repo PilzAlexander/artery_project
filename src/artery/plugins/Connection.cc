@@ -94,39 +94,10 @@ void load() {
     Connection a;
     //ia_txt >> a;
     ia_bin >> a;
-
-    /*
-    std::cout << a.Speed() << std::endl;
-    std::cout << a.Acc() << std::endl;
-    std::cout << a.Angle() << std::endl;
-    std::cout << a.Distance() << std::endl;
-    std::cout << a.Height() << std::endl;
-    std::cout << a.Length() << std::endl;
-    std::cout << a.Width() << std::endl;
-    std::cout << a.LanePos() << std::endl;
-    std::cout << a.Signals() << std::endl;
-    std::cout << a.PosX() << std::endl;
-    std::cout << a.PosY() << std::endl;
-    std::cout << a.PosZ() << std::endl;
-    std::cout << a.Decel() << std::endl;
-    std::cout << a.RoadID() << std::endl;
-    std::cout << a.RoadIndex() << std::endl;
-    std::cout << a.LaneID() << std::endl;
-    std::cout << a.LaneIndex() << std::endl;
-     */
-
-    /*std::cout << a.Pos3DX() << std::endl;
-    std::cout << a.Pos3DY() << std::endl;
-    std::cout << a.Pos3DZ() << std::endl;*/
-    /*
-    std::cout << a.End() << std::endl;
-    */
 }
 
 //Close txt File
 void Connection::closeFile(const std::string path) {
-    //std::cout << "Close Path \n";
-    //std::cout << path << "\n";
     myfile.close();
 }
 
@@ -134,32 +105,6 @@ void Connection::closeFile(const std::string path) {
 void Connection::openFile(const std::string path) {
     //open txt file
     myfile.open(path);
-
-    /*
-    //Initialize Map
-    tmp_data["Speed"] = 0;
-    tmp_data["Acceleration"] =  0;
-    tmp_data["Angle"] =  0;
-    tmp_data["Distance"] =  0;
-    tmp_data["Height"] =  0;
-    tmp_data["Length"] =  0;
-    tmp_data["Width"] =  0;
-    tmp_data["LanePosition"] =  0;
-    tmp_data["Signals"] =  0;
-    tmp_data["Position X-Coordinate"] = 0;
-    tmp_data["Position Y-Coordinate"] = 0;
-    tmp_data["Position Z-Coordinate"] = 0;
-    //data["Route"] = traci.getRoute(vehicleID);
-    tmp_data["Decel"] = 0;
-    tmp_data["RoadID"] = 0;
-    tmp_data["RouteIndex"] = 0;
-    //data["LaneChangeState"] = traci.getLaneChangeState(vehicleID, 1);
-    tmp_data["LaneID"] = 0;
-    tmp_data["LaneIndex"] = 0;
-    //data["Leader"] = traci.getLeader(vehicleID, 10.0);
-    tmp_data["3DPos X-Coordiante"] = 0;
-    tmp_data["3DPos Y-Coordiante"] = 0;
-    tmp_data["3DPos Z-Coordiante"] = 0;*/
 }
 
 void Connection::initializeMap(){
@@ -176,14 +121,11 @@ void Connection::initializeMap(){
     data["Position_X-Coordinate"] = 0;
     data["Position_Y-Coordinate"] = 0;
     data["Position_Z-Coordinate"] = 0;
-    //data["Route"] = traci.getRoute(vehicleID);
     data["Decel"] = 0;
     data["RoadID"] = 0;
     data["RouteIndex"] = 0;
-    //data["LaneChangeState"] = traci.getLaneChangeState(vehicleID, 1);
     data["LaneID"] = 0;
     data["LaneIndex"] = 0;
-    //data["Leader"] = traci.getLeader(vehicleID, 10.0);
     data["3DPos_X-Coordiante"] = 0;
     data["3DPos_Y-Coordiante"] = 0;
     data["3DPos_Z-Coordiante"] = 0;
@@ -195,11 +137,10 @@ void Connection::ConvertToJSONFile(nlohmann::json JSON){
     std::ofstream o("/home/vagrant/Desktop/fork_repo/NodeData.json");
 
     //check if file is open
-    //if (o.is_open()) {
-        //std::cout << "##################### \n \n";
+    if (o.is_open()) {
         //Convert json object to json file
         o << std::setw(2) << JSON << std::endl << "\n";
-    //}
+    }
 
     //Close open json file
     o.close();

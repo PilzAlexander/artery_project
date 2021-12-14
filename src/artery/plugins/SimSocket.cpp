@@ -194,15 +194,6 @@ namespace artery {
     void SimSocket::subscribe() {
         zmq::message_t messageToReceive;
 
-        cModule *mod = getSimulation()->getModule(5);
-        auto *mTarget = check_and_cast<artery::DUTOtaInterfaceStub *>(mod);
-
-        /*unsigned char vch[65];
-        std::vector<unsigned char> TEST(vch, vch + size());
-        std::array<unsigned char, 6> dest = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-        std::array<unsigned char, 6> source = {0x0a, 0xaa, 0x00, 0x00, 0x00, 0x01};
-        mTarget->placeGeoNetPacketInQueue(source, dest, TEST);
-*/
         try {
             std::cout << "Receiving..." << std::endl;
             subscriberSocket_.recv(&messageToReceive, ZMQ_NOBLOCK);
