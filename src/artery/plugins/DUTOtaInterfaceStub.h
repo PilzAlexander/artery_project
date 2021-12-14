@@ -70,8 +70,6 @@ namespace artery {
     protected:
         void initialize() override;
 
-        void finish() override;
-
     private:
         DUTOtaInterfaceLayer *mRegisteredModule = nullptr;
         std::shared_ptr<DUTOtaIndicationQueue> mOtaIndicationQueue;
