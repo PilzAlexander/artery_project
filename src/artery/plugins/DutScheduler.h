@@ -1,6 +1,7 @@
 /*
  * Artery V2X Simulation Framework
  * Copyright 2017-2018 Christina Obermaier
+ * Contributors Alexander Pilz, Johannes Winter
  * Licensed under GPLv2, see COPYING file for detailed license and warranty terms.
  */
 
@@ -10,9 +11,10 @@
 #include <omnetpp/cscheduler.h>
 #include <omnetpp/simtime.h>
 #include <omnetpp/ccomponent.h>
+#include "traci/BasicNodeManager.h"
+
 #include <chrono>
 #include <memory>
-#include "traci/BasicNodeManager.h"
 #include <string>
 
 namespace artery

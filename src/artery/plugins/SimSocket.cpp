@@ -28,7 +28,6 @@
 #include <vanetza/net/mac_address.hpp>
 #include <vanetza/common/byte_view.hpp>
 #include "artery/plugins/DUTOtaInterfaceConnection.h"
-
 #include "artery/plugins/SimEventFromInterfaceVisitor.h"
 
 #include <iostream>

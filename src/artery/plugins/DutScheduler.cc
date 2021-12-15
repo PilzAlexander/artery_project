@@ -6,8 +6,9 @@
 #include <omnetpp/regmacros.h>
 #include <omnetpp/ccomponent.h>
 #include "SimSocket.h"
-#include <fstream>
 #include "omnetpp.h"
+
+#include <fstream>
 #include <thread>
 namespace artery
 {

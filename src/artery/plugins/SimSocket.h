@@ -51,15 +51,25 @@ namespace artery {
          */
         ~SimSocket();
 
-        // socket functions
+        /**
+         * close socket
+         */
         void close();
 
+        /**
+         * connect to port
+         *
+         * @param portName
+         */
         void connect(const PortName &portName);
 
+        /**
+         * disconnect from port
+         *
+         * @param portName
+         */
         void disconnect(const PortName &portName);
-
         void bind(const PortName &portName);
-
         void unbind(const PortName &portName);
 
         // send and receive functions

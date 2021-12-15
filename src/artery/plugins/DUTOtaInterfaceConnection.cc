@@ -3,7 +3,6 @@
 #include "artery/plugins/DUTOtaInterfaceLayer.h"
 #include "artery/plugins/DutScheduler.h"
 #include "SimSocket.h"
-
 #include "artery/networking/GeoNetRequest.h"
 #include <vanetza/access/data_request.hpp>
 #include <vanetza/common/byte_order.hpp>
@@ -56,7 +55,6 @@ namespace artery {
                                                              std::vector<unsigned char> buffer) {
 
         vanetza::access::DataRequest req;
-        //req.access_category = mapAccessCategory(ind.service_class);
         req.destination_addr.octets = macDest;
         req.source_addr.octets = macSource;
         req.ether_type = vanetza::uint16be_t(0x8947); // GeoNet EtherType
