@@ -6,7 +6,7 @@ import artery.plugins.SimSocket;
 network DutWorld extends World
 {
     submodules:
-        otaInterface: <default("DUTOtaInterfaceStub")> like DUTOtaInterface {
+        otaInterface: <default("DUTOtaInterfaceConnection")> like DUTOtaInterface {
             parameters:
                 @display("p=70,40");
         }

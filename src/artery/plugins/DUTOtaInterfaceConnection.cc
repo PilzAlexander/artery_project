@@ -1,4 +1,4 @@
-#include "artery/plugins/DUTOtaInterfaceStub.h"
+#include "artery/plugins/DUTOtaInterfaceConnection.h"
 #include "artery/plugins/DUTOtaIndicationQueue.h"
 #include "artery/plugins/DUTOtaInterfaceLayer.h"
 #include "artery/plugins/DutScheduler.h"
@@ -13,9 +13,9 @@
 
 namespace artery {
 
-    Define_Module(DUTOtaInterfaceStub)
+    Define_Module(DUTOtaInterfaceConnection)
 
-    void DUTOtaInterfaceStub::initialize() {
+    void DUTOtaInterfaceConnection::initialize() {
 
         mOtaIndicationQueue.reset(new DUTOtaIndicationQueue(this));
 
@@ -28,32 +28,32 @@ namespace artery {
         }
     }
 
-    void DUTOtaInterfaceStub::registerModule(DUTOtaInterfaceLayer *layer) {
+    void DUTOtaInterfaceConnection::registerModule(DUTOtaInterfaceLayer *layer) {
         mRegisteredModule = layer;
     }
 
-    void DUTOtaInterfaceStub::unregisterModule() {
+    void DUTOtaInterfaceConnection::unregisterModule() {
         mRegisteredModule = nullptr;
     }
 
-    void DUTOtaInterfaceStub::sendMessage(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
-                                          const vanetza::byte_view_range &byteViewRange) {
+    void DUTOtaInterfaceConnection::sendMessage(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
+                                                const vanetza::byte_view_range &byteViewRange) {
         // create module pointer to SimSocket with ID = 6
         cModule *mod = getSimulation()->getModule(6);
         auto *mTarget = check_and_cast<artery::SimSocket *>(mod);
         //mTarget->publishSimMsg(macSource, macDest, byteViewRange);
     }
 
-    void DUTOtaInterfaceStub::receiveMessage(std::unique_ptr<GeoNetPacket> DUTGeoNetPacket) {
+    void DUTOtaInterfaceConnection::receiveMessage(std::unique_ptr<GeoNetPacket> DUTGeoNetPacket) {
         if (hasRegisteredModule()) {
             Enter_Method("receiveMessage");
             mRegisteredModule->request(std::move(DUTGeoNetPacket));
         }
     }
 
-    void DUTOtaInterfaceStub::placeGeoNetPacketInQueue(const std::array<unsigned char, 6> macSource,
-                                                       const std::array<unsigned char, 6> macDest,
-                                                       std::vector<unsigned char> buffer) {
+    void DUTOtaInterfaceConnection::placeGeoNetPacketInQueue(const std::array<unsigned char, 6> macSource,
+                                                             const std::array<unsigned char, 6> macDest,
+                                                             std::vector<unsigned char> buffer) {
 
         vanetza::access::DataRequest req;
         //req.access_category = mapAccessCategory(ind.service_class);
@@ -70,7 +70,7 @@ namespace artery {
         std::unique_ptr<GeoNetPacket> gn(new GeoNetPacket("GeoNet packet from DUT"));
         gn->setPayload(std::move(payload));
         gn->setControlInfo(new GeoNetRequest(req));
-        DUTOtaInterfaceStub::receiveMessage(std::move(gn));
+        DUTOtaInterfaceConnection::receiveMessage(std::move(gn));
     }
 
 } // namespace artery

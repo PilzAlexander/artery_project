@@ -29,15 +29,13 @@
 #include <vanetza/net/mac_address.hpp>
 #include <vanetza/common/byte_view.hpp>
 #include <vanetza/common/archives.hpp>
-#include "artery/plugins/DUTOtaInterfaceStub.h"
+#include "artery/plugins/DUTOtaInterfaceConnection.h"
 #include "artery/plugins/SimEventFromInterfaceVisitor.h"
 
 #include <iostream>
 #include <zmq.hpp>
 #include <algorithm>
 #include <array>
-//#include <utility>
-//#include <type_traits>
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
@@ -251,7 +249,7 @@ namespace artery {
                     }
 
                     cModule *mod = getSimulation()->getModule(5);
-                    auto *mTarget = check_and_cast<artery::DUTOtaInterfaceStub *>(mod);
+                    auto *mTarget = check_and_cast<artery::DUTOtaInterfaceConnection *>(mod);
                     mTarget->placeGeoNetPacketInQueue(macSource_, macDest_, payload_);
                 }
 

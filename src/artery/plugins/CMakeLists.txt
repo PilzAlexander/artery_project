@@ -2,7 +2,7 @@ add_artery_feature(plugins
         DUTGpsdServer.cc
         DUTOtaIndicationQueue.cc
         DUTOtaInterfaceLayer.cc
-        DUTOtaInterfaceStub.cc
+        DUTOtaInterfaceConnection.cc
         DutContention.cc
         DutRadio.cc
         SimSocket.cpp

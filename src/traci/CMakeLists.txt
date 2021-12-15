@@ -20,13 +20,12 @@ set(SOURCES
     sumo/foreign/tcpip/socket.cpp
     sumo/foreign/tcpip/storage.cpp
     sumo/utils/traci/TraCIAPI.cpp
-    ../artery/plugins/Connection.cc
-    ../artery/plugins/SimSocket.cpp
+        ../artery/plugins/SimSocket.cpp
     ../artery/plugins/MessageContext.cpp
     DutNodeManager.cpp
     DutModuleMapper.cpp
     ../artery/plugins/DutScheduler.cc
-    ../artery/plugins/DUTOtaInterfaceStub.cc
+        ../artery/plugins/DUTOtaInterfaceConnection.cc
     ../artery/plugins/DUTOtaIndicationQueue.cc
     ../artery/plugins/DUTOtaInterfaceLayer.cc
         )

@@ -14,7 +14,7 @@ namespace artery
 {
 
 /**
- * The DUTOtaInterfaceStub provides a implementation of the DUTOtaInterface which acts as an stub to work without any hardware connected.
+ * The DUTOtaInterfaceConnection provides a implementation of the DUTOtaInterface which acts as an stub to work without any hardware connected.
  * It implements all necessary methods, mos of them doing nothing.
  * It can be used to compile the testbed without any external library available (like the S.E.A. API required by the OtaInterfaceUsrp).
  */
