@@ -30,14 +30,14 @@
 #include <vanetza/common/byte_view.hpp>
 #include <vanetza/common/archives.hpp>
 #include "artery/plugins/DUTOtaInterfaceStub.h"
-
 #include "artery/plugins/SimEventFromInterfaceVisitor.h"
+
 #include <iostream>
-#include <utility>
 #include <zmq.hpp>
 #include <algorithm>
 #include <array>
-#include <type_traits>
+//#include <utility>
+//#include <type_traits>
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
@@ -48,26 +48,36 @@ namespace artery {
 
     Define_Module(SimSocket)
 
-    void SimSocket::initialize() {
-        //get traci from ModulePath
-        cModule *traci = getModuleByPath(par("traciModule"));
+    void SimSocket::initialize(int stage) {
+        if(stage == 0) {
+            //get traci from ModulePath
+            cModule *traci = getModuleByPath(par("traciModule"));
 
-        //Subscribe signal to actual Traci
-        if (traci) {
-            traci->subscribe(traci::BasicNodeManager::updateNodeSignal, this);
-        } else {
-            throw cRuntimeError("No TraCI module found for signal subscription");
+            //Subscribe signal to actual Traci
+            if (traci) {
+                traci->subscribe(traci::BasicNodeManager::updateNodeSignal, this);
+            } else {
+                throw cRuntimeError("No TraCI module found for signal subscription");
+            }
+
+            // set up zmq socket and stuff
+            context_ = zmq::context_t(1);
+            portName_ = "tcp://*:7777";
+            subPortName_ = "tcp://localhost:7778";
+            publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
+            subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
+            subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+            subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
+            bind(portName_);
         }
 
-        // set up zmq socket and stuff
-        context_ = zmq::context_t(1);
-        portName_ = "tcp://*:7777";
-        subPortName_ = "tcp://localhost:7778";
-        publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
-        subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
-        subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
-        subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
-        bind(portName_);
+        if(stage == 1){
+            EV_DEBUG << "IN STAGE 1 " << endl;
+            std::cout << "IN STAGE 1 " << endl;
+            // create buffer size for message
+            zmq::message_t msgToSend("HAllo");
+            publisherSocket_.send(msgToSend, zmq::send_flags::none);
+        }
     }
 
     void SimSocket::finish() {

@@ -13,48 +13,50 @@
 /********************************************************************************
  * Includes
  *********************************************************************************/
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
-#include <boost/variant/variant.hpp>
-#include "traci/Angle.h"
-#include "traci/Boundary.h"
-#include "traci/NodeManager.h"
-#include "traci/Listener.h"
-#include "traci/Position.h"
-#include "traci/SubscriptionManager.h"
-#include <omnetpp/ccomponent.h>
-#include "artery/inet/gemv2/VehicleIndex.h"
-#include "artery/inet/gemv2/Visualizer.h"
-#include "artery/traci/Cast.h"
-#include "traci/BasicNodeManager.h"
-#include "traci/API.h"
-#include <boost/geometry.hpp>
-#include <boost/geometry/geometries/register/linestring.hpp>
-#include <boost/geometry/strategies/transform/matrix_transformers.hpp>
-#include <boost/range/adaptor/indexed.hpp>
-#include <boost/range/adaptor/transformed.hpp>
-#include <boost/units/cmath.hpp>
-#include <inet/common/ModuleAccess.h>
-#include <omnetpp/checkandcast.h>
-#include "artery/utility/Geometry.h"
-#include <boost/geometry/index/rtree.hpp>
-#include <omnetpp/clistener.h>
-#include <omnetpp/csimplemodule.h>
 #include "artery/application/VehicleKinematics.h"
 #include "DUTOtaInterfaceStub.h"
+#include <inet/common/ModuleAccess.h>
+#include "traci/Boundary.h"
+#include "traci/Listener.h"
+#include "traci/SubscriptionManager.h"
 
-#include <iostream>
-#include <functional>
-#include <map>
-#include <memory>
-#include <string>
-#include <iostream>
-#include <bitset>
 #include <zmq.hpp>
-#include <set>
-#include <vector>
-#include <algorithm>
-#include <array>
+
+//#include <boost/archive/text_oarchive.hpp>
+//#include <boost/archive/binary_oarchive.hpp>
+//#include <boost/variant/variant.hpp>
+//#include "traci/Angle.h"
+//#include "traci/NodeManager.h"
+//#include "traci/Position.h"
+//#include <omnetpp/ccomponent.h>
+//#include "artery/inet/gemv2/VehicleIndex.h"
+//#include "artery/inet/gemv2/Visualizer.h"
+//#include "artery/traci/Cast.h"
+//#include "traci/BasicNodeManager.h"
+//#include "traci/API.h"
+//#include <boost/geometry.hpp>
+//#include <boost/geometry/geometries/register/linestring.hpp>
+//#include <boost/geometry/strategies/transform/matrix_transformers.hpp>
+//#include <boost/range/adaptor/indexed.hpp>
+//#include <boost/range/adaptor/transformed.hpp>
+//#include <boost/units/cmath.hpp>
+//#include <omnetpp/checkandcast.h>
+//#include "artery/utility/Geometry.h"
+//#include <boost/geometry/index/rtree.hpp>
+//#include <omnetpp/clistener.h>
+//#include <omnetpp/csimplemodule.h>
+
+//#include <iostream>
+//#include <functional>
+//#include <map>
+//#include <memory>
+//#include <string>
+//#include <iostream>
+//#include <bitset>
+//#include <set>
+//#include <vector>
+//#include <algorithm>
+//#include <array>
 /********************************************************************************
  * Class declaration
  ********************************************************************************/
@@ -151,7 +153,7 @@ namespace artery {
         std::string serializeVehicleData() const;
 
     protected:
-        void initialize() override;
+        void initialize(int stage) override;
 
         void finish() override;
 
