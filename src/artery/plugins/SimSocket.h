@@ -4,6 +4,8 @@
   \brief    Provides the class for setting up a socket to send data from the simulation to the interface component
   \author   Alexander Pilz
   \author   Johannes Winter
+  \author   Fabian Genes
+  \author   Thanaanncheyan Thavapalan
   \version  1.0.0
   \date     31.10.2021
  ********************************************************************************/
@@ -72,6 +74,9 @@ namespace artery {
         void bind(const PortName &portName);
         void unbind(const PortName &portName);
 
+        void bindConfig(const PortName &portName);
+        void unbindConfig(const PortName &portName);
+
         // send and receive functions
         /**
          * Method for publishing vehicle data, such as speed, dynamics, ...
@@ -89,6 +94,12 @@ namespace artery {
          * Method for subscribing to the interface component and receiving vehicle data
          */
         void subscribe();
+
+        /**
+       * Method for sending  the connectorConfig  XML to the Interface
+       * @param stringFilePath
+       */
+        void sendConfigString(std::string stringFilePath) ;
 
         /**
          * Method for collecting simulated vehicle data from the DutNodeManager
@@ -137,8 +148,10 @@ namespace artery {
     private:
         PortName portName_;
         PortName subPortName_;
+        PortName portNameConfig_;
         zmq::socket_t publisherSocket_;
         zmq::socket_t subscriberSocket_;
+        zmq::socket_t publisherSocketConfig_;
         zmq::context_t context_;
         std::vector<PortName> connections_;
         std::vector<PortName> bindings_;
@@ -146,6 +159,8 @@ namespace artery {
         DataMap tmpVehicleDataMap_;
         DataMap diffVehicleDataMap_;
         DataMap inputDataMap_;
+        int count = 0;
+        std::string configXMLPath_;
         // DUT has always the same Mac in the simulation
         std::array<unsigned char, 6> macSource_ = {0x0a, 0xaa, 0x00, 0x00, 0x00, 0x01};
         std::array<unsigned char, 6> macDest_{};

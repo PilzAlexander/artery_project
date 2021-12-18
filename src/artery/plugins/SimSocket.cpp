@@ -4,6 +4,8 @@
   \brief    Provides the functions for setting up a socket to send data from the simulation to the interface component
   \author   Alexander Pilz
   \author   Johannes Winter
+  \author   Fabian Genes
+  \author   Thanaanncheyan Thavapalan
   \version  1.0.0
   \date     31.10.2021
  ********************************************************************************/
@@ -34,6 +36,7 @@
 #include <zmq.hpp>
 #include <algorithm>
 #include <array>
+#include <fstream>
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
@@ -60,15 +63,21 @@ namespace artery {
             context_ = zmq::context_t(1);
             portName_ = "tcp://*:7777";
             subPortName_ = "tcp://localhost:7778";
+            portNameConfig_ = "tcp://*:7779";
+            //Add Path in settingg XML
+            configXMLPath_ = "/home/vagrant/disk/artery_projekt_letsGO/artery_project/src/artery/plugins/connectorsConfig.xml";
             publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
             subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
+            publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
             subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
             subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
             bind(portName_);
+            bindConfig(portNameConfig_);
     }
 
     void SimSocket::finish() {
         unbind(portName_);
+        unbindConfig(portNameConfig_);
         cSimpleModule::finish();
     }
 
@@ -127,6 +136,23 @@ namespace artery {
         connections_.erase(bindingIterator);
     }
 
+    // bind the publisher socket to a port
+    void SimSocket::bindConfig(const PortName &portNameConfig) {
+        publisherSocketConfig_.bind(portNameConfig_);
+        bindings_.push_back(portNameConfig);
+    }
+
+// unbind the socket from a port
+    void SimSocket::unbindConfig(const PortName &portNameConfig) {
+
+        auto bindingIterator = std::find(bindings_.begin(), bindings_.end(), portNameConfig);
+        if (bindingIterator == bindings_.end()) {
+            cerr << "SimSocket::" << portNameConfig << "failed to unbind from SimSocket::" << portNameConfig << endl;
+            return;
+        }
+        publisherSocketConfig_.unbind(portNameConfig_);
+        connections_.erase(bindingIterator);
+    }
 // publish data
     void SimSocket::publish() {
 
@@ -139,6 +165,21 @@ namespace artery {
         } catch (zmq::error_t &cantSend) {
             cerr << "Socket can't send: " << cantSend.what() << endl;
             unbind(portName_);
+        }
+    }
+//send Config XML
+
+    void SimSocket::sendConfigString(std::string stringFilePath) {
+        std::ifstream xmlFile(stringFilePath);
+        std::stringstream ss;
+        ss << xmlFile.rdbuf();
+        std::istringstream iss(ss.str());
+        try {
+            std::cout << "Gesendet" << endl;
+            publisherSocketConfig_.send(zmq::buffer(ss.str()), zmq::send_flags::none);
+        } catch (zmq::error_t &cantSend) {
+            cerr << "Socket can't send: " << cantSend.what() << endl;
+            unbindConfig(portNameConfig_);
         }
     }
 
@@ -705,6 +746,16 @@ namespace artery {
 //receive NodeUpdate Signal from BasicNodeManager
     void SimSocket::receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) {
         if (signal == traci::BasicNodeManager::updateNodeSignal) {
+
+            //Workaround because its not Posssible to send in the Omnet Init mehtode
+            if (count < 1) {
+
+                sendConfigString(configXMLPath_) ;
+
+                //config wird einmal gesendet
+                count=1;
+            }
+
             publish();
             subscribe();
         }
