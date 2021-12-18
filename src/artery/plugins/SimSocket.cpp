@@ -69,7 +69,7 @@ namespace artery {
             publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
             subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
             publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
-            subscriberSocket_.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+            subscriberSocket_.set(zmq::sockopt::subscribe, "");
             subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
             bind(portName_);
             bindConfig(portNameConfig_);
@@ -227,8 +227,8 @@ namespace artery {
         zmq::message_t messageToReceive;
 
         try {
-            subscriberSocket_.recv(&messageToReceive, ZMQ_NOBLOCK);
-        } catch (zmq::error_t cantReceive) {
+            subscriberSocket_.recv(messageToReceive,zmq::recv_flags::dontwait);
+        } catch (zmq::error_t &cantReceive) {
             cerr << "Socket can't receive: " << cantReceive.what() << endl;
             // TODO unbind
         }
@@ -753,7 +753,7 @@ namespace artery {
                 sendConfigString(configXMLPath_) ;
 
                 //config wird einmal gesendet
-                count=1;
+                count=0;
             }
 
             publish();
