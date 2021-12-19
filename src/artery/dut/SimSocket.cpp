@@ -58,20 +58,20 @@ namespace artery {
 
         pugi::xml_node root = openXML();
         context_ = zmq::context_t(1);
-        pubPortName_ = getValueFromXML(root,"pubPortName_","pubPortName");
-        subPortName_ = getValueFromXML(root,"subPortName_","subPortName");
-        portNameConfig_ = getValueFromXML(root,"portNameConfig_","portNameConfig");
-      //  portNameConfigSub_ = getValueFromXML(root,"portNameConfigSub_","portNameConfigSub");
-        configXMLPath_ = getValueFromXML(root,"configXMLPath_","configXMLPath");
+        pubPortName_ = getValueFromXML(root, "pubPortName_", "pubPortName");
+        subPortName_ = getValueFromXML(root, "subPortName_", "subPortName");
+        portNameConfig_ = getValueFromXML(root, "portNameConfig_", "portNameConfig");
+        //  portNameConfigSub_ = getValueFromXML(root,"portNameConfigSub_","portNameConfigSub");
+        configXMLPath_ = getValueFromXML(root, "configXMLPath_", "configXMLPath");
         publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
         subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
         publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
-      //  subscribeSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::sub);
+        //  subscribeSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::sub);
         subscriberSocket_.set(zmq::sockopt::subscribe, "");
         connect(subPortName_, subscriberSocket_);
-      //  connect(portNameConfigSub_,subscribeSocketConfig_);
+        //  connect(portNameConfigSub_,subscribeSocketConfig_);
         bind(pubPortName_, publisherSocket_);
-        bind(portNameConfig_, publisherSocketConfig_ );
+        bind(portNameConfig_, publisherSocketConfig_);
     }
 
     void SimSocket::finish() {
@@ -84,11 +84,11 @@ namespace artery {
         unbind(getLastEndpoint(publisherSocketConfig_), publisherSocketConfig_);
         disconnect(getLastEndpoint(subscriberSocket_), subscriberSocket_);
         close(publisherSocket_);
-        close(subscriberSocket_ );
+        close(subscriberSocket_);
         close(publisherSocketConfig_);
     }
 
-    std::string SimSocket::getLastEndpoint(zmq::socket_t& socketName) const {
+    std::string SimSocket::getLastEndpoint(zmq::socket_t &socketName) const {
         string lastEndpoint =
                 socketName.get(zmq::sockopt::last_endpoint);
         return lastEndpoint;
@@ -98,11 +98,11 @@ namespace artery {
         socketName.close();
     }
 
-    void SimSocket::connect(const PortName &portName, zmq::socket_t& socketName) {
+    void SimSocket::connect(const PortName &portName, zmq::socket_t &socketName) {
         try {
             socketName.connect(portName);
             connections_.push_back(portName);
-            EV_INFO << "Connected to port: " << portName  << endl;
+            EV_INFO << "Connected to port: " << portName << endl;
         } catch (zmq::error_t &cantConnect) {
             cout << "SO DRECK " << portName << std::endl;
             cerr << "Socket can't connect to port: " << cantConnect.what() << endl;
@@ -111,7 +111,7 @@ namespace artery {
         }
     }
 
-    void SimSocket::disconnect(const PortName &portName, zmq::socket_t& socketName) {
+    void SimSocket::disconnect(const PortName &portName, zmq::socket_t &socketName) {
         auto connectionIterator = std::find(connections_.begin(), connections_.end(), portName);
         if (connectionIterator == connections_.end()) {
             cerr << "Socket: " << socketName << " failed to disconnect from port: " << portName << endl;
@@ -121,11 +121,11 @@ namespace artery {
         connections_.erase(connectionIterator);
     }
 
-    void SimSocket::bind(const PortName &portName, zmq::socket_t& socketName) {
+    void SimSocket::bind(const PortName &portName, zmq::socket_t &socketName) {
         try {
             socketName.bind(portName);
             bindings_.push_back(portName);
-            EV_INFO << "Bound to port: " << portName  << endl;
+            EV_INFO << "Bound to port: " << portName << endl;
         } catch (zmq::error_t &cantBind) {
             cerr << "Socket can't bind to port: " << cantBind.what() << endl;
             close(socketName);
@@ -133,7 +133,7 @@ namespace artery {
         }
     }
 
-    void SimSocket::unbind(const PortName &portName, zmq::socket_t& socketName) {
+    void SimSocket::unbind(const PortName &portName, zmq::socket_t &socketName) {
         auto bindingIterator = std::find(bindings_.begin(), bindings_.end(), portName);
         if (bindingIterator == bindings_.end()) {
             cerr << "Socket: " << socketName << " failed to unbind from port: " << portName << endl;
@@ -156,16 +156,16 @@ namespace artery {
         }
     }
 
-    void SimSocket::sendConfigString(const std::string& stringFilePath) {
+    void SimSocket::sendConfigString(const std::string &stringFilePath) {
         std::ifstream xmlFile(directoryPath_ + stringFilePath);
         std::stringstream ss;
         ss << xmlFile.rdbuf();
         std::istringstream iss(ss.str());
 
-       // bool hasRecivedConfig = false;
-       // while (hasRecivedConfig)  {
-       //
-       // }
+        // bool hasRecivedConfig = false;
+        // while (hasRecivedConfig)  {
+        //
+        // }
         try {
             EV_INFO << "Config sent to simulation" << endl;
             publisherSocketConfig_.send(zmq::buffer(ss.str()), zmq::send_flags::none);
@@ -349,36 +349,28 @@ namespace artery {
             diffVehicleDataMap_.erase("Signals_DUT");
         }
 
-        if (vehicleDataMap_["LanePosition_DUT"] !=
-            boost::variant<int, double, std::string>(traci.getLanePosition(vehicleID))) {
-            vehicleDataMap_.insert_or_assign("LanePosition_DUT", traci.getLanePosition(vehicleID));
-            diffVehicleDataMap_.insert_or_assign("LanePosition_DUT", traci.getLanePosition(vehicleID));
-        } else {
-            diffVehicleDataMap_.erase("LanePosition_DUT");
-        }
-
-        if (vehicleDataMap_["Position_x-Coordinate_DUT"] !=
+        if (vehicleDataMap_["Position_X-Coordinate_DUT"] !=
             boost::variant<int, double, std::string>(traci.getPosition(vehicleID).x)) {
-            vehicleDataMap_.insert_or_assign("Position_X-Coordinate_DUT", traci.getPosition(vehicleID).x);
-            diffVehicleDataMap_.insert_or_assign("Position_X-Coordinate_DUT", traci.getPosition(vehicleID).x);
+            vehicleDataMap_.insert_or_assign("Position_X_Coordinate_DUT", traci.getPosition(vehicleID).x);
+            diffVehicleDataMap_.insert_or_assign("Position_X_Coordinate_DUT", traci.getPosition(vehicleID).x);
         } else {
-            diffVehicleDataMap_.erase("Position_X-Coordinate_DUT");
+            diffVehicleDataMap_.erase("Position_X_Coordinate_DUT");
         }
 
-        if (vehicleDataMap_["Position_y-Coordinate_DUT"] !=
+        if (vehicleDataMap_["Position_Y-Coordinate_DUT"] !=
             boost::variant<int, double, std::string>(traci.getPosition(vehicleID).y)) {
-            vehicleDataMap_.insert_or_assign("Position_y-Coordinate_DUT", traci.getPosition(vehicleID).y);
-            diffVehicleDataMap_.insert_or_assign("Position_y-Coordinate_DUT", traci.getPosition(vehicleID).y);
+            vehicleDataMap_.insert_or_assign("Position_Y_Coordinate_DUT", traci.getPosition(vehicleID).y);
+            diffVehicleDataMap_.insert_or_assign("Position_Y_Coordinate_DUT", traci.getPosition(vehicleID).y);
         } else {
-            diffVehicleDataMap_.erase("Position_y-Coordinate_DUT");
+            diffVehicleDataMap_.erase("Position_Y_Coordinate_DUT");
         }
 
-        if (vehicleDataMap_["Position_z-Coordinate_DUT"] !=
+        if (vehicleDataMap_["Position_Z-Coordinate_DUT"] !=
             boost::variant<int, double, std::string>(traci.getPosition(vehicleID).z)) {
-            vehicleDataMap_.insert_or_assign("Position_z-Coordinate_DUT", traci.getPosition(vehicleID).z);
-            diffVehicleDataMap_.insert_or_assign("Position_z-Coordinate_DUT", traci.getPosition(vehicleID).z);
+            vehicleDataMap_.insert_or_assign("Position_Z_Coordinate_DUT", traci.getPosition(vehicleID).z);
+            diffVehicleDataMap_.insert_or_assign("Position_Z_Coordinate_DUT", traci.getPosition(vehicleID).z);
         } else {
-            diffVehicleDataMap_.erase("Position_z-Coordinate_DUT");
+            diffVehicleDataMap_.erase("Position_Z_Coordinate_DUT");
         }
 
         if (vehicleDataMap_["Decel_DUT"] != boost::variant<int, double, std::string>(traci.getDecel(vehicleID))) {
@@ -744,19 +736,19 @@ namespace artery {
         }
     }
 
-    std::string SimSocket::getValueFromXML( pugi::xml_node root, std::string entryName, const char * attributeName) {
+    std::string SimSocket::getValueFromXML(pugi::xml_node root, std::string entryName, const char *attributeName) {
         std::string strValue;
         // Search for the first matching entry with the given hint attribute
         string searchStr = entryName;
         pugi::xpath_node xpathNode = root.select_single_node(searchStr.c_str());
         if (xpathNode) {
             pugi::xml_node selectedNode = xpathNode.node();
-            strValue =  selectedNode.child(attributeName).attribute("path").as_string();
+            strValue = selectedNode.child(attributeName).attribute("path").as_string();
         }
         return strValue;
     }
-	
-	stringstream SimSocket::getStringstreamOfXML(const string &stringFilePath) const {
+
+    stringstream SimSocket::getStringstreamOfXML(const string &stringFilePath) const {
         std::ifstream xmlFile(stringFilePath);
         std::stringstream ss;
         ss << xmlFile.rdbuf();
@@ -770,11 +762,7 @@ namespace artery {
         char *xmlPath = &helpString[0];
 
         // Load XML file into memory
-        // Remark: to fully read declaration entries you have to specify
-        // "pugi::parse_declaration"
-                  pugi::xml_parse_result result = doc.load_file(
-                          xmlPath,
-                pugi::parse_default | pugi::parse_declaration);
+        pugi::xml_parse_result result = doc.load_file(xmlPath, pugi::parse_default | pugi::parse_declaration);
         if (!result) {
             cout << "Parse error: " << result.description()
                  << ", character pos= " << result.offset;
@@ -784,7 +772,7 @@ namespace artery {
         return root;
     }
 
-    void waitConfigRecive( ){
+    void waitConfigReceive() {
 
     }
 

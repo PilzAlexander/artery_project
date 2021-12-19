@@ -201,14 +201,13 @@ namespace artery {
         /**
          * Returns value for set up connection
          * !Absolute path for config file "connectionConfig.xml has to be changed!
-         * @param root
+         * @param root root of xml
          * @param entryName name of child
          * @param attributeName name of attribute of child
          * @return
          */
         std::string getValueFromXML(pugi::xml_node root, std::string entryName, const char *attributeName);
     };
-
 } //namespace artery
 
 #endif //ARTERY_SIMSOCKET_H
