@@ -1,4 +1,4 @@
-package artery.plugins;
+package artery.dut;
 
 import artery.nic.IRadioDriver;
 import artery.inet.RadioDriver;

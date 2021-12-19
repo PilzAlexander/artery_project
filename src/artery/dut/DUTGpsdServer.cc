@@ -1,5 +1,5 @@
-#include "artery/plugins/DUTGpsdServer.h"
-#include "artery/plugins/DUTOtaInterfaceLayer.h"
+#include "artery/dut/DUTGpsdServer.h"
+#include "artery/dut/DUTOtaInterfaceLayer.h"
 #include "artery/traci/Cast.h"
 #include <vanetza/gnss/nmea.hpp>
 #include <vanetza/gnss/wgs84point.hpp>

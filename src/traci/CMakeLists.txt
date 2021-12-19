@@ -20,13 +20,13 @@ set(SOURCES
     sumo/foreign/tcpip/socket.cpp
     sumo/foreign/tcpip/storage.cpp
     sumo/utils/traci/TraCIAPI.cpp
-        ../artery/plugins/SimSocket.cpp
-        DutNodeManager.cpp
+    ../artery/dut/SimSocket.cpp
+    DutNodeManager.cpp
     DutModuleMapper.cpp
-    ../artery/plugins/DutScheduler.cc
-        ../artery/plugins/DUTOtaInterfaceConnection.cc
-    ../artery/plugins/DUTOtaIndicationQueue.cc
-    ../artery/plugins/DUTOtaInterfaceLayer.cc
+    ../artery/dut/DutScheduler.cc
+    ../artery/dut/DUTOtaInterfaceConnection.cc
+    ../artery/dut/DUTOtaIndicationQueue.cc
+    ../artery/dut/DUTOtaInterfaceLayer.cc
         )
 
 add_library(traci SHARED ${SOURCES})

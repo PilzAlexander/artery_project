@@ -1,4 +1,4 @@
-add_library(artery INTERFACE plugins/SimEventFromInterfaceVisitorInt.h)
+add_library(artery INTERFACE)
 add_library(core SHARED
     StaticNodeManager.cc
     application/CaObject.cc
@@ -173,8 +173,8 @@ if(WITH_TESTBED)
     add_subdirectory(testbed)
 endif()
 
-if(WITH_PLUGINS)
-    add_subdirectory(plugins)
+if(WITH_DUT)
+    add_subdirectory(dut)
 endif()
 
 install(TARGETS core LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

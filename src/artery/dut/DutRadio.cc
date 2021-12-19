@@ -1,4 +1,4 @@
-#include "artery/plugins/DutRadio.h"
+#include "artery/dut/DutRadio.h"
 #include <inet/linklayer/ieee80211/mac/Ieee80211Frame_m.h>
 #include <inet/physicallayer/common/packetlevel/RadioMedium.h>
 #include <inet/physicallayer/common/packetlevel/Radio.h>

@@ -7,12 +7,16 @@
 
 #ifndef ARTERY_OTA_INTERFACE_STUB_H
 #define ARTERY_OTA_INTERFACE_STUB_H
-
-#include "artery/plugins/DUTOtaInterface.h"
-#include "artery/plugins/DUTOtaIndicationQueue.h"
+/********************************************************************************
+ * Includes
+ *********************************************************************************/
+#include "artery/dut/DUTOtaInterface.h"
+#include "artery/dut/DUTOtaIndicationQueue.h"
 #include <omnetpp/csimplemodule.h>
 #include "SimSocket.h"
-
+/********************************************************************************
+ * Class declaration
+ ********************************************************************************/
 namespace artery {
 /**
  * The DUTOtaInterfaceConnection provides a implementation of the DUTOtaInterface which acts as an stub to work without any hardware connected.
@@ -75,7 +79,6 @@ namespace artery {
         DUTOtaInterfaceLayer *mRegisteredModule = nullptr;
         std::shared_ptr<DUTOtaIndicationQueue> mOtaIndicationQueue;
     };
-
 } // namespace artery
 
 #endif /* ARTERY_OTA_INTERFACE_STUB_H */

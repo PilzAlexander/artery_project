@@ -1,5 +1,5 @@
-#include "artery/plugins/DUTOtaIndicationQueue.h"
-#include "artery/plugins/DutScheduler.h"
+#include "artery/dut/DUTOtaIndicationQueue.h"
+#include "artery/dut/DutScheduler.h"
 #include <omnetpp/cconfigoption.h>
 #include <omnetpp/cconfiguration.h>
 #include <omnetpp/cfutureeventset.h>

@@ -1,4 +1,4 @@
-#include "artery/plugins/DutContention.h"
+#include "artery/dut/DutContention.h"
 
 namespace artery
 {

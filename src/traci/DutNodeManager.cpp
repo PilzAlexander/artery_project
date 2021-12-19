@@ -7,12 +7,11 @@
   \version  1.0.0
   \date     17.11.2021
  ********************************************************************************/
-
 /********************************************************************************
  * Includes
  *********************************************************************************/
 #include "DutNodeManager.h"
-#include "artery/plugins/SimSocket.h"
+#include "artery/dut/SimSocket.h"
 #include "omnetpp.h"
 #include "iostream"
 #include "traci/Angle.h"
@@ -27,7 +26,7 @@
 #include <ostream>
 #include <any>
 #include "boost/variant/get.hpp"
-#include "artery/plugins/SimEventFromInterfaceVisitorInt.h"
+#include "artery/dut/SimEventFromInterfaceVisitorInt.h"
 
 #include "artery/traci/VehicleController.h"
 #include "artery/application/StationType.h"
@@ -85,7 +84,6 @@ namespace traci {
     cModule *DutNodeManager::createModule(const std::string &id, omnetpp::cModuleType *type) {
         if (id == m_twinId) {
             return type->create(m_twinName.c_str(), getSystemModule());
-
         } else {
             return BasicNodeManager::createModule(id, type);
         }
@@ -93,7 +91,6 @@ namespace traci {
 
     void DutNodeManager::updateVehicle(const std::string &id, VehicleSink *sink) {
         auto vehicle = m_subscriptions->getVehicleCache(id);
-
         auto &traci = m_api->vehicle;
 
         // get vehicle data to send
@@ -115,17 +112,17 @@ namespace traci {
     }
 
     void DutNodeManager::setVehicleData(const std::string &id, artery::SimSocket::DataMap inputDataMap) {
-
         auto vehicle = m_subscriptions->getVehicleCache(id);
         auto &traci = m_api->vehicle;
 
-        if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("Signals")) {
+        if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("Signals") &&
+            inputDataMap["Operation"] == boost::variant<int, double, std::string>(traci.getSignals(id))) {
+            std::cout << "IN DER IF, VOR SET SIGNALS" << std::endl;
+
             std::string signalsStr = boost::get<std::string>(inputDataMap["Value"]);
             int signals = atoi(signalsStr.c_str());
             traci.setSignals(id, signals);
         }
-
-
     }
 }// namespace traci
 /********************************************************************************

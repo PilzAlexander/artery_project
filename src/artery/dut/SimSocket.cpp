@@ -1,16 +1,4 @@
 /********************************************************************************
-  \project  INFM_HIL_Interface
-  \file     SimSocket.h
-  \brief    Provides the functions for setting up a socket to send data from the simulation to the interface component
-  \author   Alexander Pilz
-  \author   Johannes Winter
-  \author   Fabian Genes
-  \author   Thanaanncheyan Thavapalan
-  \version  1.0.0
-  \date     31.10.2021
- ********************************************************************************/
-
-/********************************************************************************
  * Includes
  *********************************************************************************/
 #include "SimSocket.h"
@@ -29,8 +17,8 @@
 #include <vanetza/geonet/serialization.hpp>
 #include <vanetza/net/mac_address.hpp>
 #include <vanetza/common/byte_view.hpp>
-#include "artery/plugins/DUTOtaInterfaceConnection.h"
-#include "artery/plugins/SimEventFromInterfaceVisitor.h"
+#include "artery/dut/DUTOtaInterfaceConnection.h"
+#include "artery/dut/SimEventFromInterfaceVisitor.h"
 
 #include <iostream>
 #include <zmq.hpp>
@@ -49,15 +37,15 @@ namespace artery {
 
     void SimSocket::initialize() {
 
-            //get traci from ModulePath
-            cModule *traci = getModuleByPath(par("traciModule"));
+        //get traci from ModulePath
+        cModule *traci = getModuleByPath(par("traciModule"));
 
-            //Subscribe signal to actual Traci
-            if (traci) {
-                traci->subscribe(traci::BasicNodeManager::updateNodeSignal, this);
-            } else {
-                throw cRuntimeError("No TraCI module found for signal subscription");
-            }
+        //Subscribe signal to actual Traci
+        if (traci) {
+            traci->subscribe(traci::BasicNodeManager::updateNodeSignal, this);
+        } else {
+            throw cRuntimeError("No TraCI module found for signal subscription");
+        }
 
             // set up zmq socket and stuff
             context_ = zmq::context_t(1);
@@ -215,7 +203,7 @@ namespace artery {
         zmq::message_t messageToReceive;
 
         try {
-            subscriberSocket_.recv(messageToReceive,zmq::recv_flags::dontwait);
+            subscriberSocket_.recv(messageToReceive, zmq::recv_flags::dontwait);
         } catch (zmq::error_t &cantReceive) {
             cerr << "Socket can't receive: " << cantReceive.what() << endl;
             disconnect(subPortName_, subscriberSocket_);
@@ -733,22 +721,20 @@ namespace artery {
 //receive NodeUpdate Signal from BasicNodeManager
     void SimSocket::receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) {
         if (signal == traci::BasicNodeManager::updateNodeSignal) {
-
-            //Workaround because its not Posssible to send in the Omnet Init mehtode
+            //Workaround because it's not possible to send in the Omnet++ Init methode
             if (count < 1) {
-
-                sendConfigString(configXMLPath_) ;
-
-                //config wird einmal gesendet
-                count=1;
+                //sending config once at the beginning
+                sendConfigString(configXMLPath_);
+                count = 1;
             }
-
             publish();
             subscribe();
         }
     }
 
-
+    const SimSocket::DataMap &SimSocket::getInputDataMap() const {
+        return inputDataMap_;
+    }
 }// namespace artery
 /********************************************************************************
  * EOF

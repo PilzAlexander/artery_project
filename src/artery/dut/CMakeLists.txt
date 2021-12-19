@@ -1,4 +1,4 @@
-add_artery_feature(plugins
+add_artery_feature(dut
         DUTGpsdServer.cc
         DUTOtaIndicationQueue.cc
         DUTOtaInterfaceLayer.cc
@@ -9,16 +9,16 @@ add_artery_feature(plugins
         DutScheduler.cc
         )
 
-target_link_libraries(plugins PUBLIC INET)
+target_link_libraries(dut PUBLIC INET)
 
 find_package(SEA_V2X CONFIG)
 mark_as_advanced(SEA_V2X_DIR)
 if (SEA_V2X_FOUND)
-    target_sources(plugins PUBLIC
+    target_sources(dut PUBLIC
             OtaInterfaceUsrp.cc
             UsrpConnection.cc
             )
-    target_link_libraries(plugins PUBLIC SEA_V2X::sea_v2x)
+    target_link_libraries(dut PUBLIC SEA_V2X::sea_v2x)
     message(STATUS "Building Plugins with SEA API")
 else()
     message(STATUS "Building Plugins without SEA API")
