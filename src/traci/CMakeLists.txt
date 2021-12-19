@@ -27,6 +27,7 @@ set(SOURCES
     ../artery/dut/DUTOtaInterfaceConnection.cc
     ../artery/dut/DUTOtaIndicationQueue.cc
     ../artery/dut/DUTOtaInterfaceLayer.cc
+    ../artery/dut/XML/pugixml.cpp
         )
 
 add_library(traci SHARED ${SOURCES})

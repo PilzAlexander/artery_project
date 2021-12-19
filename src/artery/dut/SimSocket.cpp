@@ -19,6 +19,7 @@
 #include <vanetza/common/byte_view.hpp>
 #include "artery/dut/DUTOtaInterfaceConnection.h"
 #include "artery/dut/SimEventFromInterfaceVisitor.h"
+#include "artery/dut/XML/pugixml.hpp"
 
 #include <iostream>
 #include <zmq.hpp>
@@ -44,6 +45,8 @@ namespace artery {
         } else {
             throw cRuntimeError("No TraCI module found for signal subscription");
         }
+
+        pugi::xml_node root = openXML();
 
         context_ = zmq::context_t(1);
         pubPortName_ = getValueFromXML(root,"portName_","portName");
