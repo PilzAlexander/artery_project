@@ -1,8 +1,8 @@
 #include "artery/networking/GeoNetIndication.h"
 #include "artery/networking/GeoNetPacket.h"
 #include "artery/nic/RadioDriverBase.h"
-#include "artery/plugins/DUTOtaInterfaceLayer.h"
-#include "artery/plugins/DUTOtaInterface.h"
+#include "artery/dut/DUTOtaInterfaceLayer.h"
+#include "artery/dut/DUTOtaInterface.h"
 #include "artery/traci/ControllableVehicle.h"
 #include <inet/common/ModuleAccess.h>
 #include <vanetza/net/packet_variant.hpp>

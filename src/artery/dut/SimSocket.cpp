@@ -17,8 +17,8 @@
 #include <vanetza/geonet/serialization.hpp>
 #include <vanetza/net/mac_address.hpp>
 #include <vanetza/common/byte_view.hpp>
-#include "artery/plugins/DUTOtaInterfaceConnection.h"
-#include "artery/plugins/SimEventFromInterfaceVisitor.h"
+#include "artery/dut/DUTOtaInterfaceConnection.h"
+#include "artery/dut/SimEventFromInterfaceVisitor.h"
 
 #include <iostream>
 #include <zmq.hpp>
@@ -53,7 +53,7 @@ namespace artery {
         subPortName_ = "tcp://localhost:7778";
         portNameConfig_ = "tcp://*:7779";
         //Add Path in setting XML
-        configXMLPath_ = "/home/vagrant/disk/artery_projekt_letsGO/artery_project/src/artery/plugins/connectorsConfig.xml";
+        configXMLPath_ = "/home/vagrant/disk/artery_projekt_letsGO/artery_project/src/artery/dut/connectorsConfig.xml";
         publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
         subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
         publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);

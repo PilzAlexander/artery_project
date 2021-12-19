@@ -1,6 +1,6 @@
-package artery.plugins;
+package artery.dut;
 
-import artery.plugins.OtaInterface;
+import artery.dut.OtaInterface;
 
 simple DUTOtaInterfaceConnection like DUTOtaInterface
 {

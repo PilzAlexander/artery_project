@@ -1,4 +1,4 @@
-add_opp_run(plugins CONFIG omnetpp.ini)
+add_opp_run(dut CONFIG omnetpp.ini)
 #add_opp_test(plugins SUFFIX no-api CONFIG noSeaApi SIMTIME_LIMIT 5s)
 #if(SEA_V2X_FOUND)
 #    add_opp_test(plugins SUFFIX no-usrp CONFIG noUsrp SIMTIME_LIMIT 5s)

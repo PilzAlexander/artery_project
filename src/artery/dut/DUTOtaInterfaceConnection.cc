@@ -1,7 +1,7 @@
-#include "artery/plugins/DUTOtaInterfaceConnection.h"
-#include "artery/plugins/DUTOtaIndicationQueue.h"
-#include "artery/plugins/DUTOtaInterfaceLayer.h"
-#include "artery/plugins/DutScheduler.h"
+#include "artery/dut/DUTOtaInterfaceConnection.h"
+#include "artery/dut/DUTOtaIndicationQueue.h"
+#include "artery/dut/DUTOtaInterfaceLayer.h"
+#include "artery/dut/DutScheduler.h"
 #include "SimSocket.h"
 #include "artery/networking/GeoNetRequest.h"
 #include <vanetza/access/data_request.hpp>

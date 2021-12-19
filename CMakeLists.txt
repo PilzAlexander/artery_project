@@ -96,7 +96,7 @@ option(WITH_TRANSFUSION "Build Artery with transfusion feature" OFF)
 #TODO $Variable für WITH_TESTBED
 option(WITH_TESTBED "Build Artery with testbed feature" ON)
 #set(WITH_TESTBED OFF)
-option(WITH_PLUGINS "Build Artery with communication options to a dut" ON)
+option(WITH_DUT "Build Artery with communication options to a dut" ON)
 
 option(WITH_OTS "Build Artery with support for OpenTrafficSim" OFF)
 if(WITH_OTS)

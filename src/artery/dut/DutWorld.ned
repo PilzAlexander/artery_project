@@ -1,7 +1,7 @@
-package artery.plugins;
+package artery.dut;
 
 import artery.inet.World;
-import artery.plugins.SimSocket;
+import artery.dut.SimSocket;
 
 network DutWorld extends World
 {

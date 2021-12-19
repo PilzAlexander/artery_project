@@ -1,4 +1,4 @@
-package artery.plugins;
+package artery.dut;
 
 import inet.physicallayer.ieee80211.packetlevel.Ieee80211ScalarRadio;
 

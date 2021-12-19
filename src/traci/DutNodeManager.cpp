@@ -7,12 +7,11 @@
   \version  1.0.0
   \date     17.11.2021
  ********************************************************************************/
-
 /********************************************************************************
  * Includes
  *********************************************************************************/
 #include "DutNodeManager.h"
-#include "artery/plugins/SimSocket.h"
+#include "artery/dut/SimSocket.h"
 #include "omnetpp.h"
 #include "iostream"
 #include "traci/Angle.h"
@@ -27,7 +26,7 @@
 #include <ostream>
 #include <any>
 #include "boost/variant/get.hpp"
-#include "artery/plugins/SimEventFromInterfaceVisitorInt.h"
+#include "artery/dut/SimEventFromInterfaceVisitorInt.h"
 
 #include "artery/traci/VehicleController.h"
 #include "artery/application/StationType.h"
@@ -126,8 +125,6 @@ namespace traci {
 
             std::cout << "SIGNALS DER GESETZT WURDE: " << traci.getSignals(id) << std::endl;
         }
-
-
     }
 }// namespace traci
 /********************************************************************************

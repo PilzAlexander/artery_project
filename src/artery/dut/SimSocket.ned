@@ -1,4 +1,4 @@
-package artery.plugins;
+package artery.dut;
 
 module SimSocket
 {
