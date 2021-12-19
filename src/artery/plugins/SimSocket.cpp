@@ -61,99 +61,88 @@ namespace artery {
 
             // set up zmq socket and stuff
             context_ = zmq::context_t(1);
-            portName_ = "tcp://*:7777";
-            subPortName_ = "tcp://localhost:7778";
-            portNameConfig_ = "tcp://*:7779";
+            pubPortName_ = "tcp://127.0.0.1:7777";
+            subPortName_ = "tcp://127.0.0.1:7778";
+            portNameConfig_ = "tcp://127.0.0.1:7779";
             //Add Path in settingg XML
             configXMLPath_ = "/home/vagrant/disk/artery_projekt_letsGO/artery_project/src/artery/plugins/connectorsConfig.xml";
             publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
             subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
             publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
             subscriberSocket_.set(zmq::sockopt::subscribe, "");
-            subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
-            bind(portName_);
-            bindConfig(portNameConfig_);
+            connect(subPortName_, subscriberSocket_);
+            bind(pubPortName_, publisherSocket_);
+            bind(portNameConfig_, publisherSocketConfig_ );
     }
 
     void SimSocket::finish() {
-        unbind(portName_);
-        unbindConfig(portNameConfig_);
-        cSimpleModule::finish();
     }
 
-// constructor without args
     SimSocket::SimSocket() {}
 
-// destructor
     SimSocket::~SimSocket() {
-        //unbind(portName_);
-        close();
+        unbind(getLastEndpoint(publisherSocket_), publisherSocket_);
+        unbind(getLastEndpoint(publisherSocketConfig_), publisherSocketConfig_);
+        disconnect(getLastEndpoint(subscriberSocket_), subscriberSocket_);
+        close(publisherSocket_);
+        close(subscriberSocket_ );
+        close(publisherSocketConfig_);
     }
 
-    void SimSocket::close() {
-        publisherSocket_.close();
+    std::string SimSocket::getLastEndpoint(zmq::socket_t& socketName) const {
+        string lastEndpoint =
+                socketName.get(zmq::sockopt::last_endpoint);
+        return lastEndpoint;
     }
 
-// connect the publisher socket to a port
-    void SimSocket::connect(const PortName &portName) {
+    void SimSocket::close(zmq::socket_t &socketName) {
+        socketName.close();
+    }
+
+    void SimSocket::connect(const PortName &portName, zmq::socket_t& socketName) {
         try {
-            publisherSocket_.connect(portName_);
+            socketName.connect(portName);
             connections_.push_back(portName);
-            // DEBUG
-            cout << "Connected to Socket: " << portName << endl;
+            EV_INFO << "Connected to port: " << portName  << endl;
         } catch (zmq::error_t &cantConnect) {
             cerr << "Socket can't connect to port: " << cantConnect.what() << endl;
-            close();
+            close(socketName);
             return;
         }
     }
 
-// disconnect the publisher socket from a port
-    void SimSocket::disconnect(const PortName &portName) {
+    void SimSocket::disconnect(const PortName &portName, zmq::socket_t& socketName) {
         auto connectionIterator = std::find(connections_.begin(), connections_.end(), portName);
         if (connectionIterator == connections_.end()) {
-            cerr << "SimSocket::" << portName << "failed to disconnect from SimSocket::" << portName << endl;
+            cerr << "Socket: " << socketName << " failed to disconnect from port: " << portName << endl;
             return;
         }
-        publisherSocket_.disconnect(portName_);
+        socketName.disconnect(portName);
         connections_.erase(connectionIterator);
     }
 
-// bind the publisher socket to a port
-    void SimSocket::bind(const PortName &portName) {
-        publisherSocket_.bind(portName_);
-        bindings_.push_back(portName);
+    void SimSocket::bind(const PortName &portName, zmq::socket_t& socketName) {
+        try {
+            socketName.bind(portName);
+            bindings_.push_back(portName);
+            EV_INFO << "Bound to port: " << portName  << endl;
+        } catch (zmq::error_t &cantBind) {
+            cerr << "Socket can't connect to port: " << cantBind.what() << endl;
+            close(socketName);
+            return;
+        }
     }
 
-// unbind the socket from a port
-    void SimSocket::unbind(const PortName &portName) {
+    void SimSocket::unbind(const PortName &portName, zmq::socket_t& socketName) {
         auto bindingIterator = std::find(bindings_.begin(), bindings_.end(), portName);
         if (bindingIterator == bindings_.end()) {
-            cerr << "SimSocket::" << portName << "failed to unbind from SimSocket::" << portName << endl;
+            cerr << "Socket: " << socketName << " failed to unbind from port: " << portName << endl;
             return;
         }
-        publisherSocket_.unbind(portName_);
-        connections_.erase(bindingIterator);
+        socketName.unbind(portName);
+        bindings_.erase(bindingIterator);
     }
 
-    // bind the publisher socket to a port
-    void SimSocket::bindConfig(const PortName &portNameConfig) {
-        publisherSocketConfig_.bind(portNameConfig_);
-        bindings_.push_back(portNameConfig);
-    }
-
-// unbind the socket from a port
-    void SimSocket::unbindConfig(const PortName &portNameConfig) {
-
-        auto bindingIterator = std::find(bindings_.begin(), bindings_.end(), portNameConfig);
-        if (bindingIterator == bindings_.end()) {
-            cerr << "SimSocket::" << portNameConfig << "failed to unbind from SimSocket::" << portNameConfig << endl;
-            return;
-        }
-        publisherSocketConfig_.unbind(portNameConfig_);
-        connections_.erase(bindingIterator);
-    }
-// publish data
     void SimSocket::publish() {
 
         string outboundVehicleData = serializeVehicleData();
@@ -164,10 +153,9 @@ namespace artery {
 
         } catch (zmq::error_t &cantSend) {
             cerr << "Socket can't send: " << cantSend.what() << endl;
-            unbind(portName_);
+            unbind(pubPortName_, publisherSocket_);
         }
     }
-//send Config XML
 
     void SimSocket::sendConfigString(std::string stringFilePath) {
         std::ifstream xmlFile(stringFilePath);
@@ -179,7 +167,7 @@ namespace artery {
             publisherSocketConfig_.send(zmq::buffer(ss.str()), zmq::send_flags::none);
         } catch (zmq::error_t &cantSend) {
             cerr << "Socket can't send: " << cantSend.what() << endl;
-            unbindConfig(portNameConfig_);
+            unbind(portNameConfig_, publisherSocketConfig_);
         }
     }
 
@@ -202,7 +190,7 @@ namespace artery {
             publisherSocket_.send(msgToSend, zmq::send_flags::none);
         } catch (zmq::error_t &cantSend) {
             cerr << "Socket can't send: " << cantSend.what() << endl;
-            unbind(portName_);
+            unbind(pubPortName_, publisherSocket_);
         }
     }
 
@@ -230,7 +218,7 @@ namespace artery {
             subscriberSocket_.recv(messageToReceive,zmq::recv_flags::dontwait);
         } catch (zmq::error_t &cantReceive) {
             cerr << "Socket can't receive: " << cantReceive.what() << endl;
-            // TODO unbind
+            disconnect(subPortName_, subscriberSocket_);
         }
 
         if (!messageToReceive.empty()) {
@@ -242,10 +230,6 @@ namespace artery {
 
             try {
                 archive >> inputDataMap_;
-                /*
-                for (const auto &elem: inputDataMap_) {
-                    std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
-                }*/
 
                 if ("V2X" == boost::apply_visitor(SimEventFromInterfaceVisitor(), inputDataMap_["Operation"])) {
 
@@ -274,10 +258,9 @@ namespace artery {
                 }
 
             } catch (boost::archive::archive_exception &ex) {
-                std::cout << "Archive Exception during deserializing:" << std::endl;
-                std::cout << ex.what() << std::endl;
+                EV_INFO << "Archive Exception during deserializing: " << ex.what() << endl;
             } catch (int e) {
-                std::cout << "EXCEPTION " << e << std::endl;
+                EV_INFO << "EXCEPTION " << e << endl;
             }
         }
     }
@@ -743,6 +726,10 @@ namespace artery {
         }
     }
 
+    const SimSocket::DataMap &SimSocket::getInputDataMap() const {
+        return inputDataMap_;
+    }
+
 //receive NodeUpdate Signal from BasicNodeManager
     void SimSocket::receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) {
         if (signal == traci::BasicNodeManager::updateNodeSignal) {
@@ -753,7 +740,7 @@ namespace artery {
                 sendConfigString(configXMLPath_) ;
 
                 //config wird einmal gesendet
-                count=0;
+                count=1;
             }
 
             publish();
@@ -761,9 +748,7 @@ namespace artery {
         }
     }
 
-    const SimSocket::DataMap &SimSocket::getInputDataMap() const {
-        return inputDataMap_;
-    }
+
 }// namespace artery
 /********************************************************************************
  * EOF

@@ -76,8 +76,8 @@ namespace traci {
     void DutNodeManager::initialize() {
         m_twinId = par("twinId").stringValue();
         m_twinName = par("twinName").stringValue();
-        std::cout << "m_twinId: " << m_twinId << std::endl;
-        std::cout << "m_twinName: " << m_twinName << std::endl;
+        EV_INFO << "m_twinId: " << m_twinId << std::endl;
+        EV_INFO << "m_twinName: " << m_twinName << std::endl;
 
         BasicNodeManager::initialize();
     }
@@ -117,23 +117,12 @@ namespace traci {
     void DutNodeManager::setVehicleData(const std::string &id, artery::SimSocket::DataMap inputDataMap) {
 
         auto vehicle = m_subscriptions->getVehicleCache(id);
-
         auto &traci = m_api->vehicle;
 
-        for (const auto &elem: inputDataMap) {
-            std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
-        }
-
         if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("Signals")) {
-            std::cout << "IN DER IF, VOR SET SIGNALS" << std::endl;
-
-            //int signals = boost::apply_visitor(artery::SimEventFromInterfaceVisitorInt(), inputDataMap["Value"]);
-            //std::cout << "SIGNALS " << signals << std::endl;
             std::string signalsStr = boost::get<std::string>(inputDataMap["Value"]);
             int signals = atoi(signalsStr.c_str());
-
             traci.setSignals(id, signals);
-            std::cout << "SIGNALS DER GESETZT WURDE: " << traci.getSignals(id) << std::endl;
         }
 
 

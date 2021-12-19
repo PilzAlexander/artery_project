@@ -28,7 +28,6 @@
 // forward declaration
 namespace traci { class API; }
 
-//class API;
 class VehicleCache;
 
 namespace artery {
@@ -56,28 +55,25 @@ namespace artery {
         /**
          * close socket
          */
-        void close();
+        void close(zmq::socket_t &socketName);
 
         /**
          * connect to port
          *
          * @param portName
          */
-        void connect(const PortName &portName);
+        void connect(const PortName &portName, zmq::socket_t& socketName);
 
         /**
          * disconnect from port
          *
          * @param portName
          */
-        void disconnect(const PortName &portName);
-        void bind(const PortName &portName);
-        void unbind(const PortName &portName);
+        void disconnect(const PortName &portName, zmq::socket_t& socketName);
+        void bind(const PortName &portName, zmq::socket_t& socketName);
+        void unbind(const PortName &portName, zmq::socket_t& socketName);
+        std::string getLastEndpoint(zmq::socket_t& socketName) const;
 
-        void bindConfig(const PortName &portName);
-        void unbindConfig(const PortName &portName);
-
-        // send and receive functions
         /**
          * Method for publishing vehicle data, such as speed, dynamics, ...
          */
@@ -115,13 +111,6 @@ namespace artery {
         void getVehicleDynamics(VehicleKinematics dynamics);
 
         /**
-         * Method for setting received vehicle data to the twin
-         * @param traci
-         * @param map
-         */
-        void setVehicleData(TraCIAPI::VehicleScope traci, DataMap map);
-
-        /**
          * Method for serializing the Mac Addresses and the payload for sending it to the interface component
          * @param macSource
          * @param macDest
@@ -146,7 +135,7 @@ namespace artery {
         traci::SubscriptionManager *subscriptions_{};
 
     private:
-        PortName portName_;
+        PortName pubPortName_;
         PortName subPortName_;
         PortName portNameConfig_;
         zmq::socket_t publisherSocket_;
@@ -156,7 +145,6 @@ namespace artery {
         std::vector<PortName> connections_;
         std::vector<PortName> bindings_;
         DataMap vehicleDataMap_;
-        DataMap tmpVehicleDataMap_;
         DataMap diffVehicleDataMap_;
         DataMap inputDataMap_;
         int count = 0;
@@ -175,6 +163,7 @@ namespace artery {
          * @param bytes
          */
         void convertStringToByteArray(std::string &mac, std::array<unsigned char, 6> &bytes);
+
     };
 
 } //namespace artery
