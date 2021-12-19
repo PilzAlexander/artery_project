@@ -47,12 +47,12 @@ namespace artery {
         }
 
         pugi::xml_node root = openXML();
-
         context_ = zmq::context_t(1);
         pubPortName_ = getValueFromXML(root,"portName_","portName");
         subPortName_ = getValueFromXML(root,"subPortName_","subPortName");
         portNameConfig_ = getValueFromXML(root,"portNameConfig_","portNameConfig");
-        configXMLPath_ = getValueFromXML(root,"configXMLPath_","configXMLPath");
+        configXMLPath_ = "/home/vagrant/Desktop/fork_repo/artery_project/src/artery/dut/connectorsConfig.xml";
+        //configXMLPath_ = getValueFromXML(root,"configXMLPath_","configXMLPath");
         publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
         subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
         publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
@@ -735,6 +735,7 @@ namespace artery {
             pugi::xml_node selectedNode = xpathNode.node();
             strValue =  selectedNode.child(attributeName).attribute("path").as_string();
         }
+        std::cout << strValue << endl;
         return strValue;
     }
 	

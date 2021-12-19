@@ -9,8 +9,4 @@
     <portNameConfig_>
         <portNameConfig path="tcp://127.0.0.1:7779"/>
     </portNameConfig_>
-    <configXMLPath>
-        <configXMLPath
-                path="/home/vagrant/disk/artery_projekt_letsGO/artery_project/src/artery/plugins/connectorsConfig.xml"/>
-    </configXMLPath>
 </Connection>
