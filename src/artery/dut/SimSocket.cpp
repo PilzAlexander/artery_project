@@ -49,7 +49,7 @@ namespace artery {
         pugi::xml_node root = openXML();
 
         context_ = zmq::context_t(1);
-        pubPortName_ = getValueFromXML(root,"portName_","portName");
+        pubPortName_ = getValueFromXML(root,"pubPortName_","pubPortName");
         subPortName_ = getValueFromXML(root,"subPortName_","subPortName");
         portNameConfig_ = getValueFromXML(root,"portNameConfig_","portNameConfig");
         configXMLPath_ = getValueFromXML(root,"configXMLPath_","configXMLPath");
@@ -752,7 +752,7 @@ namespace artery {
         // Remark: to fully read declaration entries you have to specify
         // "pugi::parse_declaration"
         pugi::xml_parse_result result = doc.load_file(
-                "/home/vagrant/Desktop/fork_repo/artery_project/src/artery/dut/connectionConfig.xml",
+                "/home/vagrant/artery_project/src/artery/dut/connectionConfig.xml",
                 pugi::parse_default | pugi::parse_declaration);
         if (!result) {
             cout << "Parse error: " << result.description()

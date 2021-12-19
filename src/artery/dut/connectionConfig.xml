@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Connection FormatVersion="1">
     <portName_>
-        <portName path="tcp://127.0.0.1:7777"/>
+        <pubPortName path="tcp://127.0.0.1:7777"/>
     </portName_>
     <subPortName_>
         <subPortName path="tcp://127.0.0.1:7778"/>
@@ -11,6 +11,6 @@
     </portNameConfig_>
     <configXMLPath>
         <configXMLPath
-                path="/home/vagrant/disk/artery_projekt_letsGO/artery_project/src/artery/plugins/connectorsConfig.xml"/>
+                path="/home/vagrant/artery_project/src/artery/dut/connectionConfig.xml"/>
     </configXMLPath>
 </Connection>
