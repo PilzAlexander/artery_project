@@ -123,9 +123,9 @@ namespace artery {
 
         /**
          * Method for serializing the Mac Addresses and the payload for sending it to the interface component
-         * @param macSource
-         * @param macDest
-         * @param byteViewRange
+         * @param macSource source address
+         * @param macDest destination address
+         * @param byteViewRange payload of message
          * @return
          */
         std::string serializeSimMsg(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
@@ -137,6 +137,10 @@ namespace artery {
          */
         std::string serializeVehicleData() const;
 
+        /**
+         *
+         * @return return dataMap
+         */
         const DataMap &getInputDataMap() const;
         traci::SubscriptionManager *getSubscriptions() { return subscriptions_; }
 
@@ -171,8 +175,8 @@ namespace artery {
 
         /**
          * Method for converting a received String to a byte array
-         * @param mac
-         * @param bytes
+         * @param mac macAdress as string
+         * @param bytes byte array to store converted string
          */
         void convertStringToByteArray(std::string &mac, std::array<unsigned char, 6> &bytes);
     };

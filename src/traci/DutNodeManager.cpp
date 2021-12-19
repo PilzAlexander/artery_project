@@ -85,7 +85,6 @@ namespace traci {
     cModule *DutNodeManager::createModule(const std::string &id, omnetpp::cModuleType *type) {
         if (id == m_twinId) {
             return type->create(m_twinName.c_str(), getSystemModule());
-
         } else {
             return BasicNodeManager::createModule(id, type);
         }
@@ -93,7 +92,6 @@ namespace traci {
 
     void DutNodeManager::updateVehicle(const std::string &id, VehicleSink *sink) {
         auto vehicle = m_subscriptions->getVehicleCache(id);
-
         auto &traci = m_api->vehicle;
 
         // get vehicle data to send
@@ -115,24 +113,17 @@ namespace traci {
     }
 
     void DutNodeManager::setVehicleData(const std::string &id, artery::SimSocket::DataMap inputDataMap) {
-
         auto vehicle = m_subscriptions->getVehicleCache(id);
-
         auto &traci = m_api->vehicle;
 
-        for (const auto &elem: inputDataMap) {
-            std::cout << "inputDataMap_" << elem.first << " " << elem.second << std::endl;
-        }
-
-        if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("Signals")) {
+        if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("Signals") &&
+            inputDataMap["Operation"] == boost::variant<int, double, std::string>(traci.getSignals(id))) {
             std::cout << "IN DER IF, VOR SET SIGNALS" << std::endl;
 
-            //int signals = boost::apply_visitor(artery::SimEventFromInterfaceVisitorInt(), inputDataMap["Value"]);
-            //std::cout << "SIGNALS " << signals << std::endl;
             std::string signalsStr = boost::get<std::string>(inputDataMap["Value"]);
             int signals = atoi(signalsStr.c_str());
-
             traci.setSignals(id, signals);
+
             std::cout << "SIGNALS DER GESETZT WURDE: " << traci.getSignals(id) << std::endl;
         }
 

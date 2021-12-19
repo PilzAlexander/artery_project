@@ -1,16 +1,4 @@
 /********************************************************************************
-  \project  INFM_HIL_Interface
-  \file     SimSocket.h
-  \brief    Provides the functions for setting up a socket to send data from the simulation to the interface component
-  \author   Alexander Pilz
-  \author   Johannes Winter
-  \author   Fabian Genes
-  \author   Thanaanncheyan Thavapalan
-  \version  1.0.0
-  \date     31.10.2021
- ********************************************************************************/
-
-/********************************************************************************
  * Includes
  *********************************************************************************/
 #include "SimSocket.h"
@@ -49,30 +37,30 @@ namespace artery {
 
     void SimSocket::initialize() {
 
-            //get traci from ModulePath
-            cModule *traci = getModuleByPath(par("traciModule"));
+        //get traci from ModulePath
+        cModule *traci = getModuleByPath(par("traciModule"));
 
-            //Subscribe signal to actual Traci
-            if (traci) {
-                traci->subscribe(traci::BasicNodeManager::updateNodeSignal, this);
-            } else {
-                throw cRuntimeError("No TraCI module found for signal subscription");
-            }
+        //Subscribe signal to actual Traci
+        if (traci) {
+            traci->subscribe(traci::BasicNodeManager::updateNodeSignal, this);
+        } else {
+            throw cRuntimeError("No TraCI module found for signal subscription");
+        }
 
-            // set up zmq socket and stuff
-            context_ = zmq::context_t(1);
-            portName_ = "tcp://*:7777";
-            subPortName_ = "tcp://localhost:7778";
-            portNameConfig_ = "tcp://*:7779";
-            //Add Path in settingg XML
-            configXMLPath_ = "/home/vagrant/disk/artery_projekt_letsGO/artery_project/src/artery/plugins/connectorsConfig.xml";
-            publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
-            subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
-            publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
-            subscriberSocket_.set(zmq::sockopt::subscribe, "");
-            subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
-            bind(portName_);
-            bindConfig(portNameConfig_);
+        // set up zmq socket and stuff
+        context_ = zmq::context_t(1);
+        portName_ = "tcp://*:7777";
+        subPortName_ = "tcp://localhost:7778";
+        portNameConfig_ = "tcp://*:7779";
+        //Add Path in setting XML
+        configXMLPath_ = "/home/vagrant/disk/artery_projekt_letsGO/artery_project/src/artery/plugins/connectorsConfig.xml";
+        publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
+        subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
+        publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
+        subscriberSocket_.set(zmq::sockopt::subscribe, "");
+        subscriberSocket_.connect(subPortName_); // TODO anderer Port als publisher
+        bind(portName_);
+        bindConfig(portNameConfig_);
     }
 
     void SimSocket::finish() {
@@ -153,6 +141,7 @@ namespace artery {
         publisherSocketConfig_.unbind(portNameConfig_);
         connections_.erase(bindingIterator);
     }
+
 // publish data
     void SimSocket::publish() {
 
@@ -227,7 +216,7 @@ namespace artery {
         zmq::message_t messageToReceive;
 
         try {
-            subscriberSocket_.recv(messageToReceive,zmq::recv_flags::dontwait);
+            subscriberSocket_.recv(messageToReceive, zmq::recv_flags::dontwait);
         } catch (zmq::error_t &cantReceive) {
             cerr << "Socket can't receive: " << cantReceive.what() << endl;
             // TODO unbind
@@ -746,16 +735,12 @@ namespace artery {
 //receive NodeUpdate Signal from BasicNodeManager
     void SimSocket::receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) {
         if (signal == traci::BasicNodeManager::updateNodeSignal) {
-
-            //Workaround because its not Posssible to send in the Omnet Init mehtode
+            //Workaround because it's not possible to send in the Omnet++ Init methode
             if (count < 1) {
-
-                sendConfigString(configXMLPath_) ;
-
-                //config wird einmal gesendet
-                count=0;
+                //sending config once at the beginning
+                sendConfigString(configXMLPath_);
+                count = 1;
             }
-
             publish();
             subscribe();
         }
