@@ -644,7 +644,7 @@ namespace artery {
 
         if (!isnan(dynamics.yaw_rate.value()) &&
             vehicleDataMap_["YawRate_Dynamics"] != boost::variant<int, double, std::string>
-                    (dynamics.speed.value())) {
+                    (dynamics.yaw_rate.value())) {
             vehicleDataMap_.insert_or_assign("YawRate_Dynamics", dynamics.yaw_rate.value());
             diffVehicleDataMap_.insert_or_assign("YawRate_Dynamics", dynamics.yaw_rate.value());
         } else {
@@ -653,7 +653,7 @@ namespace artery {
 
         if (!isnan(dynamics.acceleration.value()) &&
             vehicleDataMap_["Acceleration_Dynamics"] != boost::variant<int, double, std::string>
-                    (dynamics.speed.value())) {
+                    (dynamics.acceleration.value())) {
             vehicleDataMap_.insert_or_assign(
                     "Acceleration_Dynamics", dynamics.acceleration.value());
             diffVehicleDataMap_.insert_or_assign("Acceleration_Dynamics", dynamics.acceleration.value());
@@ -663,7 +663,7 @@ namespace artery {
 
         if (!isnan(dynamics.heading.value()) &&
             vehicleDataMap_["Heading_Dynamics"] != boost::variant<int, double, std::string>
-                    (dynamics.speed.value())) {
+                    (dynamics.heading.value())) {
             vehicleDataMap_.insert_or_assign("Heading_Dynamics", dynamics.heading.value());
             diffVehicleDataMap_.insert_or_assign("Heading_Dynamics", dynamics.heading.value());
         } else {
@@ -672,7 +672,7 @@ namespace artery {
 
         if (!isnan(dynamics.geo_position.latitude.value()) &&
             vehicleDataMap_["Latitude_Dynamics"] != boost::variant<int, double, std::string>
-                    (dynamics.speed.value())) {
+                    (dynamics.geo_position.latitude.value())) {
             vehicleDataMap_.insert_or_assign(
                     "Latitude_Dynamics", dynamics.geo_position.latitude.value());
             diffVehicleDataMap_.insert_or_assign("Latitude_Dynamics", dynamics.geo_position.latitude.value());
@@ -682,7 +682,7 @@ namespace artery {
 
         if (!isnan(dynamics.geo_position.longitude.value()) &&
             vehicleDataMap_["Longitude_Dynamics"] != boost::variant<int, double, std::string>
-                    (dynamics.speed.value())) {
+                    (dynamics.geo_position.longitude.value())) {
             vehicleDataMap_.insert_or_assign(
                     "Longitude_Dynamics", dynamics.geo_position.longitude.value());
             diffVehicleDataMap_.insert_or_assign("Longitude_Dynamics", dynamics.geo_position.longitude.value());
@@ -692,7 +692,7 @@ namespace artery {
 
         if (!isnan(dynamics.position.x.value()) &&
             vehicleDataMap_["PosX_Dynamics"] != boost::variant<int, double, std::string>
-                    (dynamics.speed.value())) {
+                    (dynamics.position.x.value())) {
             vehicleDataMap_.insert_or_assign("PosX_Dynamics", dynamics.position.x.value());
             diffVehicleDataMap_.insert_or_assign("PosX_Dynamics", dynamics.position.x.value());
         } else {
@@ -701,7 +701,7 @@ namespace artery {
 
         if (!isnan(dynamics.position.y.value()) &&
             vehicleDataMap_["PosY_Dynamics"] != boost::variant<int, double, std::string>
-                    (dynamics.speed.value())) {
+                    (dynamics.position.y.value())) {
             vehicleDataMap_.insert_or_assign("PosY_Dynamics", dynamics.position.y.value());
             diffVehicleDataMap_.insert_or_assign("PosY_Dynamics", dynamics.position.y.value());
         } else {
