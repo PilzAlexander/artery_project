@@ -2,6 +2,7 @@
   \project  INFM_HIL_Interface
   \file     SimEventFromInterfaceVisitorInt.h
   \brief    Class to convert a value, that is allowed to have different types, into a int value
+            -> currently not used
   \author   Alexander Pilz
   \author   Johannes Winter
   \version  1.0.0

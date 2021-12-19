@@ -1,11 +1,11 @@
 /********************************************************************************
   \project  INFM_HIL_Interface
   \file     DutNodeManager.cpp
-  \brief    Node manager for the dut simulation
+  \brief    Node manager for the dut simulation, also the vehicle data are gotten from here and are being set here
   \author   Alexander Pilz
   \author   Johannes Winter
   \version  1.0.0
-  \date     17.11.2021
+  \date     19.12.2021
  ********************************************************************************/
 /********************************************************************************
  * Includes
@@ -26,7 +26,6 @@
 #include <ostream>
 #include <any>
 #include "boost/variant/get.hpp"
-#include "artery/dut/SimEventFromInterfaceVisitorInt.h"
 
 #include "artery/traci/VehicleController.h"
 #include "artery/application/StationType.h"

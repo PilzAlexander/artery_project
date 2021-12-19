@@ -19,9 +19,9 @@
  ********************************************************************************/
 namespace artery {
 /**
- * The DUTOtaInterfaceConnection provides a implementation of the DUTOtaInterface which acts as an stub to work without any hardware connected.
- * It implements all necessary methods, mos of them doing nothing.
- * It can be used to compile the testbed without any external library available (like the S.E.A. API required by the OtaInterfaceUsrp).
+ * The DUTOtaInterfaceConnection provides a implementation of the DUTOtaInterface which can work with equipped hardware.
+ * It implements all necessary methods.
+ * It can be used to compile the dut without any external library available (like the S.E.A. API required by the OtaInterfaceUsrp).
  */
     class DUTOtaInterfaceConnection : public DUTOtaInterface, public omnetpp::cSimpleModule {
     public:

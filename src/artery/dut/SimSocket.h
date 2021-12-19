@@ -1,13 +1,14 @@
 /********************************************************************************
   \project  INFM_HIL_Interface
   \file     SimSocket.h
-  \brief    Provides the class for setting up a socket to send data from the simulation to the interface component
+  \brief    Provides the class for setting up a socket to send data from the simulation to the interface component and
+            also to receive the incoming messages and data from the device under test (DuT)
   \author   Alexander Pilz
   \author   Johannes Winter
   \author   Fabian Genes
   \author   Thanaanncheyan Thavapalan
   \version  1.0.0
-  \date     31.10.2021
+  \date     19.12.2021
  ********************************************************************************/
 #ifndef ARTERY_SIMSOCKET_H
 #define ARTERY_SIMSOCKET_H
@@ -33,7 +34,8 @@ class VehicleCache;
 namespace artery {
 
     /**
-     * Module for collecting data from the simulation and sending it to the interface hardware
+     * Module for collecting data and messages from the simulation and sending it to the interface component
+     * Also receives data and messages from the interface component and puts it into the simulation
      */
     class SimSocket : public traci::Listener, public omnetpp::cSimpleModule {
     public:
@@ -42,92 +44,101 @@ namespace artery {
         using PortContext = zmq::context_t;
         using DataMap = std::map<std::string, boost::variant<int, double, std::string>>;
 
-        /**
-         * Constructor of SimSocket
-         */
         SimSocket();
-
-        /**
-         * Deconstructor of SimSocket
-         */
         ~SimSocket();
 
         /**
-         * close socket
+         * Closes socket
          */
         void close(zmq::socket_t &socketName);
 
         /**
-         * connect to port
+         * Connects a subscriber socket to a port
          *
          * @param portName
          */
         void connect(const PortName &portName, zmq::socket_t& socketName);
 
         /**
-         * disconnect from port
+         * Disconnects a connected subscriber socket from port
          *
          * @param portName
          */
         void disconnect(const PortName &portName, zmq::socket_t& socketName);
+
+        /**
+         * Binds a publisher socket to a port
+         * @param portName
+         * @param socketName
+         */
         void bind(const PortName &portName, zmq::socket_t& socketName);
+        /**
+         * Unbinds a bound publisher socket from port
+         * @param portName
+         * @param socketName
+         */
         void unbind(const PortName &portName, zmq::socket_t& socketName);
+        /**
+         * Gets the last endpoint a socket was connected/bound to
+         * @param socketName
+         * @return
+         */
         std::string getLastEndpoint(zmq::socket_t& socketName) const;
 
         /**
-         * Method for publishing vehicle data, such as speed, dynamics, ...
+         * Publishes vehicle data, such as speed, dynamics, ...
          */
         void publish();
 
         /**
-         * Method for publishing simulated messages addressed to the dut
+         * Publishes simulated (V2X) messages addressed to the dut
          * @param byteViewRange
          */
         void publishSimMsg(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
                            const vanetza::byte_view_range &byteViewRange);
 
         /**
-         * Method for subscribing to the interface component and receiving vehicle data
+         * Subscribes to the publisher socket of the interface component and receive vehicle data
          */
         void subscribe();
 
         /**
-       * Method for sending  the connectorConfig  XML to the Interface
+       * Sends the connectorConfig XML to the interface component
        * @param stringFilePath
        */
-        void sendConfigString(std::string stringFilePath) ;
+        void sendConfigString(const std::string& stringFilePath) ;
 
         /**
-         * Method for collecting simulated vehicle data from the DutNodeManager
+         * Collects simulated vehicle data from the DutNodeManager
          * @param vehicleID
          * @param traci
          */
         void getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci);
 
         /**
-         * Method for collecting the simulated vehicle dynamics
+         * Collects the simulated vehicle dynamics
          * @param dynamics
          */
         void getVehicleDynamics(VehicleKinematics dynamics);
 
         /**
-         * Method for serializing the Mac Addresses and the payload for sending it to the interface component
+         * Serializes the Mac Addresses and the payload for sending it to the interface component
          * @param macSource source address
          * @param macDest destination address
          * @param byteViewRange payload of message
-         * @return
+         * @return returns a serialized string of the simulated message
          */
         std::string serializeSimMsg(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
                                     const vanetza::byte_view_range &byteViewRange) const;
 
         /**
-         * Method for serializing the vehicle dataa for sending it to the interface component
-         * @return
+         * Serializes the vehicle data for sending it to the interface component
+         * @return returns a serialized string of the vehicle data
          */
         std::string serializeVehicleData() const;
 
         /**
-         *
+         * Gets the data member inputDataMap
          * @return return dataMap
          */
         const DataMap &getInputDataMap() const;
@@ -162,8 +173,8 @@ namespace artery {
         void receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) override;
 
         /**
-         * Method for converting a received String to a byte array
-         * @param mac macAdress as string
+         * Converts a received String to a byte array
+         * @param mac macAddress as string
          * @param bytes byte array to store converted string
          */
         void convertStringToByteArray(std::string &mac, std::array<unsigned char, 6> &bytes);

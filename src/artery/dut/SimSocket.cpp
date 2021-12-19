@@ -37,23 +37,19 @@ namespace artery {
 
     void SimSocket::initialize() {
 
-        //get traci from ModulePath
         cModule *traci = getModuleByPath(par("traciModule"));
 
-        //Subscribe signal to actual Traci
         if (traci) {
             traci->subscribe(traci::BasicNodeManager::updateNodeSignal, this);
         } else {
             throw cRuntimeError("No TraCI module found for signal subscription");
         }
 
-            // set up zmq socket and stuff
             context_ = zmq::context_t(1);
             pubPortName_ = "tcp://127.0.0.1:7777";
             subPortName_ = "tcp://127.0.0.1:7778";
             portNameConfig_ = "tcp://127.0.0.1:7779";
-            //Add Path in settingg XML
-            configXMLPath_ = "/home/vagrant/disk/artery_projekt_letsGO/artery_project/src/artery/plugins/connectorsConfig.xml";
+            configXMLPath_ = "/home/vagrant/disk/artery_project/artery_project/src/artery/plugins/connectorsConfig.xml";
             publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
             subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
             publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
@@ -132,7 +128,6 @@ namespace artery {
     }
 
     void SimSocket::publish() {
-
         string outboundVehicleData = serializeVehicleData();
         zmq::message_t msgToSend(outboundVehicleData);
 
@@ -145,13 +140,13 @@ namespace artery {
         }
     }
 
-    void SimSocket::sendConfigString(std::string stringFilePath) {
+    void SimSocket::sendConfigString(const std::string& stringFilePath) {
         std::ifstream xmlFile(stringFilePath);
         std::stringstream ss;
         ss << xmlFile.rdbuf();
         std::istringstream iss(ss.str());
         try {
-            std::cout << "Gesendet" << endl;
+            EV_INFO << "Config sent to simulation" << endl;
             publisherSocketConfig_.send(zmq::buffer(ss.str()), zmq::send_flags::none);
         } catch (zmq::error_t &cantSend) {
             cerr << "Socket can't send: " << cantSend.what() << endl;
@@ -170,7 +165,6 @@ namespace artery {
 
     void SimSocket::publishSimMsg(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
                                   const vanetza::byte_view_range &byteViewRange) {
-
         string outboundData = serializeSimMsg(macSource, macDest, byteViewRange);
         zmq::message_t msgToSend(outboundData);
 
@@ -184,18 +178,17 @@ namespace artery {
 
     string SimSocket::serializeSimMsg(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
                                       const vanetza::byte_view_range &byteViewRange) const {
-
-        ostringstream stringsstream;
-        boost::archive::text_oarchive archive(stringsstream);
-        vanetza::operator<<(stringsstream, macSource);
-        vanetza::operator<<(stringsstream, macDest);
+        ostringstream stringsStream;
+        boost::archive::text_oarchive archive(stringsStream);
+        vanetza::operator<<(stringsStream, macSource);
+        vanetza::operator<<(stringsStream, macDest);
         archive << byteViewRange.size();
 
         for (int i = 0; i < byteViewRange.size(); i++) {
             archive << byteViewRange.operator[](i);
         }
 
-        string outboundData = stringsstream.str();
+        string outboundData = stringsStream.str();
         return outboundData;
     }
 
@@ -226,17 +219,17 @@ namespace artery {
                     std::string macDest;
                     std::string macSource;
 
-                    std::istringstream archiveStream(
+                    std::istringstream archiveV2XStream(
                             boost::apply_visitor(SimEventFromInterfaceVisitor(), inputDataMap_["Value"]));
-                    boost::archive::text_iarchive archive(archiveStream);
+                    boost::archive::text_iarchive archiveV2X(archiveV2XStream);
 
-                    archive >> macSource;
-                    archive >> macDest;
+                    archiveV2X >> macSource;
+                    archiveV2X >> macDest;
                     convertStringToByteArray(macDest, macDest_);
 
-                    archive >> payloadLength;
+                    archiveV2X >> payloadLength;
                     for (int i = 0; i < payloadLength; i++) {
-                        archive >> byte;
+                        archiveV2X >> byte;
                         payload_.push_back(byte);
                     }
 
@@ -265,7 +258,6 @@ namespace artery {
         std::copy_n(byteVector.begin(), 6, bytes.begin());
     }
 
-// call in basic node manager to get data and write to a global map
     void SimSocket::getVehicleData(std::string vehicleID, TraCIAPI::VehicleScope traci) {
 
         SimTime sendingTime = simTime();
@@ -718,7 +710,6 @@ namespace artery {
         return inputDataMap_;
     }
 
-//receive NodeUpdate Signal from BasicNodeManager
     void SimSocket::receiveSignal(cComponent *, simsignal_t signal, unsigned long, cObject *) {
         if (signal == traci::BasicNodeManager::updateNodeSignal) {
             //Workaround because it's not possible to send in the Omnet++ Init methode
@@ -730,10 +721,6 @@ namespace artery {
             publish();
             subscribe();
         }
-    }
-
-    const SimSocket::DataMap &SimSocket::getInputDataMap() const {
-        return inputDataMap_;
     }
 }// namespace artery
 /********************************************************************************

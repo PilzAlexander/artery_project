@@ -4,6 +4,7 @@
   \brief    Class to convert a value, that is allowed to have different types, into a string value
   \author   Alexander Pilz
   \author   Johannes Winter
+  \author   Michael Schmitz
   \version  1.0.0
   \date     17.11.2021
  ********************************************************************************/
