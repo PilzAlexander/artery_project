@@ -45,18 +45,18 @@ namespace artery {
             throw cRuntimeError("No TraCI module found for signal subscription");
         }
 
-            context_ = zmq::context_t(1);
-            pubPortName_ = "tcp://127.0.0.1:7777";
-            subPortName_ = "tcp://127.0.0.1:7778";
-            portNameConfig_ = "tcp://127.0.0.1:7779";
-            configXMLPath_ = "/home/vagrant/disk/artery_project/artery_project/src/artery/plugins/connectorsConfig.xml";
-            publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
-            subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
-            publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
-            subscriberSocket_.set(zmq::sockopt::subscribe, "");
-            connect(subPortName_, subscriberSocket_);
-            bind(pubPortName_, publisherSocket_);
-            bind(portNameConfig_, publisherSocketConfig_ );
+        context_ = zmq::context_t(1);
+        pubPortName_ = getValueFromXML(root,"portName_","portName");
+        subPortName_ = getValueFromXML(root,"subPortName_","subPortName");
+        portNameConfig_ = getValueFromXML(root,"portNameConfig_","portNameConfig");
+        configXMLPath_ = getValueFromXML(root,"configXMLPath_","configXMLPath");
+        publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
+        subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
+        publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
+        subscriberSocket_.set(zmq::sockopt::subscribe, "");
+        connect(subPortName_, subscriberSocket_);
+        bind(pubPortName_, publisherSocket_);
+        bind(portNameConfig_, publisherSocketConfig_ );
     }
 
     void SimSocket::finish() {
@@ -721,6 +721,43 @@ namespace artery {
             publish();
             subscribe();
         }
+    }
+
+    std::string SimSocket::getValueFromXML( pugi::xml_node root, std::string entryName, const char * attributeName) {
+        std::string strValue;
+        // Search for the first matching entry with the given hint attribute
+        string searchStr = entryName;
+        pugi::xpath_node xpathNode = root.select_single_node(searchStr.c_str());
+        if (xpathNode) {
+            pugi::xml_node selectedNode = xpathNode.node();
+            strValue =  selectedNode.child(attributeName).attribute("path").as_string();
+        }
+        return strValue;
+    }
+	
+	stringstream SimSocket::getStringstreamOfXML(const string &stringFilePath) const {
+        std::ifstream xmlFile(stringFilePath);
+        std::stringstream ss;
+        ss << xmlFile.rdbuf();
+        std::istringstream iss(ss.str());
+        return ss;
+    }
+
+    pugi::xml_node SimSocket::openXML() const {// Create empty XML document within memory
+        pugi::xml_document doc;
+        // Load XML file into memory
+        // Remark: to fully read declaration entries you have to specify
+        // "pugi::parse_declaration"
+        pugi::xml_parse_result result = doc.load_file(
+                "/home/vagrant/Desktop/fork_repo/artery_project/src/artery/dut/connectionConfig.xml",
+                pugi::parse_default | pugi::parse_declaration);
+        if (!result) {
+            cout << "Parse error: " << result.description()
+                 << ", character pos= " << result.offset;
+        }
+        // A valid XML document must have a single root node
+        pugi::xml_node root = doc.document_element();
+        return root;
     }
 }// namespace artery
 /********************************************************************************

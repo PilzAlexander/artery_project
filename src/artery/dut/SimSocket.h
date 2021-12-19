@@ -179,6 +179,24 @@ namespace artery {
          */
         void convertStringToByteArray(std::string &mac, std::array<unsigned char, 6> &bytes);
 
+        std::stringstream getStringstreamOfXML(const std::string &stringFilePath) const;
+
+        /**
+         * opens XML file
+         *
+         * @return root of xml
+         */
+        pugi::xml_node openXML() const;
+
+        /**
+         * returns value for set up connection
+         *
+         * @param root
+         * @param entryName name of child
+         * @param attributeName name of attribute of child
+         * @return
+         */
+        std::string getValueFromXML(pugi::xml_node root, std::string entryName, const char *attributeName);
     };
 
 } //namespace artery
