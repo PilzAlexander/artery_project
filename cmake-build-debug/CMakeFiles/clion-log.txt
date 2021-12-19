@@ -1,1 +1,14 @@
-Toolchains are not configured Configure Disable profile
+/home/vagrant/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/213.5744.254/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/vagrant/artery_project
+-- Found Boost: /usr/include (found suitable version "1.67.0", minimum required is "1.59") found components: date_time system 
+-- Found Boost: /usr/include (found suitable version "1.67.0", minimum required is "1.58") found components: date_time 
+-- GeographicLib: using lookup code by Vanetza
+-- SimuLTE integration disabled
+-- Enable Veins integration
+-- Enable INET integration
+-- Could NOT find SEA_V2X (missing: SEA_V2X_DIR)
+-- Building Testbed without SEA API
+-- Could NOT find SEA_V2X (missing: SEA_V2X_DIR)
+-- Building Plugins without SEA API
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/vagrant/artery_project/cmake-build-debug

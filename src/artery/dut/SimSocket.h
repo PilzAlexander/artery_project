@@ -21,6 +21,7 @@
 #include "traci/Boundary.h"
 #include "traci/Listener.h"
 #include "traci/SubscriptionManager.h"
+#include "artery/dut/XML/pugixml.hpp"
 
 #include <zmq.hpp>
 /********************************************************************************

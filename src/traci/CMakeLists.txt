@@ -1,38 +1,39 @@
 set(SOURCES
-    API.cc
-    BasicModuleMapper.cc
-    BasicNodeManager.cc
-    BasicSubscriptionManager.cc
-    CheckTimeSync.cc
-    Core.cc
-    ConnectLauncher.cc
-    ExtensibleNodeManager.cc
-    InsertionDelayVehiclePolicy.cc
-    Listener.cc
-    MultiTypeModuleMapper.cc
-    PosixLauncher.cc
-    RegionsOfInterest.cc
-    RegionOfInterestVehiclePolicy.cc
-    TestbedModuleMapper.cc
-    TestbedNodeManager.cc
-    ValueUtils.cc
-    VariableCache.cc
-    sumo/foreign/tcpip/socket.cpp
-    sumo/foreign/tcpip/storage.cpp
-    sumo/utils/traci/TraCIAPI.cpp
-    ../artery/dut/SimSocket.cpp
-    DutNodeManager.cpp
-    DutModuleMapper.cpp
-    ../artery/dut/DutScheduler.cc
-    ../artery/dut/DUTOtaInterfaceConnection.cc
-    ../artery/dut/DUTOtaIndicationQueue.cc
-    ../artery/dut/DUTOtaInterfaceLayer.cc
+        API.cc
+        BasicModuleMapper.cc
+        BasicNodeManager.cc
+        BasicSubscriptionManager.cc
+        CheckTimeSync.cc
+        Core.cc
+        ConnectLauncher.cc
+        ExtensibleNodeManager.cc
+        InsertionDelayVehiclePolicy.cc
+        Listener.cc
+        MultiTypeModuleMapper.cc
+        PosixLauncher.cc
+        RegionsOfInterest.cc
+        RegionOfInterestVehiclePolicy.cc
+        TestbedModuleMapper.cc
+        TestbedNodeManager.cc
+        ValueUtils.cc
+        VariableCache.cc
+        sumo/foreign/tcpip/socket.cpp
+        sumo/foreign/tcpip/storage.cpp
+        sumo/utils/traci/TraCIAPI.cpp
+        ../artery/dut/SimSocket.cpp
+        DutNodeManager.cpp
+        DutModuleMapper.cpp
+        ../artery/dut/DutScheduler.cc
+        ../artery/dut/DUTOtaInterfaceConnection.cc
+        ../artery/dut/DUTOtaIndicationQueue.cc
+        ../artery/dut/DUTOtaInterfaceLayer.cc
+        ../artery/dut/XML/pugixml.cpp
         )
 
 add_library(traci SHARED ${SOURCES})
 target_include_directories(traci PUBLIC
-    $<TARGET_PROPERTY:core,INCLUDE_DIRECTORIES>
-    ${CMAKE_CURRENT_SOURCE_DIR}/sumo)
+        $<TARGET_PROPERTY:core,INCLUDE_DIRECTORIES>
+        ${CMAKE_CURRENT_SOURCE_DIR}/sumo)
 set_property(TARGET traci PROPERTY NED_FOLDERS ${CMAKE_CURRENT_SOURCE_DIR})
 set_property(TARGET traci PROPERTY OMNETPP_LIBRARY ON)
 
