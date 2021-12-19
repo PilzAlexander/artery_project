@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Connection FormatVersion="1">
-    <portName_>
+    <pubPortName_>
         <pubPortName path="tcp://127.0.0.1:7777"/>
-    </portName_>
+    </pubPortName_>
     <subPortName_>
         <subPortName path="tcp://127.0.0.1:7778"/>
     </subPortName_>
