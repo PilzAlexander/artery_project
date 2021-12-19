@@ -735,6 +735,7 @@ namespace artery {
             pugi::xml_node selectedNode = xpathNode.node();
             strValue =  selectedNode.child(attributeName).attribute("path").as_string();
         }
+        std::cout << strValue << endl;
         return strValue;
     }
 	
