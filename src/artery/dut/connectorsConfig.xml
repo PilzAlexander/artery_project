@@ -1,6 +1,5 @@
 <connectors>
 
-
     <connector classType="RESTDummyConnector">
 
         <conn>

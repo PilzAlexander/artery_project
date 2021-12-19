@@ -48,7 +48,7 @@ namespace artery {
 
         pugi::xml_node root = openXML();
         context_ = zmq::context_t(1);
-        pubPortName_ = getValueFromXML(root,"portName_","portName");
+        pubPortName_ = getValueFromXML(root,"pubPortName_","pubPortName");
         subPortName_ = getValueFromXML(root,"subPortName_","subPortName");
         portNameConfig_ = getValueFromXML(root,"portNameConfig_","portNameConfig");
         //configXMLPath_ = "/home/vagrant/Desktop/fork_repo/artery_project/src/artery/dut/connectorsConfig.xml";

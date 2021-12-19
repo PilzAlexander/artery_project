@@ -32,8 +32,8 @@ set(SOURCES
 
 add_library(traci SHARED ${SOURCES})
 target_include_directories(traci PUBLIC
-    $<TARGET_PROPERTY:core,INCLUDE_DIRECTORIES>
-    ${CMAKE_CURRENT_SOURCE_DIR}/sumo)
+        $<TARGET_PROPERTY:core,INCLUDE_DIRECTORIES>
+        ${CMAKE_CURRENT_SOURCE_DIR}/sumo)
 set_property(TARGET traci PROPERTY NED_FOLDERS ${CMAKE_CURRENT_SOURCE_DIR})
 set_property(TARGET traci PROPERTY OMNETPP_LIBRARY ON)
 

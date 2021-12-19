@@ -104,9 +104,10 @@ namespace artery {
         void subscribe();
 
         /**
-       * Sends the connectorConfig XML to the interface component
-       * @param stringFilePath
-       */
+         * Sends the connectorConfig XML to the interface component
+         * !Absolute path for config file "connectorsConfig.xml has to be changed!
+         * @param stringFilePath
+         */
         void sendConfigString(const std::string& stringFilePath) ;
 
         /**
@@ -183,15 +184,15 @@ namespace artery {
         std::stringstream getStringstreamOfXML(const std::string &stringFilePath) const;
 
         /**
-         * opens XML file
+         * Opens XML file
          *
          * @return root of xml
          */
         pugi::xml_node openXML() const;
 
         /**
-         * returns value for set up connection
-         *
+         * Returns value for set up connection
+         * !Absolute path for config file "connectionConfig.xml has to be changed!
          * @param root
          * @param entryName name of child
          * @param attributeName name of attribute of child
