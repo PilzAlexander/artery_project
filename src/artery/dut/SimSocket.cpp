@@ -101,7 +101,6 @@ namespace artery {
             connections_.push_back(portName);
             EV_INFO << "Connected to port: " << portName << endl;
         } catch (zmq::error_t &cantConnect) {
-            cout << "SO DRECK " << portName << std::endl;
             cerr << "Socket can't connect to port: " << cantConnect.what() << endl;
             close(socketName);
             return;
@@ -158,17 +157,26 @@ namespace artery {
         std::stringstream ss;
         ss << xmlFile.rdbuf();
         std::istringstream iss(ss.str());
-
-        // bool hasRecivedConfig = false;
-        // while (hasRecivedConfig)  {
-        //
-        // }
+        
         try {
             EV_INFO << "Config sent to simulation" << endl;
             publisherSocketConfig_.send(zmq::buffer(ss.str()), zmq::send_flags::none);
         } catch (zmq::error_t &cantSend) {
             cerr << "Socket can't send: " << cantSend.what() << endl;
             unbind(portNameConfig_, publisherSocketConfig_);
+        }
+
+        zmq::message_t messageToReceive;
+        try {
+            subscriberSocket_.recv(messageToReceive, zmq::recv_flags::none);
+        } catch (zmq::error_t &cantReceive) {
+            cerr << "Socket can't receive: " << cantReceive.what() << endl;
+            disconnect(subPortName_, subscriberSocket_);
+            unbind(portNameConfig_, publisherSocketConfig_);
+        }
+        cout << messageToReceive.to_string() << endl;
+        if(messageToReceive.to_string() != "Config received\0") {
+            throw omnetpp::cRuntimeError("Interface didn't  receive the config. Please try again.");
         }
     }
 
