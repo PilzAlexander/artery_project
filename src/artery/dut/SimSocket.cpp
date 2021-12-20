@@ -10,9 +10,6 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/variant.hpp>
-#include <boost/algorithm/string.hpp>
-#include <filesystem>
-//#include <boost/filesystem.hpp>
 #include "artery/traci/VehicleController.h"
 #include "artery/application/VehicleKinematics.h"
 #include "artery/application/Middleware.h"
@@ -53,8 +50,8 @@ namespace artery {
         char *cwd = get_current_dir_name();
         directoryPath_ = cwd;
         free(cwd);
-        //change directoryPath in right format
-        boost::algorithm::replace_all(directoryPath_, R"(/scenarios/)", "/src/artery/");
+
+
 
         pugi::xml_node root = openXML();
         context_ = zmq::context_t(1);
