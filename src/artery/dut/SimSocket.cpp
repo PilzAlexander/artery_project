@@ -187,8 +187,14 @@ namespace artery {
     void SimSocket::publishSimMsg(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
                                   const vanetza::byte_view_range &byteViewRange) {
         string outboundData = serializeSimMsg(macSource, macDest, byteViewRange);
-        zmq::message_t msgToSend(outboundData);
-
+        stringstream ss;
+        {
+            boost::archive::text_oarchive archive(ss);
+            DataMap map;
+            map.insert_or_assign("V2X", outboundData);
+            archive << map;
+        }
+        zmq::message_t msgToSend(ss.str());
         try {
             publisherSocket_.send(msgToSend, zmq::send_flags::none);
         } catch (zmq::error_t &cantSend) {

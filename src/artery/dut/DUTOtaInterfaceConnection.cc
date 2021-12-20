@@ -40,7 +40,7 @@ namespace artery {
         // create module pointer to SimSocket with ID = 6
         cModule *mod = getSimulation()->getModule(6);
         auto *mTarget = check_and_cast<artery::SimSocket *>(mod);
-        //mTarget->publishSimMsg(macSource, macDest, byteViewRange);
+        mTarget->publishSimMsg(macSource, macDest, byteViewRange);
     }
 
     void DUTOtaInterfaceConnection::receiveMessage(std::unique_ptr<GeoNetPacket> DUTGeoNetPacket) {
