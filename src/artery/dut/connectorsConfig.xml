@@ -7,34 +7,68 @@
             <baseCallbackUrl>http://172.17.0.1</baseCallbackUrl>
             <port>9091</port>
             <operations>
-                <count>20</count>
+                <count>54</count>
                 <item_version>0</item_version>
-                <item>FDOG</item>
-                <item>Angle</item>
-                <item>Decel</item>
-                <item>Distance</item>
-                <item>Height</item>
-                <item>LaneID</item>
-                <item>LaneIndex</item>
-                <item>LanePosition</item>
-                <item>Length</item>
-                <item>Position_X-Coordinate</item>
-                <item>Position_Y-Coordinate</item>
-                <item>Position_Z-Coordinate</item>
-                <item>RoadID</item>
-                <item>RouteIndex</item>
-                <item>Signals</item>
-                <item>Speed</item>
-                <item>Test</item>
-                <item>Width</item>
-                <item>current</item>
-                <item>origin</item>
+                <item>Speed_DUT</item>
+                <item>Acceleration_DUT</item>
+                <item>Distance_DUT</item>
+                <item>Height_DUT</item>
+                <item>Angle_DUT</item>
+                <item>Length_DUT</item>
+                <item>Width_DUT</item>
+                <item>LanePosition_DUT</item>
+                <item>Signals_DUT</item>
+                <item>Position_X_Coordinate_DUT</item>
+                <item>Position_Y_Coordinate_DUT</item>
+                <item>Position_Z_Coordinate_DUT</item>
+                <item>Decel_DUT</item>
+                <item>RoadID_DUT</item>
+                <item>RouteIndex_DUT</item>
+                <item>LaneID_DUT</item>
+                <item>LaneIndex_DUT</item>
+                <item>AccumulatedWaitingTime_DUT</item>
+                <item>AllowedSpeed_DUT</item>
+                <item>Co2Emission_DUT</item>
+                <item>COEmission_DUT</item>
+                <item>ElectricityConsumption_DUT</item>
+                <item>FuelConsumption_DUT</item>
+                <item>HCEmission_DUT</item>
+                <item>Imperfection_DUT</item>
+                <item>LateralLanePosition_DUT</item>
+                <item>MaxSpeed_DUT</item>
+                <item>MaxSpeedLat_DUT</item>
+                <item>MinGap_DUT</item>
+                <item>MinGapLat_DUT</item>
+                <item>NOxEmission_DUT</item>
+                <item>NoiseEmission_DUT</item>
+                <item>PMxEmission_DUT</item>
+                <item>Slope_DUT</item>
+                <item>SpeedDeviation_DUT</item>
+                <item>SpeedFactor_DUT</item>
+                <item>SpeedWithoutTraCI_DUT</item>
+                <item>Tau_DUT</item>
+                <item>EmissionClass_DUT</item>
+                <item>WaitingTime_DUT</item>
+                <item>LaneChangeMode_DUT</item>
+                <item>LateralAlignment_DUT</item>
+                <item>SpeedMode_DUT</item>
+                <item>StopState_DUT</item>
+                <item>RoutingMode_DUT</item>
+                <item>ShapeClass_DUT</item>
+                <item>Speed_Dynamics</item>
+                <item>YawRate_Dynamics</item>
+                <item>Acceleration_Dynamics</item>
+                <item>Heading_Dynamics</item>
+                <item>Latitude_Dynamics</item>
+                <item>Longitude_Dynamics</item>
+                <item>PosX_Dynamics</item>
+                <item>PosY_Dynamics</item>
             </operations>
             <periodicOperations>
                 <count>1</count>
                 <item_version>0</item_version>
                 <item  >
-                    <first>Test</first>
+                    <first>COEmission_DUT</first>
                     <second>1000</second>
                 </item>
             </periodicOperations>
