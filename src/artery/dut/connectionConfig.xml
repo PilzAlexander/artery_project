@@ -10,6 +10,6 @@
         <portNameConfig path="tcp://127.0.0.1:7779"/>
     </portNameConfig_>
     <configXMLPath_>
-        <configXMLPath path="/home/vagrant/Desktop/fork_repo/artery_project/src/artery/dut/connectorsConfig.xml"></configXMLPath>
+        <configXMLPath path="/connectorsConfig.xml"></configXMLPath>
     </configXMLPath_>
 </Connection>

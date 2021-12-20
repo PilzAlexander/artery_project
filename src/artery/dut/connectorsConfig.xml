@@ -57,9 +57,9 @@
                 <item>Speed_Dynamics</item>
                 <item>YawRate_Dynamics</item>
             </operations>
-            <frameToOperation>
+            <frameToOperation >
                 <count>4</count>
-                <itemFrameToOperation>
+                <itemFrameToOperation    >
                     <canid>273</canid>
                     <CANConnectorReceiveOperation>
                         <operation>GESCHWINDIGKEIT</operation>
@@ -135,7 +135,7 @@
                         </mask>
                     </CANConnectorReceiveOperation>
                 </itemFrameToOperation>
-                <itemFrameToOperation>
+                <itemFrameToOperation   >
                     <canid>546</canid>
                     <CANConnectorReceiveOperation>
                         <operation>GPS_LOCA</operation>

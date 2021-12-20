@@ -10,6 +10,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/variant.hpp>
+#include <boost/algorithm/string.hpp>
+#include <filesystem>
+//#include <boost/filesystem.hpp>
 #include "artery/traci/VehicleController.h"
 #include "artery/application/VehicleKinematics.h"
 #include "artery/application/Middleware.h"
@@ -26,6 +29,7 @@
 #include <algorithm>
 #include <array>
 #include <fstream>
+
 /********************************************************************************
  * Function declarations
  ********************************************************************************/
@@ -46,18 +50,26 @@ namespace artery {
             throw cRuntimeError("No TraCI module found for signal subscription");
         }
 
+        char *cwd = get_current_dir_name();
+        directoryPath_ = cwd;
+        free(cwd);
+        //change directoryPath in right format
+        boost::algorithm::replace_all(directoryPath_, R"(/scenarios/)", "/src/artery/");
+
         pugi::xml_node root = openXML();
         context_ = zmq::context_t(1);
         pubPortName_ = getValueFromXML(root,"pubPortName_","pubPortName");
         subPortName_ = getValueFromXML(root,"subPortName_","subPortName");
         portNameConfig_ = getValueFromXML(root,"portNameConfig_","portNameConfig");
-        //configXMLPath_ = "/home/vagrant/Desktop/fork_repo/artery_project/src/artery/dut/connectorsConfig.xml";
+      //  portNameConfigSub_ = getValueFromXML(root,"portNameConfigSub_","portNameConfigSub");
         configXMLPath_ = getValueFromXML(root,"configXMLPath_","configXMLPath");
         publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
         subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
         publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
+      //  subscribeSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::sub);
         subscriberSocket_.set(zmq::sockopt::subscribe, "");
         connect(subPortName_, subscriberSocket_);
+      //  connect(portNameConfigSub_,subscribeSocketConfig_);
         bind(pubPortName_, publisherSocket_);
         bind(portNameConfig_, publisherSocketConfig_ );
     }
@@ -92,6 +104,7 @@ namespace artery {
             connections_.push_back(portName);
             EV_INFO << "Connected to port: " << portName  << endl;
         } catch (zmq::error_t &cantConnect) {
+            cout << "SO DRECK " << portName << std::endl;
             cerr << "Socket can't connect to port: " << cantConnect.what() << endl;
             close(socketName);
             return;
@@ -114,7 +127,7 @@ namespace artery {
             bindings_.push_back(portName);
             EV_INFO << "Bound to port: " << portName  << endl;
         } catch (zmq::error_t &cantBind) {
-            cerr << "Socket can't connect to port: " << cantBind.what() << endl;
+            cerr << "Socket can't bind to port: " << cantBind.what() << endl;
             close(socketName);
             return;
         }
@@ -144,10 +157,15 @@ namespace artery {
     }
 
     void SimSocket::sendConfigString(const std::string& stringFilePath) {
-        std::ifstream xmlFile(stringFilePath);
+        std::ifstream xmlFile(directoryPath_ + stringFilePath);
         std::stringstream ss;
         ss << xmlFile.rdbuf();
         std::istringstream iss(ss.str());
+
+       // bool hasRecivedConfig = false;
+       // while (hasRecivedConfig)  {
+       //
+       // }
         try {
             EV_INFO << "Config sent to simulation" << endl;
             publisherSocketConfig_.send(zmq::buffer(ss.str()), zmq::send_flags::none);
@@ -748,11 +766,14 @@ namespace artery {
 
     pugi::xml_node SimSocket::openXML() const {// Create empty XML document within memory
         pugi::xml_document doc;
+        std::string helpString = (directoryPath_ + "/connectionConfig.xml");
+        char *xmlPath = &helpString[0];
+
         // Load XML file into memory
         // Remark: to fully read declaration entries you have to specify
         // "pugi::parse_declaration"
-        pugi::xml_parse_result result = doc.load_file(
-                "/home/vagrant/Desktop/fork_repo/artery_project/src/artery/dut/connectionConfig.xml",
+                  pugi::xml_parse_result result = doc.load_file(
+                          xmlPath,
                 pugi::parse_default | pugi::parse_declaration);
         if (!result) {
             cout << "Parse error: " << result.description()
@@ -762,6 +783,11 @@ namespace artery {
         pugi::xml_node root = doc.document_element();
         return root;
     }
+
+    void waitConfigRecive( ){
+
+    }
+
 }// namespace artery
 /********************************************************************************
  * EOF
