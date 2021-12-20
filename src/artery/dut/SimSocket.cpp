@@ -206,9 +206,13 @@ namespace artery {
     string SimSocket::serializeSimMsg(const vanetza::MacAddress &macSource, const vanetza::MacAddress &macDest,
                                       const vanetza::byte_view_range &byteViewRange) const {
         ostringstream stringsStream;
+        stringstream ssSource ,ssDest;
+        vanetza::operator<<(ssSource, macSource);
+        vanetza::operator<<(ssDest, macDest);
+
         boost::archive::text_oarchive archive(stringsStream);
-        vanetza::operator<<(stringsStream, macSource);
-        vanetza::operator<<(stringsStream, macDest);
+        archive << ssSource.str();
+        archive << ssDest.str();
         archive << byteViewRange.size();
 
         for (int i = 0; i < byteViewRange.size(); i++) {
