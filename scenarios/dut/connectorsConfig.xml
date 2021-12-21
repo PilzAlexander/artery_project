@@ -1,7 +1,5 @@
 <connectors>
-
     <connector classType="RESTDummyConnector">
-
         <conn>
             <baseUrlDuT>http://localhost:9090</baseUrlDuT>
             <baseCallbackUrl>http://172.17.0.1</baseCallbackUrl>
@@ -67,7 +65,7 @@
             <periodicOperations>
                 <count>1</count>
                 <item_version>0</item_version>
-                <item  >
+                <item>
                     <first>COEmission_DUT</first>
                     <second>1000</second>
                 </item>
@@ -77,10 +75,10 @@
     </connector>
 
     <connector classType="CANConnector">
-        <conn >
+        <conn>
             <interfaceName>vcan0</interfaceName>
             <codecName>BmwCodec</codecName>
-            <operations >
+            <operations>
                 <count>7</count>
                 <item_version>0</item_version>
                 <item>Acceleration_Dynamics</item>
@@ -91,9 +89,9 @@
                 <item>Speed_Dynamics</item>
                 <item>YawRate_Dynamics</item>
             </operations>
-            <frameToOperation >
+            <frameToOperation>
                 <count>4</count>
-                <itemFrameToOperation    >
+                <itemFrameToOperation>
                     <canid>273</canid>
                     <CANConnectorReceiveOperation>
                         <operation>GESCHWINDIGKEIT</operation>
@@ -169,7 +167,7 @@
                         </mask>
                     </CANConnectorReceiveOperation>
                 </itemFrameToOperation>
-                <itemFrameToOperation   >
+                <itemFrameToOperation>
                     <canid>546</canid>
                     <CANConnectorReceiveOperation>
                         <operation>GPS_LOCA</operation>
@@ -479,10 +477,7 @@
             </periodicOperations>
             <periodicTimerEnabled>0</periodicTimerEnabled>
         </conn>
-
-
     </connector>
-
     <connector classType="V2XConnector">
         <conn>
             <ifname>veth0</ifname>

@@ -152,7 +152,7 @@ namespace artery {
     }
 
     void SimSocket::sendConfigString(const std::string &stringFilePath) {
-        std::ifstream xmlFile(directoryPath_ + stringFilePath);
+        std::ifstream xmlFile(directoryPath_ + "/" + stringFilePath);
         std::stringstream ss;
         ss << xmlFile.rdbuf();
         std::istringstream iss(ss.str());
