@@ -92,307 +92,39 @@
             <frameToOperation>
                 <count>4</count>
                 <itemFrameToOperation>
-                    <canid>273</canid>
+                    <canid>0x111</canid>
                     <CANConnectorReceiveOperation>
                         <operation>GESCHWINDIGKEIT</operation>
                         <isCANFD>0</isCANFD>
                         <hasMask>0</hasMask>
-                        <maskLength>0</maskLength>
-                        <mask>
-                            <count>64</count>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                        </mask>
+                        <mask>0x0</mask>
                     </CANConnectorReceiveOperation>
                 </itemFrameToOperation>
                 <itemFrameToOperation>
-                    <canid>546</canid>
+                    <canid>0x222</canid>
                     <CANConnectorReceiveOperation>
                         <operation>GPS_LOCA</operation>
                         <isCANFD>0</isCANFD>
                         <hasMask>0</hasMask>
-                        <maskLength>0</maskLength>
-                        <mask>
-                            <count>64</count>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                        </mask>
+                        <mask>0x0</mask>
                     </CANConnectorReceiveOperation>
                 </itemFrameToOperation>
                 <itemFrameToOperation>
-                    <canid>819</canid>
+                    <canid>0x333</canid>
                     <CANConnectorReceiveOperation>
                         <operation>GPS_LOCB</operation>
                         <isCANFD>0</isCANFD>
                         <hasMask>0</hasMask>
-                        <maskLength>0</maskLength>
-                        <mask>
-                            <count>64</count>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                        </mask>
+                        <mask>0x0</mask>
                     </CANConnectorReceiveOperation>
                 </itemFrameToOperation>
                 <itemFrameToOperation>
-                    <canid>1092</canid>
+                    <canid>0x444</canid>
                     <CANConnectorReceiveOperation>
                         <operation>LICHTER</operation>
                         <isCANFD>0</isCANFD>
                         <hasMask>0</hasMask>
-                        <maskLength>0</maskLength>
-                        <mask>
-                            <count>64</count>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                            <item>0</item>
-                        </mask>
+                        <mask>0x0</mask>
                     </CANConnectorReceiveOperation>
                 </itemFrameToOperation>
             </frameToOperation>
@@ -401,7 +133,7 @@
                 <itemOperationToFrame>
                     <operation>GESCHWINDIGKEIT</operation>
                     <CANConnectorSendOperation>
-                        <canID>629</canID>
+                        <canID>275</canID>
                         <isCANFD>0</isCANFD>
                         <isCyclic>1</isCyclic>
                         <announce>0</announce>
@@ -419,7 +151,7 @@
                 <itemOperationToFrame>
                     <operation>GPS_LOCA</operation>
                     <CANConnectorSendOperation>
-                        <canID>627</canID>
+                        <canID>273</canID>
                         <isCANFD>0</isCANFD>
                         <isCyclic>1</isCyclic>
                         <announce>0</announce>
@@ -437,7 +169,7 @@
                 <itemOperationToFrame>
                     <operation>GPS_LOCB</operation>
                     <CANConnectorSendOperation>
-                        <canID>628</canID>
+                        <canID>274</canID>
                         <isCANFD>0</isCANFD>
                         <isCyclic>1</isCyclic>
                         <announce>0</announce>
@@ -455,7 +187,7 @@
                 <itemOperationToFrame>
                     <operation>LICHTER</operation>
                     <CANConnectorSendOperation>
-                        <canID>633</canID>
+                        <canID>279</canID>
                         <isCANFD>0</isCANFD>
                         <isCyclic>1</isCyclic>
                         <announce>0</announce>
