@@ -261,6 +261,8 @@ namespace artery {
                     archiveV2X >> macSource;
                     archiveV2X >> macDest;
                     convertStringToByteArray(macDest, macDest_);
+                    //if the mac address should not be static -> see SimSocket.h
+                    //convertStringToByteArray(Mac Source ,Mac Destination);
 
                     archiveV2X >> payloadLength;
                     for (int i = 0; i < payloadLength; i++) {
@@ -742,7 +744,7 @@ namespace artery {
             //Workaround because it's not possible to send in the Omnet++ Init methode
             if (count < 1) {
                 //sending config once at the beginning
-                sendConfigString(configXMLPath_);
+                //sendConfigString(configXMLPath_);
                 count = 1;
             }
             publish();
