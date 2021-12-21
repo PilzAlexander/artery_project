@@ -132,6 +132,27 @@ namespace traci {
             traci.setSignals(id, signals);
         }
 
+        if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("SpeedMode_DUT")) {
+
+            std::string speedModeStr = boost::get<std::string>(inputDataMap["Value"]);
+            int speedMode = atoi(speedModeStr.c_str());
+            traci.setSpeedMode(id, speedMode);
+        }
+
+        if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("MaxSpeed_DUT")) {
+
+            std::string maxSpeedStr = boost::get<std::string>(inputDataMap["Value"]);
+            double maxSpeed = atof(maxSpeedStr.c_str());
+            traci.setMaxSpeed(id, maxSpeed);
+        }
+
+        if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("SpeedFactor_DUT")) {
+
+            std::string speedFactorStr = boost::get<std::string>(inputDataMap["Value"]);
+            double speedFactor = atof(speedFactorStr.c_str());
+            traci.setSpeedFactor(id, speedFactor);
+        }
+
         /*
          * Insert more "setter blocks" for desired values
          */
