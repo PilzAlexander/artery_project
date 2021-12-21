@@ -13,7 +13,7 @@ if(POLICY CMP0079)
 endif()
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 enable_testing()
 
@@ -28,6 +28,10 @@ find_package(Boost 1.59 COMPONENTS date_time system REQUIRED)
 if (Boost_VERSION_STRING VERSION_GREATER_EQUAL "1.75")
     # Boost.Geometry requires C++14 starting with Boost 1.75
     set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if(WITH_DUT)
+    set(CMAKE_CXX_STANDARD 17)
 endif()
 
 # running simulations with opp_run requires shared libraries
@@ -92,8 +96,8 @@ endif()
 option(WITH_ENVMOD "Build Artery with environment model feature" ON)
 option(WITH_STORYBOARD "Build Artery with storyboard feature" ON)
 option(WITH_TRANSFUSION "Build Artery with transfusion feature" OFF)
-#TODO $Variable für WITH_TESTBED
-option(WITH_TESTBED "Build Artery with testbed feature" ON)
+
+option(WITH_TESTBED "Build Artery with testbed feature" OFF)
 #set(WITH_TESTBED OFF)
 option(WITH_DUT "Build Artery with communication options to a dut" ON)
 

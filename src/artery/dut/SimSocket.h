@@ -146,11 +146,6 @@ namespace artery {
         const DataMap &getInputDataMap() const;
         traci::SubscriptionManager *getSubscriptions() { return subscriptions_; }
 
-        /**
-         * Wait-methode: wait until the interfaace receives the config
-         */
-        void waitConfigRecive( );
-
     protected:
         void initialize() override;
         void finish() override;

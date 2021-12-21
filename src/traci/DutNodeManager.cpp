@@ -114,14 +114,27 @@ namespace traci {
         auto vehicle = m_subscriptions->getVehicleCache(id);
         auto &traci = m_api->vehicle;
 
-        if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("Signals") &&
-            inputDataMap["Operation"] == boost::variant<int, double, std::string>(traci.getSignals(id))) {
-            std::cout << "IN DER IF, VOR SET SIGNALS" << std::endl;
+        if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("Speed_DUT")) {
+
+            std::string speedStr = boost::get<std::string>(inputDataMap["Value"]);
+            double speed = atof(speedStr.c_str());
+            if (traci.getMaxSpeed(id) >= speed) {
+                traci.setSpeed(id, speed);
+            } else {
+                EV_INFO << "Received speed exceeds simulated max speed of dut" << endl;
+            }
+        }
+
+        if (inputDataMap["Operation"] == boost::variant<int, double, std::string>("Signals_DUT")) {
 
             std::string signalsStr = boost::get<std::string>(inputDataMap["Value"]);
             int signals = atoi(signalsStr.c_str());
             traci.setSignals(id, signals);
         }
+
+        /*
+         * Insert more "setter blocks" for desired values
+         */
     }
 }// namespace traci
 /********************************************************************************

@@ -786,10 +786,6 @@ namespace artery {
         return root;
     }
 
-    void waitConfigReceive() {
-
-    }
-
 }// namespace artery
 /********************************************************************************
  * EOF

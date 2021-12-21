@@ -7,7 +7,7 @@ endif()
 if(WITH_STORYBOARD)
     add_subdirectory(storyboard)
 endif()
-if(WITH_TESTBED) #TODO
+if(WITH_TESTBED)
     add_subdirectory(testbed)
 endif()
 if(WITH_DUT)

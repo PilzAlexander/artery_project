@@ -7,11 +7,4 @@ and back.
 
 - libzmq3-dev (ZeroMQ)
 - cppzmq
-
-
-## License
-
-Artery V2X Simulation Framework <br />
-Copyright 2017-2018 Christina Obermaier <br />
-Contributors: Alexander Pilz, Johannes Winter <br />
-Licensed under GPLv2, see COPYING file for detailed license and warranty terms.
+- c++17
