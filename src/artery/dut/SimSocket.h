@@ -105,10 +105,10 @@ namespace artery {
 
         /**
          * Sends the connectorConfig XML to the interface component
-         * !Absolute path for config file "connectorsConfig.xml has to be changed!
+         * Blocks until a response from the interface component is received
          * @param stringFilePath
          */
-        void sendConfigString(const std::string& stringFilePath) ;
+        void sendConfigString(const std::string& stringFilePath);
 
         /**
          * Collects simulated vehicle data from the DutNodeManager
@@ -195,7 +195,6 @@ namespace artery {
 
         /**
          * Returns value for set up connection
-         * !Absolute path for config file "connectionConfig.xml has to be changed!
          * @param root root of xml
          * @param entryName name of child
          * @param attributeName name of attribute of child
