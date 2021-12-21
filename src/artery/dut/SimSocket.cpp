@@ -742,7 +742,7 @@ namespace artery {
             //Workaround because it's not possible to send in the Omnet++ Init methode
             if (count < 1) {
                 //sending config once at the beginning
-                sendConfigString(configXMLPath_);
+                //sendConfigString(configXMLPath_);
                 count = 1;
             }
             publish();

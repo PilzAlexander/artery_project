@@ -91,9 +91,10 @@ namespace traci {
     void DutNodeManager::updateVehicle(const std::string &id, VehicleSink *sink) {
         auto vehicle = m_subscriptions->getVehicleCache(id);
         auto &traci = m_api->vehicle;
+        std::string dutName = par("twinId");
 
         // get vehicle data to send
-        if (id == "flowNorthSouth.0") {
+        if (id == dutName) {
             // create module pointer to SimSocket with ID = 6
             cModule *mod = getSimulation()->getModule(6);
             auto *m_target = check_and_cast<artery::SimSocket *>(mod);
