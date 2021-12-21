@@ -58,15 +58,14 @@ namespace artery {
         pubPortName_ = getValueFromXML(root, "pubPortName_", "pubPortName");
         subPortName_ = getValueFromXML(root, "subPortName_", "subPortName");
         portNameConfig_ = getValueFromXML(root, "portNameConfig_", "portNameConfig");
-        //  portNameConfigSub_ = getValueFromXML(root,"portNameConfigSub_","portNameConfigSub");
+
         configXMLPath_ = getValueFromXML(root, "configXMLPath_", "configXMLPath");
         publisherSocket_ = zmq::socket_t(context_, zmq::socket_type::pub);
         subscriberSocket_ = zmq::socket_t(context_, zmq::socket_type::sub);
         publisherSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::pub);
-        //  subscribeSocketConfig_ = zmq::socket_t(context_, zmq::socket_type::sub);
-        subscriberSocket_.set(zmq::sockopt::subscribe, "");
+        zmq_setsockopt(subscriberSocket_, ZMQ_SUBSCRIBE, "", 0);
         connect(subPortName_, subscriberSocket_);
-        //  connect(portNameConfigSub_,subscribeSocketConfig_);
+
         bind(pubPortName_, publisherSocket_);
         bind(portNameConfig_, publisherSocketConfig_);
     }
@@ -175,7 +174,7 @@ namespace artery {
             unbind(portNameConfig_, publisherSocketConfig_);
         }
         cout << messageToReceive.to_string() << endl;
-        if(messageToReceive.to_string() != "Config received\0") {
+        if(messageToReceive.to_string() != "Config received") {
             throw omnetpp::cRuntimeError("Interface didn't  receive the config. Please try again.");
         }
     }
