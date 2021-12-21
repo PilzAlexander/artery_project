@@ -261,6 +261,8 @@ namespace artery {
                     archiveV2X >> macSource;
                     archiveV2X >> macDest;
                     convertStringToByteArray(macDest, macDest_);
+                    //if the mac address should not be static -> see SimSocket.h
+                    //convertStringToByteArray(Mac Source ,Mac Destination);
 
                     archiveV2X >> payloadLength;
                     for (int i = 0; i < payloadLength; i++) {
